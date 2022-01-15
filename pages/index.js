@@ -57,9 +57,10 @@ function Timelapse() {
 
   return (
     <div className={styles.timelapse}>
+    <meta name="viewport" content="width=device-width, initial-scale=.5, maximum-scale=8.0, minimum-scale=.25, user-scalable=yes"/>
       <h1>Timelapse as Slideshow</h1>
       <img id='slideshow_img' src={'photos/' + slides[index]} />
-
+      <br />
       <div id='progress_bar' className={styles.progress_bar} 
              onMouseMove={onMouseMove}
              onMouseEnter={onMouseEnter}

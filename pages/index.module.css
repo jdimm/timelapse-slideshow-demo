@@ -4,8 +4,7 @@
   }
 
   .timelapse img {
-      width: 60%;
-      max-height: 60%;
+      max-width:95%;
       border-radius: 50px;
   }
 
@@ -14,7 +13,6 @@
     width: min-content;
     white-space: nowrap;
     cursor: pointer;
-    clear: both;
   }
   
   .left_bar, .right_bar {
