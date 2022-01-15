@@ -55,7 +55,8 @@ function Timelapse() {
       <div id='progress_bar' className={styles.progress_bar} 
              onMouseMove={onMouseMove}
              onMouseEnter={onMouseEnter}
-             onMouseLeave={onMouseOut}>
+             onMouseLeave={onMouseOut}
+             onTouchMove={onMouseMove}>
           <div className={styles.left_bar} style={styleLeft}/>
           &nbsp;
           <div className={styles.right_bar} style={styleRight} />
