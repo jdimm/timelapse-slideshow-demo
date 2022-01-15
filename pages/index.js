@@ -6,10 +6,19 @@ function Timelapse() {
   const [index, setIndex] = useState(0)
   const [animate, setAnimate] = useState(true)
   const [index2screen, setIndex2screen] = useState(5)
+  const [preloaded,setPreloaded] = useState(false)
 
   useEffect(() => {
     const el = document.getElementById('slideshow_img')
     setIndex2screen((el.width -50)/ slides.length)
+
+    if (!preloaded) {
+      slides.forEach((image_url, i) => {
+        const img = new Image()
+        img.src = "photos/" + image_url     
+      }) 
+      setPreloaded(true)
+    }
 
     const interval = setInterval(function() { 
         if (animate)
