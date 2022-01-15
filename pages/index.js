@@ -29,7 +29,8 @@ function Timelapse() {
 
   const onMouseMove = (e) => {
     const el = document.getElementById('progress_bar')
-    const mousePos = e.clientX - el.offsetLeft
+    const x = e.clientX || e.changedTouches[0].clientX
+    const mousePos = x - el.offsetLeft
     const newIndex = Math.max(0, parseInt(mousePos / index2screen)) % slides.length
     setIndex( newIndex)
   }
