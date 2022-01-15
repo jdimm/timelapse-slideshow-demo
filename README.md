@@ -1,5 +1,22 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+
+## Timelapse as Slideshow
+
+Timelapse is a kind of video, but there are advantages to implementing it as a javascript slideshow.
+
+- no build time
+- flexible image selection
+- easy and immediate video scrubbing
+
+## Files that matter in this repo
+
+- pages/index.js has all the code
+- pages/index.module.css has the styling
+- data/slides.js has the list of source images
+- public/photos has the source image files
+
+
 ## Getting Started
 
 First, run the development server:
