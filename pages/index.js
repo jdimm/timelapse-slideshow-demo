@@ -55,10 +55,14 @@ function Timelapse() {
   const styleLeft = {"width": position}
   const styleRight = {"width": rest}
 
+  const meta = (
+      <meta name="viewport" content="width=device-width, initial-scale=.1, maximum-scale=10.0, minimum-scale=.1, user-scalable=yes"/>
+  )
+
   return (
     <div className={styles.timelapse}>
-    <meta name="viewport" content="width=device-width, initial-scale=.5, maximum-scale=8.0, minimum-scale=.25, user-scalable=yes"/>
-      <h1>Timelapse as Slideshow</h1>
+     {meta}
+
       <img id='slideshow_img' src={'photos/' + slides[index]} />
       <br />
       <div id='progress_bar' className={styles.progress_bar} 
@@ -70,7 +74,7 @@ function Timelapse() {
           &nbsp;
           <div className={styles.right_bar} style={styleRight} />
       </div>
-
+      <h2><i>Timelapse as Slideshow</i></h2>
     </div>
   );
 }
