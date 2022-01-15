@@ -55,13 +55,9 @@ function Timelapse() {
   const styleLeft = {"width": position}
   const styleRight = {"width": rest}
 
-  const meta = (
-      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=10.0, minimum-scale=.1, user-scalable=yes"/>
-  )
 
   return (
     <div className={styles.timelapse}>
-     {meta}
 
       <img id='slideshow_img' src={'photos/' + slides[index]} />
       <br />
