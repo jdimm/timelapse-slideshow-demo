@@ -27,12 +27,19 @@ function Timelapse() {
     return () => clearInterval(interval);
   })  
 
-  const onMouseMove = (e) => {
+  const scrub = (clientX) => {
     const el = document.getElementById('progress_bar')
-    const x = e.clientX || e.changedTouches[0].clientX
-    const mousePos = x - el.offsetLeft
+    const mousePos = clientX - el.offsetLeft
     const newIndex = Math.max(0, parseInt(mousePos / index2screen)) % slides.length
     setIndex( newIndex)
+  }
+
+  const onTouchMove = (e) => {
+     scrub(e.touches[0].clientX)
+  }
+
+  const onMouseMove = (e) => {
+    scrub(e.clientX)
   }
 
   const onMouseEnter = (e) => {
@@ -57,7 +64,7 @@ function Timelapse() {
              onMouseMove={onMouseMove}
              onMouseEnter={onMouseEnter}
              onMouseLeave={onMouseOut}
-             onTouchMove={onMouseMove}>
+             onTouchMove={onTouchMove}>
           <div className={styles.left_bar} style={styleLeft}/>
           &nbsp;
           <div className={styles.right_bar} style={styleRight} />
