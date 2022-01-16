@@ -10,7 +10,7 @@ function Timelapse() {
   const [preloaded,setPreloaded] = useState(false)
   const [photos, setPhotos] = useState([])
 
-  const animateRef = React.useRef(animate)
+  const animateRef = useRef(animate)
 
   const router = useRouter()
   const { serial, camera } = router.query
@@ -36,7 +36,7 @@ function Timelapse() {
 
   useEffect(() => {
 
-    const usePhotos = (photos) => { 
+    const makePhotos = (photos) => { 
       // Map from photo index to x position on progress bar.
         setIndex2screen(index2screen => 
             window.innerWidth * 0.35 / photos.length)
@@ -72,7 +72,7 @@ function Timelapse() {
         const matches = [... html.matchAll(regexp)]
         const photos = matches.map( (val, idx) => val[1])
         setPhotos(photos)
-        usePhotos(photos)
+        makePhotos(photos)
       }).catch(function (err) {
         console.warn('Something went wrong.', err);
       });

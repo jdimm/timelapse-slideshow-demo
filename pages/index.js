@@ -18,7 +18,7 @@ function Timelapse() {
 
   useEffect(() => {
 
-    const usePhotos = (photos) => { 
+    const makePhotos = (photos) => { 
       // Map from photo index to x position on progress bar.
       const el = document.getElementById('slideshow_img')
       if (el && photos)
@@ -51,7 +51,7 @@ function Timelapse() {
         const matches = [... html.matchAll(regexp)]
         const photos = matches.map( (val, idx) => val[1])
         setPhotos(photos)
-        usePhotos(photos)
+        makePhotos(photos)
       }).catch(function (err) {
         console.warn('Something went wrong.', err);
       });
