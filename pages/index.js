@@ -7,10 +7,10 @@ function Timelapse() {
   const [animate, setAnimate] = useState(true)
   const [index2screen, setIndex2screen] = useState(5)
   const [preloaded,setPreloaded] = useState(false)
-  const [photos, setPhotos] = useState([])
+  const [photos, setPhotos] = useState(sample_photos)
 
   // const serial = 'ff2bb085f94680c754072062a61dd5b1'
-  const serial = '002e3a4ce5e861657317136a04cb6e90'
+  const serial = 'ff2bb085f94680c754072062a61dd5b1'
 
   //const url_prefix = 'photos/'
   const url_prefix = `http://13.90.210.214/serials/${serial}/camera1/`
@@ -57,8 +57,8 @@ function Timelapse() {
       });
     }  
 
-    //usePhotos(photos)
-    getPhotos()
+    makePhotos(photos)
+    //getPhotos()
 
   },[]) 
 
