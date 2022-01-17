@@ -7,7 +7,7 @@ function Timelapse() {
   const [index, setIndex] = useState(0)
   const [animate, setAnimate] = useState(true)
   const [index2screen, setIndex2screen] = useState(5)
-  const [preloaded,setPreloaded] = useState(false)
+  // const [preloaded,setPreloaded] = useState(false)
   const [photos, setPhotos] = useState([])
   const [preloadedImages, setPreloadedImages] = useState([])
 
@@ -43,13 +43,12 @@ function Timelapse() {
             window.innerWidth * 0.35 / photos.length)
   
       // Preload images.
-      if (!preloaded && photos) {
+      if (!preloadedImages.length && photos) {
         var images = photos.map((image_url, i) => {
           const img = new Image()
           img.src = url_prefix() + image_url 
           return img;    
         }) 
-        setPreloaded(true)
         setPreloadedImages(images)
       }
   
@@ -131,7 +130,8 @@ function Timelapse() {
       <div id='progress_bar' className={styles.progress_bar} 
              onMouseMove={onMouseMove}
              onTouchMove={onTouchMove}
-             onMouseEnter={onMouseEnter}>
+             onMouseEnter={onMouseEnter}
+             onMouseLeave={onMouseLeave}>
           <div className={styles.left_bar} style={styleLeft}/>
           &nbsp;
           <div className={styles.right_bar} style={styleRight} />
