@@ -9,6 +9,7 @@ function Timelapse() {
   const [index2screen, setIndex2screen] = useState(5)
   const [preloaded,setPreloaded] = useState(false)
   const [photos, setPhotos] = useState([])
+  const [preloadedImages, setPreloadedImages] = useState([])
 
   const animateRef = useRef(animate)
 
@@ -43,11 +44,13 @@ function Timelapse() {
   
       // Preload images.
       if (!preloaded && photos) {
-        photos.forEach((image_url, i) => {
+        var images = photos.map((image_url, i) => {
           const img = new Image()
-          img.src = url_prefix() + image_url     
+          img.src = url_prefix() + image_url 
+          return img;    
         }) 
         setPreloaded(true)
+        setPreloadedImages(images)
       }
   
       // Start the slideshow.
@@ -99,20 +102,14 @@ function Timelapse() {
   const onMouseMove = (e) => {
     scrub(e.clientX)
   }
-
   const onMouseEnter = (e) => {
     setAnimate(animate => false)
-    //e.preventDefault()
-    // console.log("mouseEnter", animate)
   }
   const onMouseLeave = (e) => {
     setAnimate(animate => true)
-    // e.preventDefault()
-    // console.log("mouseLeave", animate)
   } 
   const toggleAnimation = (e) => {
       setAnimate (animate => !animate)
-      // console.log('toggleAnimation', animate)
   }
 
   if (!photos || !photos.length)
@@ -134,8 +131,7 @@ function Timelapse() {
       <div id='progress_bar' className={styles.progress_bar} 
              onMouseMove={onMouseMove}
              onTouchMove={onTouchMove}
-             onMouseEnter={onMouseEnter}
-             onMouseLeave={onMouseLeave}>
+             onMouseEnter={onMouseEnter}>
           <div className={styles.left_bar} style={styleLeft}/>
           &nbsp;
           <div className={styles.right_bar} style={styleRight} />
