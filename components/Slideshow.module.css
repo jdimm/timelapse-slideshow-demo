@@ -1,0 +1,32 @@
+
+  .slideshow {
+    text-align:center;
+    margin: 20px;
+  }
+
+  .slideshow img {
+      width: 400px;
+      border-radius: 50px;
+  }
+
+  .progress_bar {
+    display: inline-block;
+    width: min-content;
+    white-space: nowrap;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .left_bar, .right_bar {
+    display: inline-block;
+    border-radius: 20px;
+    height: 24px;
+  }
+  
+  .left_bar {
+    background-color: red;
+  }
+  
+  .right_bar {
+    background-color: black;
+  }

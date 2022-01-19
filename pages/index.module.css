@@ -1,33 +1,6 @@
 
-  .timelapse {
-    text-align:center;
-    height: 100vh;
-    margin: 20px;
-  }
-
-  .timelapse img {
-      height:75%;
-      border-radius: 50px;
-  }
-
-  .progress_bar {
-    display: inline-block;
-    width: min-content;
-    white-space: nowrap;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  
-  .left_bar, .right_bar {
-    display: inline-block;
-    border-radius: 20px;
-    height: 24px;
-  }
-  
-  .left_bar {
-    background-color: red;
-  }
-  
-  .right_bar {
-    background-color: black;
-  }
+.timelapse {
+    border: 1px solid black;
+    margin: 100px;
+    padding: 100px;
+}
