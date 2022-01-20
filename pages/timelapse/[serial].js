@@ -11,7 +11,7 @@ function Index() {
     return null;
 
   return ( 
-  <div clasName={styles.timelapse}>
+  <div className={styles.timelapse}>
 
     <table>
       <tbody>
@@ -35,9 +35,6 @@ function Index() {
         </tr>
       </tbody>
     </table>
-
-    <h2>{serial}</h2>
-
 
   </div>
 
