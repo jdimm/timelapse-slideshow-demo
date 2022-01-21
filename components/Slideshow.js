@@ -91,13 +91,13 @@ const Slideshow = ( {serial, camera} ) => {
       const photos = matches.map( (val, idx) => val[1])
 
       setPhotos(photos)
-      usePhotos(photos)
+      processPhotos(photos)
     }).catch(function (err) {
       console.warn('Something went wrong getting photos.', url, err);
     });
   } 
 
-  const usePhotos = (photos) => { 
+  const processPhotos = (photos) => { 
     // Pass photos as param because setPhotos has not yet happened.
 
     if (!preloadedImages.length && photos) {
