@@ -150,6 +150,7 @@ const Slideshow = ( {serial, camera} ) => {
         key={idx}
         style={style} 
         className={styles.touchBarCell} 
+        onTouchEnter={() => setIndex(idx) }
         onMouseEnter={() => setIndex(idx) }>I</span>
     ) })
   
