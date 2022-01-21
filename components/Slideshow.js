@@ -19,30 +19,28 @@ const HourSelect = ( { hours, toggleHour } ) => {
 }
 
 const TouchBar = ( {photos, index, setIndex, wrongHour, hours} ) => {
+  const onXMove = (w,x) => {
+    const pc = x / w
+    const newIndex = Math.max(0, Math.floor( (pc * photos.length) % photos.length))
+    // console.log("newIndex", newIndex)
+    setIndex(newIndex)
+  }
+
+  const onMouseMove = (e) => {
+    const x = e.nativeEvent.offsetX 
+    const w = e.currentTarget.clientWidth
+    onXMove(w,x)
+  }
+
+  const onTouchMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.targetTouches[0].clientX - rect.left;
+    const w = e.currentTarget.clientWidth
+    onXMove(w,x)
+  }
+
   return (
-    <div className={styles.touchBar} onMouseMove={
-        (e) => { 
-          console.log("mousemove", e.nativeEvent.offsetX)
-          const w = e.currentTarget.clientWidth
-          const x = e.nativeEvent.offsetX 
-
-          const pc = x / w
-          const newIndex = Math.max(0, Math.floor( (pc * photos.length) % photos.length))
-          console.log("newIndex", newIndex)
-          setIndex(newIndex)
-        }
-      }
-      onTouchMove={ (e) => {
-          const w = e.currentTarget.clientWidth
-          const rect = e.target.getBoundingClientRect();
-          const x = e.targetTouches[0].pageX - rect.left;
-
-          const pc = x / w
-          const newIndex = Math.max(0, Math.floor( (pc * photos.length) % photos.length))
-          setIndex(newIndex) 
-        }
-      }
-      >
+    <div className={styles.touchBar} onMouseMove={onMouseMove} onTouchMove={onTouchMove}>
       {
         photos.map( (photo, idx) => {
           const bad = wrongHour(hours, photo)
