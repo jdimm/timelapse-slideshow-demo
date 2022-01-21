@@ -1,6 +1,52 @@
 import React, {useState,useEffect,useRef} from 'react';
-//import sample_photos from '../../data/photos';
 import styles from './Slideshow.module.css'
+
+const HourSelect = ( { hours, toggleHour } ) => {
+    return (
+      <div className={styles.hourSelect}>
+      {
+        hours.map( (hour, idx) => {
+          return <span key={idx}>
+            <input 
+              type="checkbox" 
+              defaultChecked={hour} 
+              onChange={(e) => toggleHour(e,idx)}/>{idx} &nbsp;
+          </span>
+        })
+      }
+      </div>
+    )
+}
+
+const TouchBar = ( {photos, index, setIndex, wrongHour, hours} ) => {
+  return (
+    <div className={styles.touchBar}>
+      {
+        photos.map( (photo, idx) => {
+          const bad = wrongHour(hours, photo)
+          let color = "black"
+          if (bad)
+            color = 'white'
+          else if (idx <= index)
+            color = 'red'
+          const style = { color: color }
+
+          if (color  === 'white')
+            return <span key={idx} style={style}>I</span>
+          else  
+            return (
+              <span 
+                key={idx}
+                style={style} 
+                className={styles.touchBarCell} 
+                onTouchStart={() => setIndex(idx) }
+                onMouseEnter={() => setIndex(idx) }>I</span>
+            ) 
+          })
+      }
+    </div>
+  ) 
+}
 
 const Slideshow = ( {serial, camera} ) => {
   const [index, setIndex] = useState(0)
@@ -8,15 +54,12 @@ const Slideshow = ( {serial, camera} ) => {
   const [photos, setPhotos] = useState([])
   const [preloadedImages, setPreloadedImages] = useState([])
   const [hours, setHours] = useState([])
+
   const animateRef = useRef(animate)
   const indexRef = useRef(index)
-  
-  const getSerial = () => {
-    return serial // '004b19672e6185483aca7956e0995d85'
- }
 
-  const url_prefix = () => {
-      return `http://13.90.210.214/serials/${getSerial()}/camera${camera}/`
+  const imageRepo = () => {
+      return `http://13.90.210.214/serials/${serial}/camera${camera}/`
   }
 
   useEffect(() => {
@@ -25,74 +68,80 @@ const Slideshow = ( {serial, camera} ) => {
     // runs every time.
     animateRef.current = animate
     indexRef.current = index
-})
+  })
 
   useEffect(() => {
-
-    const makePhotos = (photos) => { 
-
-      // Preload images.
-      if (!preloadedImages.length && photos) {
-        var images = photos.map((image_url, i) => {
-          const img = new Image()
-          img.src = url_prefix() + image_url 
-          return img;    
-        }) 
-        setPreloadedImages(images)
-
-        var h = []
-        photos.map((image_url, i) => {
-          const hour = getHour(image_url)
-          h[hour] = true
-        })
-        setHours(h)
-        }
-  
-      // Start the slideshow.
-      const interval = setInterval(() => { 
-          if (animateRef.current && photos) {
-            // Skip unselected hours.
-            let inc=1
-            let idx = indexRef.current
-            let next 
-            while(inc < photos.length) {
-              next = (idx + inc) % photos.length
-              if (wrongHour(h, photos[next])) {
-                inc++
-              } else {
-                break
-              }
-            }
-            setIndex( index => next ) 
-          }
-      }, 120);
-      return () => clearInterval(interval);
-    }
-
-    const getPhotos = () => {
-      const url = url_prefix()
-      console.log("getPhotos", url)
-      fetch(url).then(function (response) {
-        return response.text();
-      }).then(function (html) {
-        // Read nginx directory response.
-        const regexp = /href="(.*?.jpg)"/g
-        const matches = [... html.matchAll(regexp)]
-        const photos = matches.map( (val, idx) => val[1])
-
-        setPhotos(photos)
-        makePhotos(photos)
-      }).catch(function (err) {
-        console.warn('Something went wrong.', err);
-      });
-    }  
-
     if (!serial)
       return
 
     getPhotos()
-
   },[serial]) 
+
+  const getPhotos = () => {
+    // Get the listing of files from the serial directory.
+    const url = imageRepo()
+    console.log("getPhotos", url)
+
+    fetch(url).then(function (response) {
+      return response.text();
+    }).then(function (html) {
+      // Parse nginx directory response.
+      const regexp = /href="(.*?.jpg)"/g
+      const matches = [... html.matchAll(regexp)]
+      const photos = matches.map( (val, idx) => val[1])
+
+      setPhotos(photos)
+      usePhotos(photos)
+    }).catch(function (err) {
+      console.warn('Something went wrong getting photos.', url, err);
+    });
+  } 
+
+  const usePhotos = (photos) => { 
+    // Pass photos as param because setPhotos has not yet happened.
+
+    if (!preloadedImages.length && photos) {
+      // Preload images.
+      var images = photos.map((image_url, i) => {
+        const img = new Image()
+        img.src = imageRepo() + image_url 
+        return img;    
+      }) 
+      setPreloadedImages(images)
+
+      // Scan for hours. 
+      var hours = []
+      photos.map((image_url, i) => {
+        const hour = getHour(image_url)
+        hours[hour] = true
+      })
+      setHours(hours)
+    }
+
+    // Start the slideshow.
+    const interval = setInterval(() => { 
+        nextSlide(hours, photos)
+    }, 120);
+    
+    return () => clearInterval(interval);
+  }
+
+  const nextSlide = (hours, photos) => {
+    // Skip unselected hours.
+    if (animateRef.current && photos) {
+      let inc=1
+      let next 
+      while(inc < photos.length) {
+        next = (indexRef.current + inc) % photos.length
+        if (wrongHour(hours, photos[next])) {
+          inc++
+        } else {
+          break
+        }
+      }
+      setIndex( index => next ) 
+    }
+  }
 
   const getDate = (imgsrc) => {
     if (!imgsrc) 
@@ -117,58 +166,30 @@ const Slideshow = ( {serial, camera} ) => {
   }
 
   const toggleHour = (e, hour) => {
-    const newHours = hours
-    newHours[hour] = !newHours[hour]
-    setHours(newHours)
-    e.target.checked = newHours[hour]
+    hours[hour] = !hours[hour]
+    setHours(hours)
+    e.target.checked = hours[hour]
   }
 
   if (!photos || ! (photos.length > index))
     return null
 
-  const imgsrc = url_prefix() + photos[index]
+  const imgsrc = imageRepo() + photos[index]
 
   const date = getDate(photos[index])
-  const hour = getHour(photos[index])
-  const title = hour in hours && hours[hour] 
-    ? date.toLocaleString('en-GB')
-    : ""
-  let datetime =  <div className={styles.datetime}></div> 
-  if (title != "")
-    datetime = <div className={styles.datetime}>{title}</div> 
-
-  const touchBar = photos.map( (photo, idx) => {
-    const bad = wrongHour(hours, photo)
-    let color = "black"
-    if (bad)
-       color = 'white'
-    else if (idx <= index)
-       color = 'red'
-    const style = { color: color }
-    return (
-      <span 
-        key={idx}
-        style={style} 
-        className={styles.touchBarCell} 
-        onTouchEnter={() => setIndex(idx) }
-        onMouseEnter={() => setIndex(idx) }>I</span>
-    ) })
-  
-  const hourSelect = hours.map( (hour, idx) => {
-    return <span key={idx}>
-       <input 
-         type="checkbox" 
-         defaultChecked={hour} 
-         onChange={(e) => toggleHour(e,idx)}/>{idx} &nbsp;
-    </span>
-  })
+  const title = date.toLocaleString('en-GB')
 
   return (
     <div className={styles.slideshow} >
       <img src={imgsrc} onClick={toggleAnimation} />
-      {datetime}
-      <div className={styles.hourSelect}>{hourSelect}</div>
-      <div className={styles.touchBar}>{touchBar}</div>
+      <div className={styles.datetime}>{title}</div>
+      <HourSelect hours={hours} toggleHour={toggleHour}/>
+      <TouchBar 
+        photos={photos} 
+        index={index} 
+        setIndex={setIndex} 
+        wrongHour={wrongHour} 
+        hours={hours}/>
     </div>
   );
 }
