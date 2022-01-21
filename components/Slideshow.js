@@ -20,7 +20,29 @@ const HourSelect = ( { hours, toggleHour } ) => {
 
 const TouchBar = ( {photos, index, setIndex, wrongHour, hours} ) => {
   return (
-    <div className={styles.touchBar}>
+    <div className={styles.touchBar} onMouseMove={
+        (e) => { 
+          console.log("mousemove", e.nativeEvent.offsetX)
+          const w = e.currentTarget.clientWidth
+          const x = e.nativeEvent.offsetX 
+
+          const pc = x / w
+          const newIndex = Math.max(0, Math.floor( (pc * photos.length) % photos.length))
+          console.log("newIndex", newIndex)
+          setIndex(newIndex)
+        }
+      }
+      onTouchMove={ (e) => {
+          const w = e.currentTarget.clientWidth
+          const rect = e.target.getBoundingClientRect();
+          const x = e.targetTouches[0].pageX - rect.left;
+
+          const pc = x / w
+          const newIndex = Math.max(0, Math.floor( (pc * photos.length) % photos.length))
+          setIndex(newIndex) 
+        }
+      }
+      >
       {
         photos.map( (photo, idx) => {
           const bad = wrongHour(hours, photo)
@@ -38,9 +60,7 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours} ) => {
               <span 
                 key={idx}
                 style={style} 
-                className={styles.touchBarCell} 
-                onTouchStart={() => setIndex(idx) }
-                onMouseEnter={() => setIndex(idx) }>I</span>
+                className={styles.touchBarCell} >I</span>
             ) 
           })
       }
