@@ -21,8 +21,7 @@ const HourSelect = ( { hours, toggleHour } ) => {
 const TouchBar = ( {photos, index, setIndex, wrongHour, hours} ) => {
   const onXMove = (w,x) => {
     const pc = x / w
-    const newIndex = Math.max(0, Math.floor( (pc * photos.length) % photos.length))
-    // console.log("newIndex", newIndex)
+    const newIndex = Math.max(0, Math.floor( (pc * photos.length)) % photos.length)
     setIndex(newIndex)
   }
 
@@ -43,21 +42,17 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours} ) => {
     <div className={styles.touchBar} onMouseMove={mouseMove} onTouchMove={touchMove}>
       {
         photos.map( (photo, idx) => {
-          const bad = wrongHour(hours, photo)
+          const skip = wrongHour(hours, photo)
           let color = "black"
-          if (bad)
+          if (skip)
             color = 'white'
           else if (idx <= index)
             color = 'red'
-          const style = { color: color }
 
-          if (color  === 'white')
-            return <span key={idx} style={style}>I</span>
-          else  
-            return (
+          return (
               <span 
                 key={idx}
-                style={style} 
+                style={ {color: color}} 
                 className={styles.touchBarCell} >I</span>
             ) 
           })
@@ -109,13 +104,13 @@ const Slideshow = ( {serial, camera} ) => {
       const photos = matches.map( (val, idx) => val[1])
 
       setPhotos(photos)
-      processPhotos(photos)
+      startSlideshow(photos)
     }).catch(function (err) {
       console.warn('Something went wrong getting photos.', url, err);
     });
   } 
 
-  const processPhotos = (photos) => { 
+  const startSlideshow = (photos) => { 
     // Pass photos as param because setPhotos has not yet happened.
 
     if (!preloadedImages.length && photos) {
