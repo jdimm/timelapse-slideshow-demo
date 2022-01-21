@@ -28,6 +28,10 @@
     width: max-content;
   }
 
+  .touchBarCell::selection {
+    background: white;
+  }
+
   .hourSelect {
     font-size: 10pt;
     font-weight: 100;
