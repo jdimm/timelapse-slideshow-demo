@@ -2,15 +2,14 @@ import React, {useState,useEffect,useRef} from 'react';
 //import sample_photos from '../../data/photos';
 import styles from './Slideshow.module.css'
 
-
 const Slideshow = ( {serial, camera} ) => {
   const [index, setIndex] = useState(0)
   const [animate, setAnimate] = useState(true)
-  const [index2screen, setIndex2screen] = useState(3.2)
   const [photos, setPhotos] = useState([])
   const [preloadedImages, setPreloadedImages] = useState([])
+  const [hours, setHours] = useState([])
   const animateRef = useRef(animate)
-
+  const indexRef = useRef(index)
   
   const getSerial = () => {
     return serial // '004b19672e6185483aca7956e0995d85'
@@ -25,6 +24,7 @@ const Slideshow = ( {serial, camera} ) => {
     // setInterval in the next useEffect.  This useEffect
     // runs every time.
     animateRef.current = animate
+    indexRef.current = index
 })
 
   useEffect(() => {
@@ -39,13 +39,31 @@ const Slideshow = ( {serial, camera} ) => {
           return img;    
         }) 
         setPreloadedImages(images)
-      }
+
+        var h = []
+        photos.map((image_url, i) => {
+          const hour = getHour(image_url)
+          h[hour] = true
+        })
+        setHours(h)
+        }
   
       // Start the slideshow.
       const interval = setInterval(() => { 
           if (animateRef.current && photos) {
- 
-            setIndex( index => (index+1) % photos.length ) 
+            // Skip unselected hours.
+            let inc=1
+            let idx = indexRef.current
+            let next 
+            while(inc < photos.length) {
+              next = (idx + inc) % photos.length
+              if (wrongHour(h, photos[next])) {
+                inc++
+              } else {
+                break
+              }
+            }
+            setIndex( index => next ) 
           }
       }, 120);
       return () => clearInterval(interval);
@@ -57,9 +75,11 @@ const Slideshow = ( {serial, camera} ) => {
       fetch(url).then(function (response) {
         return response.text();
       }).then(function (html) {
+        // Read nginx directory response.
         const regexp = /href="(.*?.jpg)"/g
         const matches = [... html.matchAll(regexp)]
         const photos = matches.map( (val, idx) => val[1])
+
         setPhotos(photos)
         makePhotos(photos)
       }).catch(function (err) {
@@ -74,43 +94,74 @@ const Slideshow = ( {serial, camera} ) => {
 
   },[serial]) 
 
+  const getDate = (imgsrc) => {
+    if (!imgsrc) 
+       return new Date() 
+
+    const serial = parseInt(imgsrc.replace(".jpg",""))
+    return new Date(serial * 1000)
+  }
+
+  const getHour = (imgsrc) => {
+    const date = getDate(imgsrc)
+    return date.getHours()
+  }
+
   const toggleAnimation = (e) => {
       setAnimate (animate => !animate)
   }
 
-  if (!photos || !photos.length > index)
+  const wrongHour = (hours, imgsrc) => {
+    const hour = getHour(imgsrc)
+    return !hours[hour]  
+  }
+
+  const toggleHour = (e, hour) => {
+    const newHours = hours
+    newHours[hour] = !newHours[hour]
+    setHours(newHours)
+    e.target.checked = newHours[hour]
+  }
+
+  if (!photos || ! (photos.length > index))
     return null
 
-  const position = index * index2screen
-  const total = photos.length * index2screen
-  const rest = total - position
-  const styleLeft = {"width": position}
-  const styleRight = {"width": rest}
-
   const imgsrc = url_prefix() + photos[index]
-  const date = new Date(parseInt(photos[index].replace(".jpg","")) * 1000)
-  const title = date.toLocaleString('en-GB')
+
+  const date = getDate(photos[index])
+  const hour = getHour(photos[index])
+  const title = hour in hours && hours[hour] 
+    ? date.toLocaleString('en-GB')
+    : ""
+  let datetime =  <div className={styles.datetime}></div> 
+  if (title != "")
+    datetime = <div className={styles.datetime}>{title}</div> 
 
   const touchBar = photos.map( (photo, idx) => {
-    const style = { color: idx === index ? "red" : "black" }
+    const style = { color: idx <= index ? "red" : "black" }
     return (
-      <span key={idx} style={style} className={styles.touchBarCell} onMouseEnter={() => setIndex(idx) }>I</span>
+      <span 
+        key={idx}
+        style={style} 
+        className={styles.touchBarCell} 
+        onMouseEnter={() => setIndex(idx) }>I</span>
     ) })
+  
+  const hourSelect = hours.map( (hour, idx) => {
+    return <span key={idx}>
+       <input 
+         type="checkbox" 
+         defaultChecked={hour} 
+         onChange={(e) => toggleHour(e,idx)}/>{idx} &nbsp;
+    </span>
+  })
 
   return (
-    <div className={styles.slideshow}
-      onClick={toggleAnimation}>
-      <img id='slideshow_img' src={imgsrc} />
-      <br />
-      <div id='progress_bar' className={styles.progress_bar}>
-          <div id="left_bar" className={styles.left_bar} style={styleLeft}/>
-          <div id="middle_bar" className={styles.middle_bar}>&nbsp;</div> 
-          <div className={styles.right_bar} style={styleRight} />
-          <div className={styles.datetime}>{title}</div>
-      </div>
-      <div>
-      {touchBar}
-      </div>
+    <div className={styles.slideshow} >
+      <img src={imgsrc} onClick={toggleAnimation} />
+      {datetime}
+      <div className={styles.hourSelect}>{hourSelect}</div>
+      <div className={styles.touchBar}>{touchBar}</div>
     </div>
   );
 }
