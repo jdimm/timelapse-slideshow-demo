@@ -39,7 +39,7 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours} ) => {
                 key={idx}
                 style={style} 
                 className={styles.touchBarCell} 
-                onTouchMove={() => setIndex(idx) }
+                onTouchStart={() => setIndex(idx) }
                 onMouseEnter={() => setIndex(idx) }>I</span>
             ) 
           })
