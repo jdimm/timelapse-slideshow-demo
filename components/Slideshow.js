@@ -26,13 +26,13 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours} ) => {
     setIndex(newIndex)
   }
 
-  const onMouseMove = (e) => {
+  const mouseMove = (e) => {
     const x = e.nativeEvent.offsetX 
     const w = e.currentTarget.clientWidth
     onXMove(w,x)
   }
 
-  const onTouchMove = (e) => {
+  const touchMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.targetTouches[0].clientX - rect.left;
     const w = e.currentTarget.clientWidth
@@ -40,7 +40,7 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours} ) => {
   }
 
   return (
-    <div className={styles.touchBar} onMouseMove={onMouseMove} onTouchMove={onTouchMove}>
+    <div className={styles.touchBar} onMouseMove={mouseMove} onTouchMove={touchMove}>
       {
         photos.map( (photo, idx) => {
           const bad = wrongHour(hours, photo)
