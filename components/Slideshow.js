@@ -138,7 +138,13 @@ const Slideshow = ( {serial, camera} ) => {
     datetime = <div className={styles.datetime}>{title}</div> 
 
   const touchBar = photos.map( (photo, idx) => {
-    const style = { color: idx <= index ? "red" : "black" }
+    const bad = wrongHour(hours, photo)
+    let color = "black"
+    if (bad)
+       color = 'white'
+    else if (idx <= index)
+       color = 'red'
+    const style = { color: color }
     return (
       <span 
         key={idx}
