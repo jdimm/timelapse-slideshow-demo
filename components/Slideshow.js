@@ -22,7 +22,8 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours} ) => {
   const onXMove = (w,x) => {
     const pc = x / w
     const newIndex = Math.max(0, Math.floor( (pc * photos.length)) % photos.length)
-    setIndex(newIndex)
+    if (!wrongHour(hours, photos[newIndex]))
+      setIndex(newIndex)
   }
 
   const mouseMove = (e) => {
