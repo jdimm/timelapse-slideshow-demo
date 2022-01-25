@@ -18,7 +18,7 @@ const HourSelect = ( { hours, toggleHour } ) => {
     )
 }
 
-const TouchBar = ( {photos, index, setIndex, wrongHour, hours} ) => {
+const TouchBar = ( {photos, index, setIndex, wrongHour, hours, setRange, range, setAnimate} ) => {
   const onXMove = (w,x) => {
     const pc = x / w
     const newIndex = Math.max(0, Math.floor( (pc * photos.length)) % photos.length)
@@ -39,15 +39,37 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours} ) => {
     onXMove(w,x)
   }
 
+  const click = (e) => {
+    const r = range
+    if (r.start === 0) {
+      // First click pick start.
+      r.start = index
+      setAnimate(false)
+    } else if (r.end=== photos.length) {
+      // Second click pick end.
+      r.end = index
+    } else {
+      // Third click, reset.
+      r.start = 0
+      r.end = photos.length
+    }
+    setRange( r ) 
+  }
+
   return (
-    <div className={styles.touchBar} onMouseMove={mouseMove} onTouchMove={touchMove}>
+    <div className={styles.touchBar} 
+      onMouseMove={mouseMove} 
+      onTouchMove={touchMove}
+      onClick={click}>
       {
         photos.map( (photo, idx) => {
           const skip = wrongHour(hours, photo)
           let color = "black"
-          if (skip)
+          if (idx < range.start || idx >= range.end)
+            color = "lightgray"
+          else if (skip)
             color = 'white'
-          else if (idx <= index)
+          else if (idx <= index) 
             color = 'red'
 
           return (
@@ -68,6 +90,7 @@ const Slideshow = ( {serial, camera} ) => {
   const [photos, setPhotos] = useState([])
   const [preloadedImages, setPreloadedImages] = useState([])
   const [hours, setHours] = useState([])
+  const [range, setRange] = useState({})
 
   const animateRef = useRef(animate)
   const indexRef = useRef(index)
@@ -105,13 +128,15 @@ const Slideshow = ( {serial, camera} ) => {
       const photos = matches.map( (val, idx) => val[1])
 
       setPhotos(photos)
-      startSlideshow(photos)
+      range = {start: 0, end: photos.length}
+      setRange(range)
+      startSlideshow(photos, range)
     }).catch(function (err) {
       console.warn('Something went wrong getting photos.', url, err);
     });
   } 
 
-  const startSlideshow = (photos) => { 
+  const startSlideshow = (photos, range) => { 
     // Pass photos as param because setPhotos has not yet happened.
 
     if (!preloadedImages.length && photos) {
@@ -134,20 +159,20 @@ const Slideshow = ( {serial, camera} ) => {
 
     // Start the slideshow.
     const interval = setInterval(() => { 
-        nextSlide(hours, photos)
+        nextSlide(hours, photos, range)
     }, 120);
     
     return () => clearInterval(interval);
   }
 
-  const nextSlide = (hours, photos) => {
+  const nextSlide = (hours, photos, range) => {
     // Skip unselected hours.
     if (animateRef.current && photos) {
       let inc=1
       let next 
       while(inc < photos.length) {
         next = (indexRef.current + inc) % photos.length
-        if (wrongHour(hours, photos[next])) {
+        if (wrongHour(hours, photos[next]) || next < range.start || next > range.end ) {
           inc++
         } else {
           break
@@ -203,7 +228,11 @@ const Slideshow = ( {serial, camera} ) => {
         index={index} 
         setIndex={setIndex} 
         wrongHour={wrongHour} 
-        hours={hours}/>
+        hours={hours}
+        setRange={setRange}
+        range={range}
+        setAnimate={setAnimate}
+        />
     </div>
   );
 }
