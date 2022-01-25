@@ -1,5 +1,8 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Example
+
+http://localhost:3000/timelapse/816a263e7954a5ceb4cc608f61a89640
 
 ## Timelapse as Slideshow
 
