@@ -2,7 +2,7 @@
 import styles from './Video.module.css'
 
 const Video = ({serial, camera} ) => {
-    const src = `https://gardynappprod.blob.core.windows.net/timelapse-staging/videos/${serial}/camera0${camera}.mp4`
+    const src = `https://gardynappprod.blob.core.windows.net/timelapse/videos/${serial}/camera0${camera}.mp4`
     return (
         <div className={styles.video_div}>
             <video controls loop autoPlay muted>
