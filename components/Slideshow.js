@@ -91,9 +91,28 @@ const Slideshow = ( {serial, camera} ) => {
   const [preloadedImages, setPreloadedImages] = useState([])
   const [hours, setHours] = useState([])
   const [range, setRange] = useState({})
+  const [stopAt, setStopAt] = useState(-1)
+  const [direction, setDirection] = useState(1)
 
   const animateRef = useRef(animate)
   const indexRef = useRef(index)
+  const stopAtRef = useRef(stopAt)
+  const directionRef = useRef(direction)
+
+  const onXMove = (w,x) => {
+    const pc = x / w
+    const newIndex = Math.max(0, Math.floor( (pc * photos.length)) % photos.length)
+    if (!wrongHour(hours, photos[newIndex]))
+      setIndex(newIndex)
+  }
+
+  const mouseMove = (e) => {
+    const x = e.nativeEvent.offsetX 
+    const w = e.currentTarget.clientWidth
+    onXMove(w,x)
+  }
+
+
 
   const imageRepo = () => {
       return `http://13.90.210.214/serials/${serial}/camera${camera}/`
@@ -105,6 +124,8 @@ const Slideshow = ( {serial, camera} ) => {
     // runs every time.
     animateRef.current = animate
     indexRef.current = index
+    stopAtRef.current = stopAt
+    directionRef.current = direction
   })
 
   useEffect(() => {
@@ -128,16 +149,23 @@ const Slideshow = ( {serial, camera} ) => {
       const photos = matches.map( (val, idx) => val[1])
 
       setPhotos(photos)
-      range = {start: 0, end: photos.length}
-      setRange(range)
-      startSlideshow(photos, range)
+      const newRange = {start: 0, end: photos.length}
+      setRange(newRange)
+      setIndex(photos.length-20)
+      initSlideshow(photos, newRange)
     }).catch(function (err) {
       console.warn('Something went wrong getting photos.', url, err);
     });
   } 
 
-  const startSlideshow = (photos, range) => { 
+  const initSlideshow = (photos, range) => { 
     // Pass photos as param because setPhotos has not yet happened.
+
+    const startSlideShow = () => {
+        const interval = setInterval(() => { 
+          nextSlide(hours, photos, range)
+      }, 120);
+    }
 
     if (!preloadedImages.length && photos) {
       // Preload images.
@@ -155,12 +183,13 @@ const Slideshow = ( {serial, camera} ) => {
         hours[hour] = true
       })
       setHours(hours)
+
+      startSlideShow()
+    } else {
+      startSlideShow()
     }
 
-    // Start the slideshow.
-    const interval = setInterval(() => { 
-        nextSlide(hours, photos, range)
-    }, 120);
+
     
     return () => clearInterval(interval);
   }
@@ -168,9 +197,18 @@ const Slideshow = ( {serial, camera} ) => {
   const nextSlide = (hours, photos, range) => {
     // Skip unselected hours.
     if (animateRef.current && photos) {
-      let inc=1
+      let inc=directionRef.current
       let next 
       while(inc < photos.length) {
+        const atRightEnd = (indexRef.current + inc > photos.length - 1)
+        const atLeftEnd = (indexRef.current + inc < 0)
+        const stopNow = stopAtRef.current == indexRef.current
+        console.log('stopAtRef', stopAtRef.current, indexRef.current)
+        if (atRightEnd || atLeftEnd || stopNow) {
+          // Stop at the end, do not wrap.
+          setAnimate(false)
+          return
+        }
         next = (indexRef.current + inc) % photos.length
         if (wrongHour(hours, photos[next]) || next < range.start || next > range.end ) {
           inc++
@@ -196,6 +234,8 @@ const Slideshow = ( {serial, camera} ) => {
   }
 
   const toggleAnimation = (e) => {
+      setStopAt(-1)
+      setDirection(1)
       setAnimate (animate => !animate)
   }
 
@@ -210,19 +250,43 @@ const Slideshow = ( {serial, camera} ) => {
     e.target.checked = hours[hour]
   }
 
+  const prevWeek = (e) => {
+    setStopAt(index - 20)
+    setDirection(-1)
+    setAnimate(true)
+  }
+
+  const nextWeek = (e) => {
+     setStopAt(index + 20)
+     setDirection(1)
+     setAnimate(true)
+  }
+
+  const play = (e) => {    
+    setStopAt(-1)
+    setDirection(1)
+    setAnimate(true)    
+  }
+
+  const stop = (e) => {
+    setAnimate(false)
+  }
+
   if (!photos || ! (photos.length > index))
     return null
 
   const imgsrc = imageRepo() + photos[index]
-
   const date = getDate(photos[index])
   const title = date.toLocaleString('en-GB')
 
+  console.log("imgsrc:", imgsrc)
+
+  //      <HourSelect hours={hours} toggleHour={toggleHour}/>
+  
   return (
     <div className={styles.slideshow} >
-      <img src={imgsrc} onClick={toggleAnimation} />
-      <div className={styles.datetime}>{title}</div>
-      <HourSelect hours={hours} toggleHour={toggleHour}/>
+      <img src={imgsrc} onClick={toggleAnimation} onMouseMove={mouseMove}/>
+      <div>
       <TouchBar 
         photos={photos} 
         index={index} 
@@ -233,6 +297,15 @@ const Slideshow = ( {serial, camera} ) => {
         range={range}
         setAnimate={setAnimate}
         />
+        </div>
+        <div className={styles.datetime}>{title}</div>
+        <div>
+          <button onClick={prevWeek}>&#9194;</button>
+          <button onClick={stop}>&#9209;&#65039;</button>
+          <button onClick={play}>&#9654;&#65039;</button>
+          <button onClick={nextWeek}>&#9193;</button>
+        </div>
+
     </div>
   );
 }

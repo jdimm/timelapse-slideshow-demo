@@ -6,7 +6,19 @@
   .slideshow img {
       width: 410px;
       border-radius: 50px;
+      margin-bottom: -8px;
   }
+
+  .slideshow button {
+    font-size:18pt;
+    margin: 5px;
+    padding: 0;
+    border: none;
+  }
+
+  .slideshow button:active {
+    transform: translate(3px,3px);
+  } 
 
   .datetime {
     font-family: 'Courier New', Courier, monospace;
@@ -23,7 +35,6 @@
     word-break: break-all;
     font-size: 10pt;
     cursor: pointer;
-    transform:scale(1,3) translate(0, 30%);
     height: min-content;
     width: max-content;
   }

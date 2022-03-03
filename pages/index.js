@@ -1,7 +1,7 @@
 import Slideshow from '../components/Slideshow'
 
 function Index() {
-  const serial = 'ff2bb085f94680c754072062a61dd5b1'
+  const serial = '816a263e7954a5ceb4cc608f61a89640'
 
   return ( 
     <Slideshow serial={serial} camera={1} /> 
