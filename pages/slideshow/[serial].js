@@ -5,7 +5,9 @@ import styles from '../index.module.css'
 
 function Index() {
   const router = useRouter()
-  const { serial } = router.query
+  const { serial, method } = router.query
+  console.log("serial:", serial)
+  console.log("method:", method)
 
   if (!serial) 
     return null;
@@ -18,10 +20,10 @@ function Index() {
         <tr><th>camera 1</th><th>camera 2</th></tr>
         <tr>
           <td>
-            <Slideshow serial={serial} camera={1} /> 
+            <Slideshow serial={serial} camera={1} method={method}/> 
           </td>
           <td>
-            <Slideshow serial={serial} camera={2}/>
+            <Slideshow serial={serial} camera={2} method={method}/>
           </td>
         </tr>
       </tbody>

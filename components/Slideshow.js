@@ -84,7 +84,7 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours, setRange, range, 
   ) 
 }
 
-const Slideshow = ( {serial, camera} ) => {
+const Slideshow = ( {serial, camera, method} ) => {
   const [index, setIndex] = useState(0)
   const [animate, setAnimate] = useState(true)
   const [photos, setPhotos] = useState([])
@@ -93,11 +93,13 @@ const Slideshow = ( {serial, camera} ) => {
   const [range, setRange] = useState({})
   const [stopAt, setStopAt] = useState(-1)
   const [direction, setDirection] = useState(1)
+  // const [method, setMethod] = useState(_method)
 
   const animateRef = useRef(animate)
   const indexRef = useRef(index)
   const stopAtRef = useRef(stopAt)
   const directionRef = useRef(direction)
+
 
   const onXMove = (w,x) => {
     const pc = x / w
@@ -112,10 +114,24 @@ const Slideshow = ( {serial, camera} ) => {
     onXMove(w,x)
   }
 
-
-
   const imageRepo = () => {
       return `http://13.90.210.214/serials/${serial}/camera${camera}/`
+  }
+
+  const imageSource = (filename) => {
+    // console.log("method:", method)
+    // return imageRepo() + filename
+
+    if (method == 'http')
+      return imageRepo() + filename
+      
+    else if (method == 'azure-large')
+      return `https://gardyniotblob.blob.core.windows.net/iot-camera-image/camera${camera}_${serial}_${filename}`
+    
+    else if (method == 'azure-small')
+      return `https://gardyniotblob.blob.core.windows.net/iot-camera-image-small/camera${camera}_${serial}_${filename}`
+
+    //
   }
 
   useEffect(() => {
@@ -138,7 +154,7 @@ const Slideshow = ( {serial, camera} ) => {
   const getPhotos = () => {
     // Get the listing of files from the serial directory.
     const url = imageRepo()
-    console.log("getPhotos", url)
+    // console.log("getPhotos", url)
 
     fetch(url).then(function (response) {
       return response.text();
@@ -147,6 +163,7 @@ const Slideshow = ( {serial, camera} ) => {
       const regexp = /href="(.*?.jpg)"/g
       const matches = [... html.matchAll(regexp)]
       const photos = matches.map( (val, idx) => val[1])
+      // console.log(photos)
 
       setPhotos(photos)
       const newRange = {start: 0, end: photos.length}
@@ -171,7 +188,8 @@ const Slideshow = ( {serial, camera} ) => {
       // Preload images.
       var images = photos.map((image_url, i) => {
         const img = new Image()
-        img.src = imageRepo() + image_url 
+        // img.src = imageRepo() + image_url 
+        img.src = imageSource(image_url)
         return img;    
       }) 
       setPreloadedImages(images)
@@ -203,7 +221,7 @@ const Slideshow = ( {serial, camera} ) => {
         const atRightEnd = (indexRef.current + inc > photos.length - 1)
         const atLeftEnd = (indexRef.current + inc < 0)
         const stopNow = stopAtRef.current == indexRef.current
-        console.log('stopAtRef', stopAtRef.current, indexRef.current)
+        // console.log('stopAtRef', stopAtRef.current, indexRef.current)
         if (atRightEnd || atLeftEnd || stopNow) {
           // Stop at the end, do not wrap.
           setAnimate(false)
@@ -263,6 +281,8 @@ const Slideshow = ( {serial, camera} ) => {
   }
 
   const play = (e) => {    
+    if (index == photos.length-1)
+      setIndex(0)
     setStopAt(-1)
     setDirection(1)
     setAnimate(true)    
@@ -275,11 +295,11 @@ const Slideshow = ( {serial, camera} ) => {
   if (!photos || ! (photos.length > index))
     return null
 
-  const imgsrc = imageRepo() + photos[index]
+  const imgsrc = imageSource(photos[index])
   const date = getDate(photos[index])
   const title = date.toLocaleString('en-GB')
 
-  console.log("imgsrc:", imgsrc)
+  // console.log("imgsrc:", imgsrc)
 
   //      <HourSelect hours={hours} toggleHour={toggleHour}/>
   
