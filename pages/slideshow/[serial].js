@@ -5,7 +5,10 @@ import styles from '../index.module.css'
 
 function Index() {
   const router = useRouter()
-  const { serial, method } = router.query
+  let { serial, method } = router.query
+  
+  if (!method)
+    method='http'
   console.log("serial:", serial)
   console.log("method:", method)
 
