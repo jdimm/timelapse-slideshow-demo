@@ -6,7 +6,6 @@
   .slideshow img {
       max-width: 100vw;
       max-height: 100vh;
-      width: 450px;
       border-radius: 50px;
       margin-bottom: -8px;
   }
