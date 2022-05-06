@@ -2,7 +2,7 @@
 import ini from 'node-ini'
 import mysql from 'serverless-mysql';
 
-var myconf = ini.parseSync('/Users/johndimm/.my.cnf');
+var myconf = ini.parseSync('./.my.cnf');
 
 const db = mysql({
   config: {
