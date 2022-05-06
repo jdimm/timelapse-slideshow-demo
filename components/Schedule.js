@@ -130,7 +130,7 @@ const Schedule = ( {device_id, date} ) => {
             <div className={styles.scheduleRaw}>
                 <h3>Schedule</h3>
                 <div>
-                  <a href={timelapseLink} target="_blank">Timelapse</a>
+                  <a href={timelapseLink} target="_blank" rel="noreferrer">Timelapse</a>
                 </div>
                 {scheduleRaw}
 
