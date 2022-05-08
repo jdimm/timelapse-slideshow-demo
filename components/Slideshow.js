@@ -325,6 +325,7 @@ const Slideshow = ( {serial, camera, method} ) => {
           <button onClick={play}>&#9654;&#65039;</button>
           <button onClick={nextWeek}>&#9193;</button>
         </div>
+        <HourSelect hours={hours} toggleHour={toggleHour}/>
 
     </div>
   );
