@@ -324,7 +324,7 @@ const Slideshow = ( {serial, camera, method} ) => {
           <button onClick={nextWeek}>&#9193;</button>
         </div>
         <HourSelect hours={hours} toggleHour={toggleHour}/>
-        <a href={schedule_link} target="_blank">Schedule and Azure Images</a>
+        <a href={schedule_link} target="_blank" rel="noreferrer">Schedule and Azure Images</a>
     </div>
   );
 }
