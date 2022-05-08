@@ -298,10 +298,8 @@ const Slideshow = ( {serial, camera, method} ) => {
   const imgsrc = imageSource(photos[index])
   const date = getDate(photos[index])
   const title = date.toLocaleString('en-GB')
-
-  // console.log("imgsrc:", imgsrc)
-
-  //      <HourSelect hours={hours} toggleHour={toggleHour}/>
+ 
+  const schedule_link = '/schedule/' + serial + '/2022-05-01'
   
   return (
     <div className={styles.slideshow} >
@@ -326,7 +324,7 @@ const Slideshow = ( {serial, camera, method} ) => {
           <button onClick={nextWeek}>&#9193;</button>
         </div>
         <HourSelect hours={hours} toggleHour={toggleHour}/>
-
+        <a href={schedule_link} target="_blank">Schedule and Azure Images</a>
     </div>
   );
 }

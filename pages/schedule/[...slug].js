@@ -7,14 +7,10 @@ const Post = () => {
   if (!slug)
     return null 
 
-  //console.log(slug)
-  //console.log(slug[0])
-
-  const device_id = slug[0]
+  const serial = slug[0]
   const date = slug[1]
 
-  // return <p> schedule: {device_id} {date}</p>
-  return <Schedule device_id={device_id} date={date} />
+  return <Schedule serial={serial} date={date} />
 }
 
 export default Post

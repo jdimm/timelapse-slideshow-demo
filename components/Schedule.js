@@ -2,20 +2,17 @@ import { useEffect, useState } from 'react'
 import styles from './Schedule.module.css'
 import timestampRange from '../util/timestamp';
 import extractSchedule from '../util/schedule'
-import may1 from '../data/may1.tsv'
+import may1 from '../data/may1-serials.tsv'
 
-const Schedule = ( {device_id, date} ) => {
+const Schedule = ( {serial, date} ) => {
     const [schedule, setSchedule] = useState([]);
     const [scheduleRaw, setScheduleRaw] = useState([]);
-    const [serial, setSerial] = useState('');
     const [azureFiles, setAzureFiles] = useState([]);
     const [image, setImage] = useState('');
     const [waitCursorEl, setWaitCursorEl] = useState(null);
-    const [timelapseLink, setTimelapseLink] = useState('');
  
-    const getSchedule = async (device_id, date) => {
-        const response = await fetch (`/api/schedule/${device_id}/${date}`)
-        let serial = ''
+    const getSchedule = async (serial, date) => {
+        const response = await fetch (`/api/schedule/${serial}/${date}`)
         let timezone = ''
         if (typeof response !== 'undefined') {
             const scheduleRaw = await response.json()
@@ -23,14 +20,10 @@ const Schedule = ( {device_id, date} ) => {
             // console.log(schedule)
             setSchedule(schedule)
             if (schedule.length > 0) {
-                serial = schedule[0].serial
                 timezone = schedule[0].timezone
-                setSerial(serial)
             }
 
             let scheduleOG = 'timezone: ' + timezone + '\n'
-            const timelapseLink = 'http://13.90.210.214:3000/timelapse/' + serial
-            setTimelapseLink(timelapseLink)
 
             scheduleOG += `serial:${serial} \n\n`
             scheduleRaw.forEach(schedule => {
@@ -56,8 +49,8 @@ const Schedule = ( {device_id, date} ) => {
        // const tsRange = timestampRange('2022-04-01', '00:00:00', '23:59:59', 'UTC')
        // console.log('tsRange: ', tsRange)
 
-       getSchedule(device_id, date)
-    },[device_id, date])
+       getSchedule(serial, date)
+    },[serial, date])
 
     useEffect(() => {
          getAzureFiles(date)
@@ -109,6 +102,8 @@ const Schedule = ( {device_id, date} ) => {
         return <div key={idx}><a href={link}>{item}</a></div>
     })
 
+    const timelapseLink = '/timelapse/' + serial
+
     const imageUrl = image == '' ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjvTwY220WDaZMZ5BmegbXmN_dFNElObmP91YIjhVQWupZe7d2Au0NBqagSqgwB_41YQ&usqp=CAU' :
     'https://gardyniotblob.blob.core.windows.net/iot-camera-image/' + image
 
@@ -119,19 +114,21 @@ const Schedule = ( {device_id, date} ) => {
             {may1HTML}
         </div>
         <div className={styles.leftSide}>
+           
             <div className={styles.schedule}>
                 <h3>Light Time Periods</h3>
                 {scheduleHTML}
             </div>
+            <h3>
+                  <a href={timelapseLink} target="_blank" rel="noreferrer">Timelapse Link</a>
+            </h3> 
             <div className={styles.azure_files}>
                 <h3>Azure Images</h3>
                 {azureFilesHTML}
             </div>
             <div className={styles.scheduleRaw}>
                 <h3>Schedule</h3>
-                <div>
-                  <a href={timelapseLink} target="_blank" rel="noreferrer">Timelapse</a>
-                </div>
+
                 {scheduleRaw}
 
             </div>
