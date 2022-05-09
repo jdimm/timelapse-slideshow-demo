@@ -1,18 +1,22 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Schedule from '../../components/Schedule'
 
 const Post = () => {
- 
+  const [date, setDate] = useState('')
+  const [serial, setSerial] = useState('')
   const router = useRouter()
-  const { slug } = router.query
-  if (!slug)
-    return null 
 
-  const _serial = slug[0]
-  const _date = slug[1]
-  const [date, setDate] = useState(_date)
-  const [serial, setSerial] = useState(_serial)
+  useEffect(() => {
+    const { slug } = router.query
+    if (slug) {
+      setSerial(slug[0])
+      setDate(slug[1])
+    }
+  }, [router.query])
+
+  if (!serial.length || !date.length) 
+    return null
 
   return <div style={{margin:'20px'}}>
             <div>
