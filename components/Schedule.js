@@ -26,6 +26,7 @@ const Schedule = ( {serial, date} ) => {
     const [azureFiles, setAzureFiles] = useState([]);
     const [image, setImage] = useState('');
     const [waitCursorEl, setWaitCursorEl] = useState(null);
+
  
     const getSchedule = async (serial, date) => {
         const response = await fetch (`/api/schedule/${serial}/${date}`)
@@ -71,7 +72,7 @@ const Schedule = ( {serial, date} ) => {
 
     useEffect(() => {
          getAzureFiles(date)
-    },[serial])
+    },[serial, date])
 
     const imageClick = (e,item) => {
         e.currentTarget.style.cursor='wait';
@@ -112,7 +113,8 @@ const Schedule = ( {serial, date} ) => {
         const localeTime = d.toLocaleTimeString()
         const photoDate = dateToString(d)
 
-        const html =  <div key={idx}><span className={styles.imageLink} onClick={(e) => imageClick(e,item) }>{ts}</span> {sig} {localeTime} {photoDate}
+        const html = <div key={idx} className={styles.imageLink} onClick={(e) => imageClick(e,item) }>
+            {ts} {sig} {localeTime} 
         </div>
 
         if (item.includes('camera1')) {
@@ -123,45 +125,18 @@ const Schedule = ( {serial, date} ) => {
 
     })
 
+    // A sample list of serials in timezone 133 that have schedules.
     const may1HTML = may1.map ( (item, idx) => {
         const link = `/schedule/${item}/2022-05-01`
         return <div key={idx}><a href={link}>{item}</a></div>
     })
 
-    const theDate = new Date(date)
-    const localeDate = theDate.toLocaleDateString()
-    console.log('theDate', theDate)
-    console.log('localeDate', localeDate)
-
-    // console.log('date: ', date)
-    // const today = new Date()
-    /*
-    const today = date
-    console.log('date: ', today)
-    const yesterday = new Date(today)
-    yesterday.setDate(yesterday.getDate() - 1)
-    const yDate = dateToString(yesterday)
-    console.log('yDate', yDate)
-    const yPage = '/schedule/' + serial + '/' + yDate
-    const yLink = <a href={yPage}>Yesterday</a>
-
-    console.log('date: ', today)
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    const tDate = dateToString(tomorrow)
-    console.log('tDate', tDate)
-    const tPage = '/schedule/' + serial + '/' + tDate
-    const tLink = <a href={tPage}>Tomorrow</a>
-
-                {yLink} {tLink}
-    */
-
-
 
     const timelapseLink = '/timelapse/' + serial
 
-    const imageUrl = image == '' ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjvTwY220WDaZMZ5BmegbXmN_dFNElObmP91YIjhVQWupZe7d2Au0NBqagSqgwB_41YQ&usqp=CAU' :
-    'https://gardyniotblob.blob.core.windows.net/iot-camera-image/' + image
+    const imageUrl = image == '' 
+    ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjvTwY220WDaZMZ5BmegbXmN_dFNElObmP91YIjhVQWupZe7d2Au0NBqagSqgwB_41YQ&usqp=CAU' 
+    : 'https://gardyniotblob.blob.core.windows.net/iot-camera-image/' + image
 
     return (
     <div className={styles.page}>
@@ -172,7 +147,7 @@ const Schedule = ( {serial, date} ) => {
         <div className={styles.leftSide}>
            
             <div className={styles.schedule}>
-                <h3>Light Time Periods</h3>
+                <h3>Lighting Schedule Time Periods</h3>
                 {scheduleHTML}
             </div>
 
@@ -190,7 +165,7 @@ const Schedule = ( {serial, date} ) => {
 
 
             <div className={styles.scheduleRaw}>
-                <h3>Schedule</h3>
+                <h3>Lighting Schedule</h3>
 
                 <a href={timelapseLink} target="_blank" rel="noreferrer">Timelapse Link</a>
                 <br />
