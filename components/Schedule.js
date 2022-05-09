@@ -4,6 +4,22 @@ import timestampRange from '../util/timestamp';
 import extractSchedule from '../util/schedule'
 import may1 from '../data/may1-serials.tsv'
 
+function dateToString(date) {
+    const d = new Date(date)
+    return d.getFullYear() 
+    + '-' 
+    + (d.getMonth() + 1).toString().padStart(2,'0') 
+    + '-' 
+    + d.getDate().toString().padStart(2,'0')
+}
+
+Date.prototype.addDays = function(days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+}
+
+
 const Schedule = ( {serial, date} ) => {
     const [schedule, setSchedule] = useState([]);
     const [scheduleRaw, setScheduleRaw] = useState([]);
@@ -37,6 +53,7 @@ const Schedule = ( {serial, date} ) => {
 
     const getAzureFiles = async (date) => {
         const tsRange = timestampRange(date, '00:00:00', '23:59:59', '')
+        // console.log('tsRange', tsRange)
         // console.log('serial: ' + serial)
 
         const response = await fetch(`/api/azure_list/${serial}/${tsRange.startTS}/${tsRange.endTS}`)
@@ -75,8 +92,10 @@ const Schedule = ( {serial, date} ) => {
         //console.log(startDate, endDate)
         return <div key={idx}>{item.sig} {item.start} {item.end} {item.startTS} {item.endTS} {s} {e}</div>
     })
-
-    const azureFilesHTML = azureFiles.map ( (item, idx) => {
+ 
+    const camera1Files = []
+    const camera2Files = []
+    azureFiles.forEach ( (item, idx) => {
         const re = /_(\d*)\.jpg/ 
         const match = item.match(re)
         const ts = match[1]
@@ -88,19 +107,56 @@ const Schedule = ( {serial, date} ) => {
             }
         })
 
-        console.log(ts)
+        // console.log(ts)
         const d = new Date(ts * 1000)
         const localeTime = d.toLocaleTimeString()
-        const date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-        return <div key={idx}>
-             <span className={styles.imageLink} onClick={(e) => imageClick(e,item) }>{item}</span> {sig} {localeTime} {date}
-            </div>
+        const photoDate = dateToString(d)
+
+        const html =  <div key={idx}><span className={styles.imageLink} onClick={(e) => imageClick(e,item) }>{ts}</span> {sig} {localeTime} {photoDate}
+        </div>
+
+        if (item.includes('camera1')) {
+            camera1Files.push(html)
+        } else {
+            camera2Files.push(html)
+        }
+
     })
 
     const may1HTML = may1.map ( (item, idx) => {
         const link = `/schedule/${item}/2022-05-01`
         return <div key={idx}><a href={link}>{item}</a></div>
     })
+
+    const theDate = new Date(date)
+    const localeDate = theDate.toLocaleDateString()
+    console.log('theDate', theDate)
+    console.log('localeDate', localeDate)
+
+    // console.log('date: ', date)
+    // const today = new Date()
+    /*
+    const today = date
+    console.log('date: ', today)
+    const yesterday = new Date(today)
+    yesterday.setDate(yesterday.getDate() - 1)
+    const yDate = dateToString(yesterday)
+    console.log('yDate', yDate)
+    const yPage = '/schedule/' + serial + '/' + yDate
+    const yLink = <a href={yPage}>Yesterday</a>
+
+    console.log('date: ', today)
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    const tDate = dateToString(tomorrow)
+    console.log('tDate', tDate)
+    const tPage = '/schedule/' + serial + '/' + tDate
+    const tLink = <a href={tPage}>Tomorrow</a>
+
+                {yLink} {tLink}
+    */
+
+
 
     const timelapseLink = '/timelapse/' + serial
 
@@ -119,16 +175,25 @@ const Schedule = ( {serial, date} ) => {
                 <h3>Light Time Periods</h3>
                 {scheduleHTML}
             </div>
-            <h3>
-                  <a href={timelapseLink} target="_blank" rel="noreferrer">Timelapse Link</a>
-            </h3> 
+
+
             <div className={styles.azure_files}>
-                <h3>Azure Images</h3>
-                {azureFilesHTML}
+                <div className = {styles.camera_files}>
+                    <h4>Camera 1</h4>
+                {camera1Files}
+                </div>
+                <div className = {styles.camera_files}>
+                    <h4>Camera 2</h4>
+                {camera2Files}
+                </div>
             </div>
+
+
             <div className={styles.scheduleRaw}>
                 <h3>Schedule</h3>
 
+                <a href={timelapseLink} target="_blank" rel="noreferrer">Timelapse Link</a>
+                <br />
                 {scheduleRaw}
 
             </div>

@@ -44,10 +44,12 @@ const getLightRange = (day, idx, sigOn) => {
   const date = new Date(day)
   console.log('date: ', date)
 
-  //let dateLocal = new Date(date.toLocaleString("en-US", {
-  //  timeZone: timezone
-  //}))
-  //const diff = (dateLocal - date) / 1000 / 60 / 60
+  let dateLocal = new Date(date.toLocaleString("en-US", {
+    timeZone: timezone,
+  }))
+  console.log('dateLocal: ', dateLocal)
+  const diff = (dateLocal - date) / 1000 / 60 / 60
+  console.log('diff: ', diff)
 
   let dayOfWeek= date.getDay()
 

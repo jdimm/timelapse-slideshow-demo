@@ -297,7 +297,7 @@ const Slideshow = ( {serial, camera, method} ) => {
 
   const imgsrc = imageSource(photos[index])
   const date = getDate(photos[index])
-  const title = date.toLocaleString('en-GB')
+  const title = date.toLocaleString('en-US')
  
   const schedule_link = '/schedule/' + serial + '/2022-05-01'
   

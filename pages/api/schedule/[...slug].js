@@ -14,7 +14,7 @@ const getSchedule = async (serial, day) => {
         values: [],
     });
 
-    console.log("schedule results", results)
+    // console.log("schedule results", results)
     return results
 }
 

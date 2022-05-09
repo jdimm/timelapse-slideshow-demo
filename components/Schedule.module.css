@@ -7,8 +7,13 @@
     white-space: pre;
     margin: 10px;
 }
+
+.scheduleRaw {
+    clear: both;
+}
+
 .image {
-    width: 500px;
+    width: 640px;
 }
 .imageLink {
     cursor: pointer;
@@ -16,16 +21,21 @@
 
 .leftSide {
     float: left;
-    margin: 20px;
-    width: 650px;
+    margin: 10px;
+    width: 700px;
 }
 .rightSide {
-    float: left;
+    position: fixed;
+    left: 850px;
     margin: 20px;
 }
 .leftMargin {
-
     float: left;
     width: 70px;
     overflow: hidden;
+}
+.camera_files {
+    float:left;
+    width: 300px;
+    margin: 20px;
 }
