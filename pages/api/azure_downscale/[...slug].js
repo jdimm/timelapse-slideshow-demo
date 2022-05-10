@@ -1,93 +1,35 @@
 
-import { createPipelineFromOptions } from '@azure/core-http';
-import { time } from 'console';
+// import { createPipelineFromOptions } from '@azure/core-http';
+// import { time } from 'console';
+
 import * as fs from 'fs';
-// import { colorDiff } from 'jimp';
 import fetch from 'node-fetch';
 var Jimp = require('jimp');
 import { pipeline } from 'stream'
-import schedule from '../../../data/schedule'
 
-import getSchedule from '../../../util/schedule'
-const { BlobServiceClient } = require('@azure/storage-blob');
-//import connection from '../../../util/mysql'
+const {Duplex} = require('stream'); // Native Node Module 
 
-const azureStorage = async (ts_start, ts_end) => {
-  const AZURE_STORAGE_CONNECTION_STRING =
-  process.env.AZURE_STORAGE_CONNECTION_STRING_IOT;
-
-  if (!AZURE_STORAGE_CONNECTION_STRING) {
-    throw Error("Azure Storage Connection string not found");
-  }
-
-  // Create the BlobServiceClient object which will be used to create a container client
-  const blobServiceClient = BlobServiceClient.fromConnectionString(
-    AZURE_STORAGE_CONNECTION_STRING
-  );
-
-  console.log("\nListing blobs...");
-
-  const containerName = 'iot-camera-image'
-  const containerClient = blobServiceClient.getContainerClient(containerName);
-
-  const serial = '845f89ee6e4cfe2afd9cfef70a4065d8'
-  // const serial = '61ee6063e923f05eb2afffe7a5c6ba92'
-  var query = `"deviceid"='${serial}'
-  and 
-  "timestamp">\'${ts_start}\' 
-  and "timestamp"<\'${ts_end}\'`
-
-  console.log(query)
-  const fromTime = new Date(ts_start * 1000)
-  const toTime = new Date(ts_end * 1000)
-  console.log('fromTime: ' + fromTime)
-  console.log('toTime: ' + toTime)
-
-  let i = 1;
-  for await (const blob of blobServiceClient.findBlobsByTags(query)) {
-    console.log(blob.name);
-  }
-
+function bufferToStream(myBuuffer) {
+    let tmp = new Duplex();
+    tmp.push(myBuuffer);
+    tmp.push(null);
+    return tmp;
 }
 
-
-async function oldloadPic(url, image_width) {
-
-    const options = {
-        method: "GET"
-    }
-
-    let response = await fetch(url, options)
-    if (response.status === 200) {
-        const imageBlob = await response.blob()
-        const b = Buffer.from(await imageBlob.arrayBuffer())
-        const type = 'image/jpeg'
-        const theimg = await Jimp.read(b)
-
-        console.log('resizing image')
-
-        theimg
-        .resize(parseInt(image_width), Jimp.AUTO) // resize
-        .quality(60) // set JPEG quality
-        
-        console.log('writing to disk')
-        theimg.write('response_small.jpg') 
-    }
-
+const downloadAzureImage = async (url) => {
+    const response = await fetch(url)
+    const imageBlob = await response.blob()
+    return Buffer.from(await imageBlob.arrayBuffer())
 }
 
-async function loadPic(url, image_width) {
+async function downscaleBuffer(buffer, path, image_width) {
+    const theimg = await Jimp.read(buffer)
 
-        const theimg = await Jimp.read(url)
-
-        console.log('resizing image')
-        theimg
-              .resize(parseInt(image_width), Jimp.AUTO) // resize
-              .quality(60) // set JPEG quality
-              .write('response_small.jpg')
+    theimg
+      .resize(parseInt(image_width), Jimp.AUTO) // resize
+      .quality(90) // set JPEG quality
+      .write(path) 
 }
-
-
 
 export default async (req, res) => {
     const {
@@ -99,23 +41,33 @@ export default async (req, res) => {
     const timestamp = slug[2] 
     const image_width = slug[3]
 
+    // http://13.90.210.214/serials/85df8546a995dd7772a230f03978cbc8/camera2/1649607694.jpg
+    const path = `./public/serials/${serial}/camera${camera}/${timestamp}.jpg`
+
     //const azureUrl = 'https://gardyniotblob.blob.core.windows.net/iot-camera-image/camera1_c2c5916b17dff1437dbc0ea761d9651c_1647130896.jpg'
-    const azureUrl = `https://gardyniotblob.blob.core.windows.net/iot-camera-image/camera${camera}_${serial}_${timestamp}.jpg`
+    const url = `https://gardyniotblob.blob.core.windows.net/iot-camera-image/camera${camera}_${serial}_${timestamp}.jpg`
 
+    let buffer
+    if (fs.existsSync(path)) {
+        console.log('using local file ', path)
+        buffer = fs.readFileSync(path)
+    } else {
+       buffer = await downloadAzureImage(url)
+       await downscaleBuffer(buffer, path, image_width)
+    }
 
-    loadPic(azureUrl, image_width)
+   //  await downscaleUrl(url, image_width)
 
-    const device_id=50
-    const day='2022-02-01'
-    const lightonToday = await getSchedule(device_id, day)
-    console.log('lightonToday: ', lightonToday)
+    //fs.writeFileSync('response.jpg', b)
+    //const imageStream = fs.createReadStream(`response.jpg`)
 
-
-    console.log('writing output to response')
-
+    const imageStream = bufferToStream(buffer);
     res.setHeader('Content-Type', 'image/jpg')
-    const imageStream = fs.createReadStream(`response_small.jpg`)
     pipeline(imageStream, res, (error) => {
       if (error) console.error(error)
     })
+
+    // res.setHeader('Content-Type', 'application/json');
+    // res.json({response: 'ok'});
+    
 };

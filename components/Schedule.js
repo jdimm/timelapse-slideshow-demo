@@ -19,13 +19,30 @@ Date.prototype.addDays = function(days) {
     return date;
 }
 
+const imageToAPI = (image) => {
+    if (!image || image === '')
+      return ''
+      
+    console.log('imageToAPI, image:', image)
+    const re = /camera(\d)_([^_]*)_([^_]*).jpg/
+    const match = image.match(re)
+    const camera = match[1]
+    const serial = match[2]
+    const ts = match[3]
+
+    return `/api/azure_downscale/${serial}/${camera}/${ts}/640`
+}
+
+
+
 
 const Schedule = ( {serial, date} ) => {
     const [schedule, setSchedule] = useState([]);
     const [scheduleRaw, setScheduleRaw] = useState([]);
     const [azureFiles, setAzureFiles] = useState([]);
-    const [image, setImage] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
     const [waitCursorEl, setWaitCursorEl] = useState(null);
+    const [localFiles, setLocalFiles] = useState({});
 
  
     const getSchedule = async (serial, date) => {
@@ -58,9 +75,11 @@ const Schedule = ( {serial, date} ) => {
         // console.log('serial: ' + serial)
 
         const response = await fetch(`/api/azure_list/${serial}/${tsRange.startTS}/${tsRange.endTS}`)
-        const azureFiles = await response.json()
-        // console.log('azureFiles', azureFiles)
-        setAzureFiles(azureFiles)
+        const jsonResponse = await response.json()
+
+        // console.log('azureFiles', azureFiles)    
+        setAzureFiles(jsonResponse.azureFiles)
+        setLocalFiles(jsonResponse.localFiles)
     }
 
     useEffect(() => {
@@ -74,10 +93,36 @@ const Schedule = ( {serial, date} ) => {
          getAzureFiles(date)
     },[serial, date])
 
-    const imageClick = (e,item) => {
+    const imageToLocalFileUrl = (image) => {
+        if (!image || image === '')
+          return ''
+          
+        const re = /camera(\d)_([^_]*)_([^_]*).jpg/
+        const match = image.match(re)
+        const camera = match[1]
+        const serial = match[2]
+        const ts = match[3]
+    
+        const localFile = `serials/${serial}/camera${camera}/${ts}.jpg`
+    
+        console.log('imageToLocalFile, image:', image, ' localFile:', localFile)
+        return localFile
+    }
+
+    const imageClick = (e,image) => {
         e.currentTarget.style.cursor='wait';
         setWaitCursorEl(e.currentTarget);
-        setImage(item)
+        const APIimage = imageToAPI(image)
+        const imageUrl = image == '' 
+        ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjvTwY220WDaZMZ5BmegbXmN_dFNElObmP91YIjhVQWupZe7d2Au0NBqagSqgwB_41YQ&usqp=CAU' 
+        : APIimage
+      //  : 'https://gardyniotblob.blob.core.windows.net/iot-camera-image/' + image
+    
+        setImageUrl(imageUrl)
+
+        const localFile = imageToLocalFileUrl(image)
+        localFiles[image] = localFile
+        setLocalFiles(localFiles)
     }
 
     const imageLoaded = (e) => {
@@ -111,11 +156,17 @@ const Schedule = ( {serial, date} ) => {
         // console.log(ts)
         const d = new Date(ts * 1000)
         const localeTime = d.toLocaleTimeString()
-        const photoDate = dateToString(d)
 
-        const html = <div key={idx} className={styles.imageLink} onClick={(e) => imageClick(e,item) }>
-            {ts} {sig} {localeTime} 
-        </div>
+        const localFile = localFiles[item]
+        const style = {fontWeight:'600',  color: 'red'}
+        const html = localFile 
+        ?  <div style={style} onMouseEnter={(e) => setImageUrl('/' + localFile)}>
+              {ts} {sig} {localeTime}    
+           </div>
+        :  <div key={idx} className={styles.imageLink} onClick={(e) => imageClick(e,item) }>
+              {ts} {sig} {localeTime}
+          </div>
+
 
         if (item.includes('camera1')) {
             camera1Files.push(html)
@@ -133,10 +184,6 @@ const Schedule = ( {serial, date} ) => {
 
 
     const timelapseLink = '/timelapse/' + serial
-
-    const imageUrl = image == '' 
-    ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjvTwY220WDaZMZ5BmegbXmN_dFNElObmP91YIjhVQWupZe7d2Au0NBqagSqgwB_41YQ&usqp=CAU' 
-    : 'https://gardyniotblob.blob.core.windows.net/iot-camera-image/' + image
 
     return (
     <div className={styles.page}>
@@ -176,7 +223,7 @@ const Schedule = ( {serial, date} ) => {
         <div className={styles.rightSide}>
             <img className={styles.image} src={imageUrl} onLoad={imageLoaded}/>
             <br />
-            {image}
+            {imageUrl}
         </div>
     </div>
     )

@@ -1,4 +1,5 @@
 const { BlobServiceClient } = require('@azure/storage-blob');
+import * as fs from 'fs';
 
 function sort_unique(arr) {
   if (arr.length === 0) return arr;
@@ -53,9 +54,6 @@ const azureList = async (serial, ts_start, ts_end) => {
     }
   }
 
-
-
-
   await listBlobsCamera(ts_s5, '1')
   await listBlobsCamera(ts_e5, '1')
   await listBlobsCamera(ts_s5, '2')
@@ -94,6 +92,22 @@ const azureStorage = async (serial, ts_start, ts_end) => {
   
   }
 
+  const imageToLocalFile = (image) => {
+    if (!image || image === '')
+      return ''
+      
+    const re = /camera(\d)_([^_]*)_([^_]*).jpg/
+    const match = image.match(re)
+    const camera = match[1]
+    const serial = match[2]
+    const ts = match[3]
+
+    const localFile = `serials/${serial}/camera${camera}/${ts}.jpg`
+
+    // console.log('imageToLocalFile, image:', image, ' localFile:', localFile)
+    return localFile
+}
+
 export default async (req, res) => {
     const {
 		query: { slug },
@@ -109,6 +123,17 @@ export default async (req, res) => {
 
     const azureFiles = await azureList(serial, timestamp_start, timestamp_end)
 
+    const localFiles = {}
+    azureFiles.forEach (file => {
+        const localFile = imageToLocalFile(file)
+        if (fs.existsSync('./public/' + localFile)) {
+          // console.log('file exists: ' + localFile)
+          localFiles[file] = localFile
+        }
+    })
+
+    const response = {azureFiles: azureFiles, localFiles:localFiles}
+
     res.setHeader('Content-Type', 'application/json');
-    res.json(azureFiles)
+    res.json(response)
 }

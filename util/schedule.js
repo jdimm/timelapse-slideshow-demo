@@ -73,6 +73,9 @@ const getLightRange = (day, idx, sigOn) => {
  }
 
  const extractSchedule = (results, day) => {
+    if (!results || !results.length) 
+      return []
+      
     const schedule = JSON.parse(results[0].schedule)
     const lighton = parseSchedule(schedule)
     const timezoneCode = results[0].timezone
