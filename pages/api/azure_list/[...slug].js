@@ -13,6 +13,44 @@ function sort_unique(arr) {
   return ret;
 }
 
+const azureListSmall = async (serial) => {
+  const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING_IOT;
+  
+  if (!AZURE_STORAGE_CONNECTION_STRING) {
+    throw Error("Azure Storage Connection string not found");
+  }
+
+  const blobServiceClient = BlobServiceClient.fromConnectionString(
+    AZURE_STORAGE_CONNECTION_STRING
+  );
+
+  const containerName = 'iot-camera-image-small'
+  const containerClient = blobServiceClient.getContainerClient(containerName);
+  const blobList = []
+
+  async function listBlobsCamera (camera) {
+    const listOptions = {
+      includeMetadata: true,
+      includeSnapshots: false,
+      includeTags: true,
+      includeVersions: false,
+      prefix: `camera${camera}_${serial}_`
+      // prefix: 'camera1_85df8546a995dd7772a230f03978cbc8_'
+    }
+
+    for await (const blob of containerClient.listBlobsFlat(listOptions)) {
+      // if (blobList.length < 60)
+        blobList.push(blob.name)
+    }
+  }
+
+  await listBlobsCamera('1')
+  await listBlobsCamera('2')
+
+  return blobList.sort()
+
+}
+
 const azureList = async (serial, ts_start, ts_end) => {
   const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING_IOT;
   
@@ -30,6 +68,8 @@ const azureList = async (serial, ts_start, ts_end) => {
   const blobList = []
   const ts_s5 = ts_start.toString().substring(0,5)
   const ts_e5 = ts_end.toString().substring(0,5)
+  console.log('ts_s5:', ts_s5)
+  console.log('ts_e5:', ts_e5)
 
   async function listBlobsCamera (timestamp_start, camera) {
     const listOptions = {
@@ -42,7 +82,7 @@ const azureList = async (serial, ts_start, ts_end) => {
     }
 
    for await (const blob of containerClient.listBlobsFlat(listOptions)) {
-      // console.log('blob: ' + blob.name)
+      console.log('blob: ' + blob.name)
       const re = new RegExp('[^_]*_[^_]*_([^_]*).jpg')
       const match = blob.name.match(re)
       if (match) {
@@ -116,12 +156,17 @@ export default async (req, res) => {
     const serial = slug[0] 
     const timestamp_start = slug[1] 
     const timestamp_end = slug[2]
+    const containerName = slug.length > 3 ? slug[3] : 'iot-camera-image'
 
     /*
        http://localhost:3000/api/azure_list/845f89ee6e4cfe2afd9cfef70a4065d8/1651474800/1651485600
     */
-
-    const azureFiles = await azureList(serial, timestamp_start, timestamp_end)
+    let azureFiles = []
+    if (containerName === 'iot-camera-image') {
+      azureFiles = await azureList(serial, timestamp_start, timestamp_end)
+    } else if (containerName === 'iot-camera-image-small') {
+      azureFiles = await azureListSmall(serial)
+    }
 
     const localFiles = {}
     azureFiles.forEach (file => {

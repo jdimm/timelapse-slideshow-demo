@@ -129,7 +129,7 @@ const Slideshow = ( {serial, camera, method} ) => {
       return `https://gardyniotblob.blob.core.windows.net/iot-camera-image/camera${camera}_${serial}_${filename}`
     
     else if (method == 'azure-small')
-      return `https://gardyniotblob.blob.core.windows.net/iot-camera-image-small/camera${camera}_${serial}_${filename}`
+      return `https://gardyniotblob.blob.core.windows.net/iot-camera-image-small/${filename}`
 
     //
   }
@@ -148,10 +148,34 @@ const Slideshow = ( {serial, camera, method} ) => {
     if (!serial)
       return
 
-    getPhotos()
+    if (method == 'azure-small') {
+      getPhotosAzure()
+    } else {
+      getPhotosNginx()
+    }
   },[serial]) 
 
-  const getPhotos = () => {
+  const getPhotosAzure = async () => {
+
+    const startTS = 958053498 // 2000 
+    const endTS = 4082191098 // 2099
+    console.log("startTS:", startTS)
+    console.log("endTS:", endTS)
+    const containerName = 'iot-camera-image-small'
+    
+    const response = await fetch(`/api/azure_list/${serial}/${startTS}/${endTS}/${containerName}`)
+    const jsonResponse = await response.json()
+    const photos = jsonResponse.azureFiles
+
+    // console.log('azureFiles', jsonResponse.azureFiles)    
+    setPhotos(photos)
+    const newRange = {start: 0, end: photos.length}
+    setRange(newRange)
+    setIndex(photos.length-20)
+    initSlideshow(photos, newRange)
+  }
+
+  const getPhotosNginx = () => {
     // Get the listing of files from the serial directory.
     const url = imageRepo()
     // console.log("getPhotos", url)
@@ -241,7 +265,7 @@ const Slideshow = ( {serial, camera, method} ) => {
   const getDate = (imgsrc) => {
     if (!imgsrc) 
        return new Date() 
-
+    imgsrc = imgsrc.replace(/.*_/,'').replace(/_.*/,'')
     const serial = parseInt(imgsrc.replace(".jpg",""))
     return new Date(serial * 1000)
   }
