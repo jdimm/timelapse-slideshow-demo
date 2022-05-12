@@ -160,7 +160,7 @@ const Schedule = ( {serial, date} ) => {
         const localFile = localFiles[item]
         const style = {fontWeight:'600',  color: 'red'}
         const html = localFile 
-        ?  <div style={style} onMouseEnter={(e) => setImageUrl('/' + localFile)}>
+        ?  <div key={idx} style={style} onMouseEnter={(e) => setImageUrl('/' + localFile)}>
               {ts} {sig} {localeTime}    
            </div>
         :  <div key={idx} className={styles.imageLink} onClick={(e) => imageClick(e,item) }>

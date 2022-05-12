@@ -38,6 +38,7 @@
     cursor: pointer;
     height: min-content;
     width: max-content;
+    margin-top:5px;
   }
 
   .touchBarCell::selection {

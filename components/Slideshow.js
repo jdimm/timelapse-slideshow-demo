@@ -56,11 +56,12 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours, setRange, range, 
     setRange( r ) 
   }
 
+  //onMouseMove={mouseMove} 
+  //onTouchMove={touchMove}
+  // onClick={click}
+
   return (
-    <div className={styles.touchBar} 
-      onMouseMove={mouseMove} 
-      onTouchMove={touchMove}
-      onClick={click}>
+    <div className={styles.touchBar}>
       {
         photos.map( (photo, idx) => {
           const skip = wrongHour(hours, photo)
@@ -76,7 +77,8 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours, setRange, range, 
               <span 
                 key={idx}
                 style={ {color: color}} 
-                className={styles.touchBarCell} >I</span>
+                className={styles.touchBarCell} 
+                onMouseEnter={(e) => setIndex(idx)}>I</span>
             ) 
           })
       }
@@ -165,13 +167,22 @@ const Slideshow = ( {serial, camera, method} ) => {
     
     const response = await fetch(`/api/azure_list/${serial}/${startTS}/${endTS}/${containerName}`)
     const jsonResponse = await response.json()
-    const photos = jsonResponse.azureFiles
+    const photosBoth = jsonResponse.azureFiles
 
+
+    const photos = photosBoth.filter( (photo) => {
+      // console.log(photo)
+      const good = photo.startsWith('camera'+camera)
+      // console.log("good:", good)
+      return good
+    })
+  
+    console.log("photos:", photos)
     // console.log('azureFiles', jsonResponse.azureFiles)    
     setPhotos(photos)
     const newRange = {start: 0, end: photos.length}
     setRange(newRange)
-    setIndex(photos.length-20)
+    setIndex(0)
     initSlideshow(photos, newRange)
   }
 
@@ -324,6 +335,8 @@ const Slideshow = ( {serial, camera, method} ) => {
   const title = date.toLocaleString('en-US')
  
   const schedule_link = '/schedule/' + serial + '/2022-05-01'
+
+  //      <HourSelect hours={hours} toggleHour={toggleHour}/>
   
   return (
     <div className={styles.slideshow} >
@@ -347,7 +360,7 @@ const Slideshow = ( {serial, camera, method} ) => {
           <button onClick={play}>&#9654;&#65039;</button>
           <button onClick={nextWeek}>&#9193;</button>
         </div>
-        <HourSelect hours={hours} toggleHour={toggleHour}/>
+
         <a href={schedule_link} target="_blank" rel="noreferrer">Schedule and Azure Images</a>
     </div>
   );
