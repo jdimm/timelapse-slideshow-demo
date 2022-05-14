@@ -183,8 +183,6 @@ const Schedule = ( {serial, date} ) => {
     })
 
 
-    const timelapseLink = '/timelapse/' + serial
-
     return (
     <div className={styles.page}>
         <div className={styles.leftMargin}>
@@ -213,9 +211,6 @@ const Schedule = ( {serial, date} ) => {
 
             <div className={styles.scheduleRaw}>
                 <h3>Lighting Schedule</h3>
-
-                <a href={timelapseLink} target="_blank" rel="noreferrer">Timelapse Link</a>
-                <br />
                 {scheduleRaw}
 
             </div>

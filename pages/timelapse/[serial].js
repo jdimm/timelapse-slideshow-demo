@@ -13,6 +13,7 @@ function Index() {
   if (!serial) 
     return null;
 
+
   return ( 
   <div className={styles.timelapse}>
 

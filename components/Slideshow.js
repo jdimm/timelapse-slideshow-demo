@@ -216,7 +216,7 @@ const Slideshow = ( {serial, camera, method} ) => {
     const startSlideShow = () => {
         const interval = setInterval(() => { 
           nextSlide(hours, photos, range)
-      }, 120);
+      }, 80);
     }
 
     if (!preloadedImages.length && photos) {
@@ -336,7 +336,7 @@ const Slideshow = ( {serial, camera, method} ) => {
  
   const schedule_link = '/schedule/' + serial + '/2022-05-01'
 
-  //      <HourSelect hours={hours} toggleHour={toggleHour}/>
+  //     <HourSelect hours={hours} toggleHour={toggleHour}/>
   
   return (
     <div className={styles.slideshow} >

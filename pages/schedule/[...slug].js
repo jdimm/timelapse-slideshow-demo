@@ -18,6 +18,9 @@ const Post = () => {
   if (!serial.length || !date.length) 
     return null
 
+  const timelapseUrl = '/slideshow/' + serial + '?method=azure-small'
+  const timelapseLink = <a href={timelapseUrl} target="_blank" rel="noreferrer">Timelapse Link</a>
+
   return <div style={{margin:'20px'}}>
             <div>
               Date: <input type="date" value={date} onChange={ 
@@ -27,6 +30,8 @@ const Post = () => {
               Serial: <input type="text" size='35' value={serial} onChange={ 
                 (e) => setSerial(e.currentTarget.value) 
                 } />
+              &nbsp;&nbsp;
+              {timelapseLink}
            </div>
 
            <Schedule serial={serial} date={date} />
