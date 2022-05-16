@@ -13,6 +13,15 @@ function dateToString(date) {
     + d.getDate().toString().padStart(2,'0')
 }
 
+function dateToStringMDY(date) {
+    const d = new Date(date)
+    return (d.getMonth() + 1).toString() 
+    + '-' 
+    + d.getDate().toString().padStart(2,'0')
+    + '-'
+    + d.getFullYear()
+}
+
 Date.prototype.addDays = function(days) {
     var date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
@@ -32,8 +41,6 @@ const imageToAPI = (image) => {
 
     return `/api/azure_downscale/${serial}/${camera}/${ts}/640`
 }
-
-
 
 
 const Schedule = ( {serial, date} ) => {
@@ -178,7 +185,7 @@ const Schedule = ( {serial, date} ) => {
 
     // A sample list of serials in timezone 133 that have schedules.
     const may1HTML = may1.map ( (item, idx) => {
-        const link = `/schedule/${item}/2022-05-01`
+        const link = `/schedule/${item}/5-01-2022`
         return <div key={idx}><a href={link}>{item}</a></div>
     })
 

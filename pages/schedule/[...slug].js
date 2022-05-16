@@ -24,7 +24,7 @@ const Post = () => {
   return <div style={{margin:'20px'}}>
             <div>
               Date: <input type="date" value={date} onChange={ 
-                (e) => setDate(e.currentTarget.value) 
+                (e) => { setDate(e.currentTarget.value); console.log('setting date', e.currentTarget.value) }
                 }  />
               &nbsp;&nbsp;
               Serial: <input type="text" size='35' value={serial} onChange={ 

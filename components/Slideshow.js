@@ -1,6 +1,16 @@
 import React, {useState,useEffect,useRef} from 'react';
 import styles from './Slideshow.module.css'
 
+let gInterval = null
+
+function dateToString(date) {
+  const d = new Date(date)
+  return d.getFullYear() 
+  + '-' 
+  + (d.getMonth() + 1).toString().padStart(2,'0') 
+  + '-' 
+  + d.getDate().toString().padStart(2,'0')
+}
 const HourSelect = ( { hours, toggleHour } ) => {
     return (
       <div className={styles.hourSelect}>
@@ -53,7 +63,7 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours, setRange, range, 
       r.start = 0
       r.end = photos.length
     }
-    setRange( r ) 
+    //setRange( r ) 
   }
 
   //onMouseMove={mouseMove} 
@@ -88,19 +98,25 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours, setRange, range, 
 
 const Slideshow = ( {serial, camera, method} ) => {
   const [index, setIndex] = useState(0)
-  const [animate, setAnimate] = useState(true)
+  const [animate, setAnimate] = useState(false)
   const [photos, setPhotos] = useState([])
   const [preloadedImages, setPreloadedImages] = useState([])
   const [hours, setHours] = useState([])
   const [range, setRange] = useState({})
   const [stopAt, setStopAt] = useState(-1)
   const [direction, setDirection] = useState(1)
+  //const [interval, setInterval] = useState(null)
+
   // const [method, setMethod] = useState(_method)
 
   const animateRef = useRef(animate)
   const indexRef = useRef(index)
   const stopAtRef = useRef(stopAt)
   const directionRef = useRef(direction)
+  const rangeRef = useRef(range)
+  const photosRef = useRef(photos)
+  const hoursRef = useRef(hours)
+  //const intervalRef = useRef(interval)
 
 
   const onXMove = (w,x) => {
@@ -144,52 +160,53 @@ const Slideshow = ( {serial, camera, method} ) => {
     indexRef.current = index
     stopAtRef.current = stopAt
     directionRef.current = direction
+    rangeRef.current = range
+    photosRef.current = photos
+    hoursRef.current = hours
+    //intervalRef.current = interval
   })
 
   useEffect(() => {
     if (!serial)
       return
 
+
+    //setPhotos([])
+
     if (method == 'azure-small') {
       getPhotosAzure()
     } else {
       getPhotosNginx()
     }
-  },[serial]) 
+  },[serial, camera]) 
 
   const getPhotosAzure = async () => {
 
     const startTS = 958053498 // 2000 
     const endTS = 4082191098 // 2099
-    console.log("startTS:", startTS)
-    console.log("endTS:", endTS)
+    //console.log("startTS:", startTS)
+    //console.log("endTS:", endTS)
     const containerName = 'iot-camera-image-small'
     
-    const response = await fetch(`/api/azure_list/${serial}/${startTS}/${endTS}/${containerName}`)
+    const url = `/api/azure_list/${serial}/${startTS}/${endTS}/${containerName}`
+    console.log("url:", url)
+    const response = await fetch(url)
     const jsonResponse = await response.json()
     const photosBoth = jsonResponse.azureFiles
 
+    console.log("photosBoth:", photosBoth)
 
     const photos = photosBoth.filter( (photo) => {
-      // console.log(photo)
       const good = photo.startsWith('camera'+camera)
-      // console.log("good:", good)
       return good
     })
   
-    console.log("photos:", photos)
-    // console.log('azureFiles', jsonResponse.azureFiles)    
-    setPhotos(photos)
-    const newRange = {start: 0, end: photos.length}
-    setRange(newRange)
-    setIndex(0)
-    initSlideshow(photos, newRange)
+    scanPhotos(photos) 
   }
 
   const getPhotosNginx = () => {
     // Get the listing of files from the serial directory.
     const url = imageRepo()
-    // console.log("getPhotos", url)
 
     fetch(url).then(function (response) {
       return response.text();
@@ -198,71 +215,81 @@ const Slideshow = ( {serial, camera, method} ) => {
       const regexp = /href="(.*?.jpg)"/g
       const matches = [... html.matchAll(regexp)]
       const photos = matches.map( (val, idx) => val[1])
-      // console.log(photos)
-
-      setPhotos(photos)
-      const newRange = {start: 0, end: photos.length}
-      setRange(newRange)
-      setIndex(photos.length-20)
-      initSlideshow(photos, newRange)
+      scanPhotos(photos)
     }).catch(function (err) {
       console.warn('Something went wrong getting photos.', url, err);
     });
   } 
 
-  const initSlideshow = (photos, range) => { 
-    // Pass photos as param because setPhotos has not yet happened.
+  const scanPhotos = (photos) => {
+    setPreloadedImages([])
+    setPhotos(photos)
 
-    const startSlideShow = () => {
-        const interval = setInterval(() => { 
-          nextSlide(hours, photos, range)
-      }, 80);
-    }
+    console.log("preloading images, num photos:", photos.length)
 
-    if (!preloadedImages.length && photos) {
-      // Preload images.
-      var images = photos.map((image_url, i) => {
-        const img = new Image()
-        // img.src = imageRepo() + image_url 
-        img.src = imageSource(image_url)
-        return img;    
-      }) 
-      setPreloadedImages(images)
+    photos.forEach((image_url, i) => {
+      const img = new Image()
+      img.onload = () => {
+        setPreloadedImages(preloadedImages => [...preloadedImages, img])  
+      }   
+      img.src = imageSource(image_url)
+    }) 
 
-      // Scan for hours. 
-      var hours = []
-      photos.map((image_url, i) => {
-        const hour = getHour(image_url)
-        hours[hour] = true
-      })
-      setHours(hours)
+    var hours = []
+    photos.map((image_url, i) => {
+      const hour = getHour(image_url)
+      hours[hour] = true
+    })
+    setHours(hours)
 
-      startSlideShow()
-    } else {
-      startSlideShow()
-    }
-
-
-    
-    return () => clearInterval(interval);
+    const newRange = {start: 0, end: photos.length}
+    console.log("newRange:", newRange)
+    setRange(newRange)
+    setIndex(0)
+    initSlideshow()
   }
 
-  const nextSlide = (hours, photos, range) => {
-    // Skip unselected hours.
-    if (animateRef.current && photos) {
-      let inc=directionRef.current
+  const initSlideshow = () => { 
+    const startSlideShow = () => {
+      gInterval = setInterval(() => { 
+          nextSlide()
+      }, 120);
+    }
+
+    if (!gInterval)
+      startSlideShow()
+
+    return () => clearInterval(gInterval);
+  }
+
+  const nextSlide = () => {
+    let range = rangeRef.current
+    let photos = photosRef.current
+    let hours = hoursRef.current
+    let index = indexRef.current
+    let stopAt = stopAtRef.current
+    let animate = animateRef.current
+    let direction = directionRef.current
+
+    if (animate && photos) {
+      let inc=direction
+      console.log('inc:', inc, ' range:', range, ' stopAt:', stopAt)
       let next 
       while(inc < photos.length) {
-        const atRightEnd = (indexRef.current + inc > photos.length - 1)
-        const atLeftEnd = (indexRef.current + inc < 0)
-        const stopNow = stopAtRef.current == indexRef.current
+        const atRightEnd = (index + inc > photos.length - 1)
+        if (atRightEnd)
+          console.log("index:", index, " photos.length:", photos.length)
+        const atLeftEnd = (index + inc < 0)
+        const stopNow = stopAt == index
         // console.log('stopAtRef', stopAtRef.current, indexRef.current)
         if (atRightEnd || atLeftEnd || stopNow) {
           // Stop at the end, do not wrap.
+          console.log('stop at end, atRightEnd:', atRightEnd, ' atLeftEnd:', atLeftEnd, ' stopNow:', stopNow)
           setAnimate(false)
           return
         }
-        next = (indexRef.current + inc) % photos.length
+        next = (index + inc) % photos.length
+        console.log('next:', next, 'range.end:', range.end)
         if (wrongHour(hours, photos[next]) || next < range.start || next > range.end ) {
           inc++
         } else {
@@ -293,8 +320,9 @@ const Slideshow = ( {serial, camera, method} ) => {
   }
 
   const wrongHour = (hours, imgsrc) => {
+    return false
     const hour = getHour(imgsrc)
-    return !hours[hour]  
+    return hours && !hours[hour]  
   }
 
   const toggleHour = (e, hour) => {
@@ -328,19 +356,35 @@ const Slideshow = ( {serial, camera, method} ) => {
   }
 
   if (!photos || ! (photos.length > index))
-    return null
+    return  <div className={styles.no_photos} >No photos found in azure.</div>
 
   const imgsrc = imageSource(photos[index])
   const date = getDate(photos[index])
-  const title = date.toLocaleString('en-US')
+  const title = date.toLocaleString('zh-CN')
  
-  const schedule_link = '/schedule/' + serial + '/2022-05-01'
+  const schedule_link = '/schedule/' + serial + '/' + dateToString(date)
 
+  const slideshowStyle = photos.length == preloadedImages.length
+    ? styles.slideshow
+    : styles.slideshow_loading
+
+ console.log("photos:", photos.length, "  preloaded:", preloadedImages.length, "  index:", index)
   //     <HourSelect hours={hours} toggleHour={toggleHour}/>
   
+  const preloadCount = photos.length - preloadedImages.length
+  const preloadCountDisplay = preloadCount > 0 ? preloadCount : ''
+
   return (
-    <div className={styles.slideshow} >
-      <img src={imgsrc} onClick={toggleAnimation} onMouseMove={mouseMove}/>
+    <div className={slideshowStyle} >
+
+      <div className={styles.image_holder}>
+        <img src={imgsrc} 
+          onClick={toggleAnimation} 
+          onMouseMove={mouseMove}
+          />
+        <div className={styles.countdown}>{preloadCountDisplay}</div>
+      </div>
+
       <div>
       <TouchBar 
         photos={photos} 
@@ -353,7 +397,8 @@ const Slideshow = ( {serial, camera, method} ) => {
         setAnimate={setAnimate}
         />
         </div>
-        <div className={styles.datetime}>{title}</div>
+
+
         <div>
           <button onClick={prevWeek}>&#9194;</button>
           <button onClick={stop}>&#9209;&#65039;</button>
@@ -361,7 +406,15 @@ const Slideshow = ( {serial, camera, method} ) => {
           <button onClick={nextWeek}>&#9193;</button>
         </div>
 
-        <a href={schedule_link} target="_blank" rel="noreferrer">Schedule and Azure Images</a>
+
+        <div className={styles.datetime}>
+          {title}
+        </div>
+
+        <div className={styles.timelapse_metadata}>
+          {serial} camera {camera} <a href={schedule_link} target="_blank" rel="noreferrer"> azure-&gt;</a>
+        </div>
+
     </div>
   );
 }

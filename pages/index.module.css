@@ -8,3 +8,23 @@
 .timelapse td {
     text-align: center;
 }
+
+.links {
+    width: 350px;
+    border: 1px solid lightgray;
+    margin: 30px;
+    padding: 20px;
+}
+
+.link{
+    cursor: pointer;
+    display: inline-block;
+    padding: 3px;
+    font-family:'Courier New', Courier, monospace
+}
+
+.slideshow {
+    position: absolute;
+    left: 400px;
+    top: 0px;
+}

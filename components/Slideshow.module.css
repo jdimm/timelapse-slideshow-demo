@@ -1,13 +1,17 @@
-  .slideshow {
+  .slideshow, .slideshow_loading {
+    display: inline-block;
     text-align:center;
     margin: 20px;
+    padding: 20px;
+    border: 1px solid lightgray;
+    border-radius: 25px;
   }
 
-  .slideshow img {
+  .slideshow img, .slideshow_loading img {
       max-width: 100vw;
       max-height: 100vh;
       border-radius: 50px;
-      margin-bottom: -8px;
+
   }
 
   .slideshow button {
@@ -23,7 +27,6 @@
 
   .datetime {
     font-family: 'Courier New', Courier, monospace;
-    height: 20px;
   }
 
   .touchBarCell {
@@ -50,3 +53,38 @@
     font-weight: 100;
   }
 
+  .serial {
+    font-size: 20pt;
+    font-weight: 500;
+  }
+
+
+  .image_holder {
+    position: relative;
+}
+
+.image_holder img {
+    width: 100%;
+}
+.countdown {
+    position:absolute;
+    right: 10px;
+    bottom: 10px; 
+    font-size:50pt;
+    font-family: sans-serif;
+    color: #EEFFBB;
+}
+
+.timelapse_metadata {
+  font-size:9pt;
+}
+
+
+.no_photos {
+  width: 100%;
+  font-size: 20pt;
+  font-weight: bold;
+  text-align: center;
+  padding-top:200px;
+  padding-left: 100px;
+}
