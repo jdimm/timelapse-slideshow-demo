@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Slideshow from '../components/Slideshow'
 import nice from '../data/nice'
+import thousand from '../data/thousand'
 import styles from './index.module.css'
 
 function Index() {
@@ -15,21 +16,33 @@ function Index() {
     setCamera(camera)
   }
 
-  const links = nice.map( (serial, idx) => {
+  const cameraLinks = (serial, idx) => {
     return <div key={idx}>
       {serial}
+      <br />
       <span className={styles.link} onClick={ (e) => onClick(e, serial, 1)}>camera 1</span>
       &nbsp;&nbsp;
       <span className={styles.link} onClick={ (e) => onClick(e, serial, 2)}>camera 2</span>
       </div>
+  }
+
+  const nice_links = nice.map( (serial, idx) => {
+     return cameraLinks(serial, idx)
   })
 
+  const thousand_links = thousand.map( (serial, idx) => {
+    return cameraLinks(serial, idx)
+ })
+
   return <div>
-    <div className={styles.links}>
-      {links}
+    <div className={styles.nice_links}>
+      {nice_links}
     </div>
     <div className={styles.slideshow}>
       <Slideshow serial={serial} camera={camera} method={method}/> 
+    </div>
+    <div className={styles.thousand_links}>
+      {thousand_links}
     </div>
   </div>
 

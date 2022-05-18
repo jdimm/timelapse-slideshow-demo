@@ -9,22 +9,30 @@
     text-align: center;
 }
 
-.links {
-    width: 350px;
+.nice_links, .thousand_links {
+    font-size: 10pt;
+    float:left;
+    width: 300px;
     border: 1px solid lightgray;
-    margin: 30px;
+    margin: 20px;
     padding: 20px;
+}
+
+.thousand_links {
+    height: 600px;
+    overflow: auto;
 }
 
 .link{
     cursor: pointer;
     display: inline-block;
     padding: 3px;
-    font-family:'Courier New', Courier, monospace
+    font-family:'Courier New', Courier, monospace;
+    font-size: 10pt;
 }
 
 .slideshow {
-    position: absolute;
+    float: left;
     left: 400px;
     top: 0px;
 }

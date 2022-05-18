@@ -68,17 +68,25 @@
 }
 .countdown {
     position:absolute;
-    right: 10px;
-    bottom: 10px; 
-    font-size:50pt;
+    right: 50px;
+    bottom: 30px; 
+    font-size:20pt;
     font-family: sans-serif;
     color: #EEFFBB;
+}
+
+.preloaded_image img {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  width: 100px;
+  border-radius: 10px;
+
 }
 
 .timelapse_metadata {
   font-size:9pt;
 }
-
 
 .no_photos {
   width: 100%;

@@ -230,7 +230,7 @@ const Slideshow = ( {serial, camera, method} ) => {
     photos.forEach((image_url, i) => {
       const img = new Image()
       img.onload = () => {
-        setPreloadedImages(preloadedImages => [...preloadedImages, img])  
+        setPreloadedImages(preloadedImages => [...preloadedImages, image_url])  
       }   
       img.src = imageSource(image_url)
     }) 
@@ -373,6 +373,11 @@ const Slideshow = ( {serial, camera, method} ) => {
   
   const preloadCount = photos.length - preloadedImages.length
   const preloadCountDisplay = preloadCount > 0 ? preloadCount : ''
+  const preloadedImg =  preloadCount > 0 
+    ? <div className={styles.preloaded_image}>
+        <img src={imageSource(preloadedImages[preloadedImages.length - 1])} />
+      </div>
+    : ''
 
   return (
     <div className={slideshowStyle} >
@@ -382,6 +387,9 @@ const Slideshow = ( {serial, camera, method} ) => {
           onClick={toggleAnimation} 
           onMouseMove={mouseMove}
           />
+
+        {preloadedImg}
+
         <div className={styles.countdown}>{preloadCountDisplay}</div>
       </div>
 
