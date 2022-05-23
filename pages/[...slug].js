@@ -10,13 +10,6 @@ import thousand from '../data/thousand'
 
 
 const App = () => {
-    /*
-  const [page, setPage] = useState('')
-  const [serial, setSerial] = useState('')
-  const [date, setDate] = useState('')
-  const [camera, setCamera] = useState('')
-  */
-
   const router = useRouter()
   console.log('query', router.query)
 
@@ -30,22 +23,6 @@ const App = () => {
       {serial}
       </div>
   }
-
-  /*
-  useEffect(() => {
-    const { slug } = router.query
-    if (slug && slug.length > 1) {
-        setPage (slug[0])
-        setSerial(slug[1])
-    }
-    if ('camera' in router.query) {
-        setCamera(router.query.camera)
-    }
-    if ('date' in router.query) {
-        setDate(router.query.date)
-    }
-  }, [router.query])
-  */
 
   let page, serial
 

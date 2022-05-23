@@ -3,8 +3,13 @@ import Slideshow from '../components/Slideshow'
 import nice from '../data/nice'
 import thousand from '../data/thousand'
 import styles from './index.module.css'
+import Navbar from '../components/Navbar'
 
 function Index() {
+
+  //window.location.href = `/slideshow/${serial}?camera=${camera}&date=${date}`
+  //return null
+
  // const serial = '816a263e7954a5ceb4cc608f61a89640'
   //const method = 'http'
   const [serial, setSerial] = useState(nice[0])
@@ -35,6 +40,7 @@ function Index() {
  })
 
   return <div>
+    <Navbar page="slideshow"/>
     <div className={styles.nice_links}>
       {nice_links}
     </div>
