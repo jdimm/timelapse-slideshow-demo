@@ -39,6 +39,11 @@ function Index() {
     return cameraLinks(serial, idx)
  })
 
+ const url = `/slideshow/${serial}`
+ return (
+   <meta http-equiv="refresh" content="0; url={url}"></meta>
+ )
+
   return <div>
     <Navbar page="slideshow"/>
     <div className={styles.nice_links}>

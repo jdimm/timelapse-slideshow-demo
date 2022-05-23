@@ -9,7 +9,7 @@ const Navbar = ({ page, serial, camera, date }) => {
     console.log('Navbar', page, serial, camera, date)
 
     if (!serial || serial == '' || serial == 'undefined') 
-      serial = '816a263e7954a5ceb4cc608f61a89640'
+      serial = '513f13f5e05ae4f4cae8195786fe7a9c'
 
     const params = `camera=${camera}&date=${date}`
     const slideshow = `/slideshow/${serial}?${params}`

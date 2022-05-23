@@ -1,4 +1,4 @@
-const serial = '816a263e7954a5ceb4cc608f61a89640'
+const serial = '513f13f5e05ae4f4cae8195786fe7a9c'
 module.exports = {
   reactStrictMode: true,
   async redirects() {
