@@ -41,7 +41,7 @@ function Index() {
 
  const url = `/slideshow/${serial}`
  return (
-   <meta http-equiv="refresh" content="0; url={url}"></meta>
+   <meta httpEquiv="refresh" content="0; url={url}"></meta>
  )
 
   return <div>
