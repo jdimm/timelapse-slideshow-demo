@@ -1,5 +1,7 @@
 import React, {useState,useEffect,useRef} from 'react';
 import styles from './Slideshow.module.css'
+import nice from '../data/nice'
+import thousand from '../data/thousand'
 
 let gInterval = null
 
@@ -96,7 +98,7 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours, setRange, range, 
   ) 
 }
 
-const Slideshow = ( {serial, camera, method} ) => {
+const Slideshow = ( {serial, camera } ) => {
   const [index, setIndex] = useState(0)
   const [animate, setAnimate] = useState(false)
   const [photos, setPhotos] = useState([])
@@ -118,6 +120,8 @@ const Slideshow = ( {serial, camera, method} ) => {
   const hoursRef = useRef(hours)
   //const intervalRef = useRef(interval)
 
+  const method='azure-small'
+
 
   const onXMove = (w,x) => {
     const pc = x / w
@@ -137,7 +141,7 @@ const Slideshow = ( {serial, camera, method} ) => {
   }
 
   const imageSource = (filename) => {
-    // console.log("method:", method)
+    console.log("method:", method)
     // return imageRepo() + filename
 
     if (method == 'http')
@@ -356,7 +360,7 @@ const Slideshow = ( {serial, camera, method} ) => {
   }
 
   if (!photos || ! (photos.length > index))
-    return  <div className={styles.no_photos} >No photos found in azure.</div>
+    return  <div className={styles.no_photos} > ... finding azure photos ... </div>
 
   const imgsrc = imageSource(photos[index])
   const date = getDate(photos[index])
@@ -420,10 +424,11 @@ const Slideshow = ( {serial, camera, method} ) => {
         </div>
 
         <div className={styles.timelapse_metadata}>
-          {serial} camera {camera} <a href={schedule_link} target="_blank" rel="noreferrer"> azure-&gt;</a>
+          {serial} camera {camera}
         </div>
 
     </div>
+
   );
 }
 

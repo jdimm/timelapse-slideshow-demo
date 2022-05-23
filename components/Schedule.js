@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import styles from './Schedule.module.css'
 import timestampRange from '../util/timestamp';
 import extractSchedule from '../util/schedule'
-import may1 from '../data/may1-serials.tsv'
 
 function dateToString(date) {
     const d = new Date(date)
@@ -183,19 +182,10 @@ const Schedule = ( {serial, date} ) => {
 
     })
 
-    // A sample list of serials in timezone 133 that have schedules.
-    const may1HTML = may1.map ( (item, idx) => {
-        const link = `/schedule/${item}/5-01-2022`
-        return <div key={idx}><a href={link}>{item}</a></div>
-    })
-
 
     return (
+
     <div className={styles.page}>
-        <div className={styles.leftMargin}>
-            <h3>Devices</h3>
-            {may1HTML}
-        </div>
         <div className={styles.leftSide}>
            
             <div className={styles.schedule}>
@@ -228,6 +218,7 @@ const Schedule = ( {serial, date} ) => {
             {imageUrl}
         </div>
     </div>
+
     )
 }
 

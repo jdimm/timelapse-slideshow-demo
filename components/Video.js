@@ -4,6 +4,8 @@ import styles from './Video.module.css'
 const Video = ({serial, camera} ) => {
     const src = `https://gardynappprod.blob.core.windows.net/timelapse/videos/${serial}/camera0${camera}.mp4`
     return (
+
+    
         <div className={styles.video_div}>
             <video controls autoPlay muted>
             <source src={src} type="video/mp4"/>
@@ -11,6 +13,7 @@ const Video = ({serial, camera} ) => {
             </video>
 
         </div>
+
   )
 }
 

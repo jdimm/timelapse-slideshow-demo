@@ -1,0 +1,28 @@
+.navbar {
+    border: 1px solid gray;
+    width: 100%;
+    clear: both;
+}
+
+.page_name {
+    float: left;
+    background-color: black;
+    color: white;
+    font-size:42pt;
+    width: fit-content;
+    padding: 10px;
+}
+
+.links {
+    float: left;
+    font-size: 10pt;
+    margin-right: 20px;
+}
+
+.query {
+    float: left;
+    padding-top: 30px;
+    height: 80px;
+    vertical-align: middle;
+
+}

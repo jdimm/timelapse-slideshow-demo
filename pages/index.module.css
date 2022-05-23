@@ -17,9 +17,13 @@
     margin: 20px;
     padding: 20px;
 }
+.nice_links {
+    clear:both;
+}
 
 .thousand_links {
     height: 600px;
+    width: 320px;
     overflow: auto;
 }
 

@@ -9,9 +9,8 @@
 
   .slideshow img, .slideshow_loading img {
       max-width: 100vw;
-      max-height: 100vh;
+      max-height: 60vh;
       border-radius: 50px;
-
   }
 
   .slideshow button {
