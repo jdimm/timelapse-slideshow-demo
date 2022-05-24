@@ -61,10 +61,7 @@ const App = () => {
     <div className={styles.slideshow}>
       <Slideshow serial={serial} camera={camera} method={'azure-small'}/> 
     </div>
-
-    <div className={styles.thousand_links}>
-      {thousand_links}
-    </div>  
+ 
     </div>
 
       )

@@ -14,7 +14,7 @@ function sort_unique(arr) {
 }
 
 const azureListSmall = async (serial) => {
-  const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING_IOT;
+  const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING_SMALL;
   
   if (!AZURE_STORAGE_CONNECTION_STRING) {
     throw Error("Azure Storage Connection string not found");
@@ -46,6 +46,8 @@ const azureListSmall = async (serial) => {
 
   await listBlobsCamera('1')
   await listBlobsCamera('2')
+
+  console.log("listBlobsCamera, serial" % ( serial))
 
   return blobList.sort()
 
@@ -82,12 +84,13 @@ const azureList = async (serial, ts_start, ts_end) => {
     }
 
    for await (const blob of containerClient.listBlobsFlat(listOptions)) {
-      console.log('blob: ' + blob.name)
+      // console.log('blob: ' + blob.name)
       const re = new RegExp('[^_]*_[^_]*_([^_]*).jpg')
       const match = blob.name.match(re)
       if (match) {
         const ts = match[1]
         if (ts >= ts_start && ts <= ts_end) {
+          console.log("push blob ", blob.name)
           blobList.push(blob.name)
         }
       }
@@ -136,6 +139,9 @@ const azureStorage = async (serial, ts_start, ts_end) => {
     if (!image || image === '')
       return ''
       
+    //console.log("imageToLocalFile: " + image)
+    // return ''
+
     const re = /camera(\d)_([^_]*)_([^_]*).jpg/
     const match = image.match(re)
     const camera = match[1]

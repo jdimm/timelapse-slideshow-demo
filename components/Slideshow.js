@@ -151,7 +151,7 @@ const Slideshow = ( {serial, camera } ) => {
       return `https://gardyniotblob.blob.core.windows.net/iot-camera-image/camera${camera}_${serial}_${filename}`
     
     else if (method == 'azure-small')
-      return `https://gardyniotblob.blob.core.windows.net/iot-camera-image-small/${filename}`
+      return `https://gardyniotblobsmall.blob.core.windows.net/iot-camera-image-small/${filename}`
 
     //
   }
@@ -398,16 +398,16 @@ const Slideshow = ( {serial, camera } ) => {
       </div>
 
       <div>
-      <TouchBar 
-        photos={photos} 
-        index={index} 
-        setIndex={setIndex} 
-        wrongHour={wrongHour} 
-        hours={hours}
-        setRange={setRange}
-        range={range}
-        setAnimate={setAnimate}
-        />
+        <TouchBar 
+            photos={photos} 
+            index={index} 
+            setIndex={setIndex} 
+            wrongHour={wrongHour} 
+            hours={hours}
+            setRange={setRange}
+            range={range}
+            setAnimate={setAnimate}
+          />
         </div>
 
 
