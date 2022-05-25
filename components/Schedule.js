@@ -80,11 +80,11 @@ const Schedule = ( {serial, date} ) => {
         // console.log('tsRange', tsRange)
         // console.log('serial: ' + serial)
 
-        const response = await fetch(`/api/azure_list/${serial}/${tsRange.startTS}/${tsRange.endTS}`)
+        const response = await fetch(`/api/image_list/${serial}/${tsRange.startTS}/${tsRange.endTS}/big`)
         const jsonResponse = await response.json()
 
         // console.log('azureFiles', azureFiles)    
-        setAzureFiles(jsonResponse.azureFiles)
+        setAzureFiles(jsonResponse.serverFiles)
         setLocalFiles(jsonResponse.localFiles)
     }
 

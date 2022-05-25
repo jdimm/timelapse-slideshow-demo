@@ -13,7 +13,7 @@ function sort_unique(arr) {
   return ret;
 }
 
-const azureListSmall = async (serial) => {
+export const smallImages = async (serial) => {
   const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING_SMALL;
   
   if (!AZURE_STORAGE_CONNECTION_STRING) {
@@ -53,7 +53,7 @@ const azureListSmall = async (serial) => {
 
 }
 
-const azureList = async (serial, ts_start, ts_end) => {
+export const bigImages = async (serial, ts_start, ts_end) => {
   const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING_IOT;
   
   if (!AZURE_STORAGE_CONNECTION_STRING) {
@@ -154,27 +154,8 @@ const azureStorage = async (serial, ts_start, ts_end) => {
     return localFile
 }
 
-export default async (req, res) => {
-    const {
-		query: { slug },
-	} = req;
-
-    const serial = slug[0] 
-    const timestamp_start = slug[1] 
-    const timestamp_end = slug[2]
-    const containerName = slug.length > 3 ? slug[3] : 'iot-camera-image'
-
-    /*
-       http://localhost:3000/api/azure_list/845f89ee6e4cfe2afd9cfef70a4065d8/1651474800/1651485600
-    */
-    let azureFiles = []
-    if (containerName === 'iot-camera-image') {
-      azureFiles = await azureList(serial, timestamp_start, timestamp_end)
-    } else if (containerName === 'iot-camera-image-small') {
-      azureFiles = await azureListSmall(serial)
-    }
-
-    const localFiles = {}
+export const getLocalFiles = (azureFiles) => {
+    const localFiles = []
     azureFiles.forEach (file => {
         const localFile = imageToLocalFile(file)
         if (fs.existsSync('./public/' + localFile)) {
@@ -182,9 +163,5 @@ export default async (req, res) => {
           localFiles[file] = localFile
         }
     })
-
-    const response = {azureFiles: azureFiles, localFiles:localFiles}
-
-    res.setHeader('Content-Type', 'application/json');
-    res.json(response)
+    return localFiles
 }

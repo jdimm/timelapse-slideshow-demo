@@ -190,13 +190,13 @@ const Slideshow = ( {serial, camera } ) => {
     const endTS = 4082191098 // 2099
     //console.log("startTS:", startTS)
     //console.log("endTS:", endTS)
-    const containerName = 'iot-camera-image-small'
+    // const containerName = 'iot-camera-image-small'
     
-    const url = `/api/azure_list/${serial}/${startTS}/${endTS}/${containerName}`
+    const url = `/api/image_list/${serial}/${startTS}/${endTS}/small`
     console.log("url:", url)
     const response = await fetch(url)
     const jsonResponse = await response.json()
-    const photosBoth = jsonResponse.azureFiles
+    const photosBoth = jsonResponse.serverFiles
 
     console.log("photosBoth:", photosBoth)
 
@@ -366,7 +366,7 @@ const Slideshow = ( {serial, camera } ) => {
   const date = getDate(photos[index])
   const title = date.toLocaleString('zh-CN')
  
-  const schedule_link = '/schedule/' + serial + '/' + dateToString(date)
+  // const schedule_link = '/schedule/' + serial + '/' + dateToString(date)
 
   const slideshowStyle = photos.length == preloadedImages.length
     ? styles.slideshow
@@ -382,6 +382,8 @@ const Slideshow = ( {serial, camera } ) => {
         <img src={imageSource(preloadedImages[preloadedImages.length - 1])} />
       </div>
     : ''
+  if (preloadCount === 1 && animate === false)
+    setAnimate(true)
 
   return (
     <div className={slideshowStyle} >

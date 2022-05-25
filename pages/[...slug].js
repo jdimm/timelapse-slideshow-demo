@@ -46,9 +46,9 @@ const App = () => {
       return cameraLinks(serial, idx)
     })
   
-    const thousand_links = thousand.map( (serial, idx) => {
-      return cameraLinks(serial, idx)
-  })
+    //const thousand_links = thousand.map( (serial, idx) => {
+    //  return cameraLinks(serial, idx)
+    // })
 
   if (page === 'video' || page === 'timelapse') {
       content = <Video serial={serial} camera={camera} date={date} />
