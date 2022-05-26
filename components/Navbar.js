@@ -16,11 +16,6 @@ const Navbar = ({ page, serial, camera, date }) => {
     const video = `/video/${serial}?${params}`
     const schedule = `/schedule/${serial}?${params}`
 
-    /*
-    const timelapseUrl = '/slideshow/' + serial + '?method=azure-small'
-    const timelapseLink = <a href={timelapseUrl} target="_blank" rel="noreferrer">Timelapse Link</a>
-    */
-
     const changeCamera = (e) => {
         const newCamera = e.target.value
         setCamera(newCamera)

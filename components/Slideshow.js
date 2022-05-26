@@ -120,7 +120,7 @@ const Slideshow = ( {serial, camera } ) => {
   const hoursRef = useRef(hours)
   //const intervalRef = useRef(interval)
 
-  const method='azure-small'
+  const method='http'
 
 
   const onXMove = (w,x) => {
@@ -140,20 +140,22 @@ const Slideshow = ( {serial, camera } ) => {
       return `http://13.90.210.214/serials/${serial}/camera${camera}/`
   }
 
+  const imageRepoV2 = () => {
+    return `http://13.90.210.214/iot-camera-image-small/${serial}/`
+  }
+
   const imageSource = (filename) => {
     console.log("method:", method)
     // return imageRepo() + filename
 
     if (method == 'http')
-      return imageRepo() + filename
+      return imageRepoV2() + filename
       
     else if (method == 'azure-large')
       return `https://gardyniotblob.blob.core.windows.net/iot-camera-image/camera${camera}_${serial}_${filename}`
     
     else if (method == 'azure-small')
       return `https://gardyniotblobsmall.blob.core.windows.net/iot-camera-image-small/${filename}`
-
-    //
   }
 
   useEffect(() => {
@@ -179,7 +181,7 @@ const Slideshow = ( {serial, camera } ) => {
 
     if (method == 'azure-small') {
       getPhotosAzure()
-    } else {
+    } else if (method == 'http') {
       getPhotosNginx()
     }
   },[serial, camera]) 
@@ -188,17 +190,12 @@ const Slideshow = ( {serial, camera } ) => {
 
     const startTS = 958053498 // 2000 
     const endTS = 4082191098 // 2099
-    //console.log("startTS:", startTS)
-    //console.log("endTS:", endTS)
-    // const containerName = 'iot-camera-image-small'
     
     const url = `/api/image_list/${serial}/${startTS}/${endTS}/small`
     console.log("url:", url)
     const response = await fetch(url)
     const jsonResponse = await response.json()
     const photosBoth = jsonResponse.serverFiles
-
-    console.log("photosBoth:", photosBoth)
 
     const photos = photosBoth.filter( (photo) => {
       const good = photo.startsWith('camera'+camera)
@@ -210,15 +207,17 @@ const Slideshow = ( {serial, camera } ) => {
 
   const getPhotosNginx = () => {
     // Get the listing of files from the serial directory.
-    const url = imageRepo()
+    const url = imageRepoV2()
 
     fetch(url).then(function (response) {
       return response.text();
     }).then(function (html) {
       // Parse nginx directory response.
+      // console.log(html)
       const regexp = /href="(.*?.jpg)"/g
       const matches = [... html.matchAll(regexp)]
       const photos = matches.map( (val, idx) => val[1])
+      // console.log(photos)
       scanPhotos(photos)
     }).catch(function (err) {
       console.warn('Something went wrong getting photos.', url, err);
