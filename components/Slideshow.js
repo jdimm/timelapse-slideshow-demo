@@ -219,7 +219,7 @@ const Slideshow = ( {serial, camera } ) => {
       const photosBoth = matches.map( (val, idx) => val[1])
 
       const photos = photosBoth.filter( (photo) => {
-        const re = /\.(\d).(\d).jpg/
+        const re = /\.(\d).(\d*).jpg/
         const match = photo.match(re)
         const good = match && match[1] == camera
         return good
@@ -313,16 +313,10 @@ const Slideshow = ( {serial, camera } ) => {
 
   const getDate = (imgsrc) => {
     if (method = 'http') {
-      const re = /(\d{4}-\d{2}-\d{2})\.\d\.(\d).jpg/
+      const re = /(\d{4}-\d{2}-\d{2})\.\d\.(\d*).jpg/
       const match = imgsrc.match(re)
-      const date = match[1]
-      const photoOfDay = match[2]
-      const pod = [9, 12, 15]
-      const time = pod[photoOfDay - 1]
-      const d = new Date(date)
-      d.setHours(time)
 
-      return d
+      return new Date(match[2] * 1000)
     }
 
     if (!imgsrc) 
