@@ -145,7 +145,7 @@ const Slideshow = ( {serial, camera } ) => {
   }
 
   const imageSource = (filename) => {
-    console.log("method:", method)
+    // console.log("method:", method)
     // return imageRepo() + filename
 
     if (method == 'http')
@@ -312,6 +312,19 @@ const Slideshow = ( {serial, camera } ) => {
   }
 
   const getDate = (imgsrc) => {
+    if (method = 'http') {
+      const re = /(\d{4}-\d{2}-\d{2})\.\d\.(\d).jpg/
+      const match = imgsrc.match(re)
+      const date = match[1]
+      const photoOfDay = match[2]
+      const pod = [9, 12, 15]
+      const time = pod[photoOfDay - 1]
+      const d = new Date(date)
+      d.setHours(time)
+
+      return d
+    }
+
     if (!imgsrc) 
        return new Date() 
     imgsrc = imgsrc.replace(/.*_/,'').replace(/_.*/,'')
@@ -379,7 +392,7 @@ const Slideshow = ( {serial, camera } ) => {
     ? styles.slideshow
     : styles.slideshow_loading
 
- console.log("photos:", photos.length, "  preloaded:", preloadedImages.length, "  index:", index)
+ // console.log("photos:", photos.length, "  preloaded:", preloadedImages.length, "  index:", index)
   //     <HourSelect hours={hours} toggleHour={toggleHour}/>
   
   const preloadCount = photos.length - preloadedImages.length
