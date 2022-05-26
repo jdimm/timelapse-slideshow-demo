@@ -216,7 +216,15 @@ const Slideshow = ( {serial, camera } ) => {
       // console.log(html)
       const regexp = /href="(.*?.jpg)"/g
       const matches = [... html.matchAll(regexp)]
-      const photos = matches.map( (val, idx) => val[1])
+      const photosBoth = matches.map( (val, idx) => val[1])
+
+      const photos = photosBoth.filter( (photo) => {
+        const re = /\.(\d).(\d).jpg/
+        const match = photo.match(re)
+        const good = match && match[1] == camera
+        return good
+      })
+
       // console.log(photos)
       scanPhotos(photos)
     }).catch(function (err) {
