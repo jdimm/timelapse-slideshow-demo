@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import styles from './Schedule.module.css'
 import timestampRange from '../util/timestamp';
 import extractSchedule from '../util/schedule'
+import { epochToTimestamp, timestampToEpoch } from '../util/timestamp'
 
 function dateToString(date) {
     const d = new Date(date)
@@ -31,7 +32,7 @@ const imageToAPI = (image) => {
     if (!image || image === '')
       return ''
       
-    console.log('imageToAPI, image:', image)
+    // console.log('imageToAPI, image:', image)
     const re = /camera(\d)_([^_]*)_([^_]*).jpg/
     const match = image.match(re)
     const camera = match[1]
@@ -111,7 +112,7 @@ const Schedule = ( {serial, date} ) => {
     
         const localFile = `serials/${serial}/camera${camera}/${ts}.jpg`
     
-        console.log('imageToLocalFile, image:', image, ' localFile:', localFile)
+        // console.log('imageToLocalFile, image:', image, ' localFile:', localFile)
         return localFile
     }
 
@@ -137,8 +138,8 @@ const Schedule = ( {serial, date} ) => {
     }
 
     const scheduleHTML = schedule.map ( (item, idx) => {
-        const startDate = new Date(item.startTS * 1000)
-        const endDate = new Date(item.endTS * 1000)
+        const startDate = epochToTimestamp(item.startTS) 
+        const endDate = epochToTimestamp(item.endTS)
         const s = startDate.toLocaleTimeString()
         const e = endDate.toLocaleTimeString()
         //console.log(startDate, endDate)
@@ -160,7 +161,7 @@ const Schedule = ( {serial, date} ) => {
         })
 
         // console.log(ts)
-        const d = new Date(ts * 1000)
+        const d = epochToTimestamp(ts)
         const localeTime = d.toLocaleTimeString()
 
         const localFile = localFiles[item]

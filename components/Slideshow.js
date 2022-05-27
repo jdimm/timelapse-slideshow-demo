@@ -1,7 +1,6 @@
 import React, {useState,useEffect,useRef} from 'react';
 import styles from './Slideshow.module.css'
-import nice from '../data/nice'
-import thousand from '../data/thousand'
+import { epochToTimestamp, timestampToEpoch } from '../util/timestamp'
 
 let gInterval = null
 
@@ -315,15 +314,16 @@ const Slideshow = ( {serial, camera } ) => {
     if (method = 'http') {
       const re = /(\d{4}-\d{2}-\d{2})\.\d\.(\d*).jpg/
       const match = imgsrc.match(re)
+      const epoch = match[2]
 
-      return new Date(match[2] * 1000)
+      return epochToTimestamp(epoch)
     }
 
     if (!imgsrc) 
        return new Date() 
     imgsrc = imgsrc.replace(/.*_/,'').replace(/_.*/,'')
-    const serial = parseInt(imgsrc.replace(".jpg",""))
-    return new Date(serial * 1000)
+    const epoch = parseInt(imgsrc.replace(".jpg",""))
+    return epochToTimestamp(epoch)
   }
 
   const getHour = (imgsrc) => {
