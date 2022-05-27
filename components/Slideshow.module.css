@@ -64,7 +64,7 @@
 }
 
 .image_holder img {
-    width: 100%;
+
 }
 .countdown {
     position:absolute;
@@ -95,4 +95,13 @@
   padding-top:200px;
   padding-left: 100px;
   color: gray;
+}
+
+.thumbnails {
+  float: left;
+  width: 150px;
+  padding: 10px;
+}
+.thumbnails img {
+  width: 75px;
 }
