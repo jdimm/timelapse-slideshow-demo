@@ -48,7 +48,7 @@ const Navbar = ({ page, serial, camera, date }) => {
                   <a href={schedule}>schedule</a>
                 </li>
                 <li>
-                  <a target="_blank" rel="noreferrer" href="https://docs.google.com/spreadsheets/d/15ypjxiNNKsRLvo1GFy9wm_BAofobyGGOOSnEbB1cAlE/edit?usp=sharing">devices</a>
+                  <a target="_blank" rel="noreferrer" href="https://docs.google.com/spreadsheets/d/1p0kzwpfcMVxUY0-bpVMEhXfDD_QHNJOiDie5SrEnGSY/edit?usp=sharing">devices</a>
                 </li>
             </ul>
         </div>
