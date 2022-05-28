@@ -86,6 +86,7 @@
 
 .timelapse_metadata {
   font-size:9pt;
+  margin-bottom: 20px;
 }
 
 .no_photos {
@@ -108,4 +109,11 @@
 .thumbnails img {
   border-radius: 10px;
   width: 100%;
+}
+
+.postToSlack {
+  height: 40px;
+  border-radius: 0 !important;
+  cursor: pointer;
+  border: 1px solid black;
 }

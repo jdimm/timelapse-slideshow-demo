@@ -12,7 +12,7 @@ import Thumbnails from '../components/Thumbnails'
 
 const App = () => {
   const router = useRouter()
-  console.log('query', router.query)
+  console.log('App slug query', router.query)
 
   const onClick = (e, serial) => {
     e.preventDefault()

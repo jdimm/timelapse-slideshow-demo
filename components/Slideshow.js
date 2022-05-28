@@ -253,7 +253,7 @@ const Slideshow = ( {serial, camera } ) => {
     setHours(hours)
 
     const newRange = {start: 0, end: photos.length}
-    console.log("newRange:", newRange)
+    // console.log("newRange:", newRange)
     setRange(newRange)
     setIndex(0)
     initSlideshow()
@@ -283,23 +283,23 @@ const Slideshow = ( {serial, camera } ) => {
 
     if (animate && photos) {
       let inc=direction
-      console.log('inc:', inc, ' range:', range, ' stopAt:', stopAt)
+      // console.log('inc:', inc, ' range:', range, ' stopAt:', stopAt)
       let next 
       while(inc < photos.length) {
         const atRightEnd = (index + inc > photos.length - 1)
-        if (atRightEnd)
-          console.log("index:", index, " photos.length:", photos.length)
+        // if (atRightEnd)
+          // console.log("index:", index, " photos.length:", photos.length)
         const atLeftEnd = (index + inc < 0)
         const stopNow = stopAt == index
         // console.log('stopAtRef', stopAtRef.current, indexRef.current)
         if (atRightEnd || atLeftEnd || stopNow) {
           // Stop at the end, do not wrap.
-          console.log('stop at end, atRightEnd:', atRightEnd, ' atLeftEnd:', atLeftEnd, ' stopNow:', stopNow)
+          // console.log('stop at end, atRightEnd:', atRightEnd, ' atLeftEnd:', atLeftEnd, ' stopNow:', stopNow)
           setAnimate(false)
           return
         }
         next = (index + inc) % photos.length
-        console.log('next:', next, 'range.end:', range.end)
+        // console.log('next:', next, 'range.end:', range.end)
         if (wrongHour(hours, photos[next]) || next < range.start || next > range.end ) {
           inc++
         } else {
@@ -371,6 +371,14 @@ const Slideshow = ( {serial, camera } ) => {
 
   const stop = (e) => {
     setAnimate(false)
+  } 
+
+  const postToSlack = async (e) => {
+    e.preventDefault()
+    const url = `/api/slack/${serial}`
+    const response = await fetch(url)
+    const jsonResponse = await response.json()
+    console.log(jsonResponse)
   }
 
   if (!photos || ! (photos.length > index))
@@ -444,6 +452,10 @@ const Slideshow = ( {serial, camera } ) => {
         <div className={styles.timelapse_metadata}>
           {serial} camera {camera}
         </div>
+
+        <button onClick={postToSlack}>
+          <img className={styles.postToSlack} src='/addToSlack.png' />
+        </button>
 
 
 
