@@ -7,6 +7,7 @@ import Schedule from '../components/Schedule'
 import styles from './index.module.css'
 import nice from '../data/nice'
 import thousand from '../data/thousand'
+import Thumbnails from '../components/Thumbnails'
 
 
 const App = () => {
@@ -55,7 +56,10 @@ const App = () => {
   } else if (page === 'slideshow') {
       content = (<div>
     <div className={styles.nice_links}>
+      <h3>Examples</h3>
+      <Thumbnails />
       {nice_links}
+
     </div>
 
     <div className={styles.slideshow}>

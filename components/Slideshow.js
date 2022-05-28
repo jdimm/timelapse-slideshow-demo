@@ -1,7 +1,6 @@
 import React, {useState,useEffect,useRef} from 'react';
 import styles from './Slideshow.module.css'
 import { epochToTimestamp, timestampToEpoch } from '../util/timestamp'
-import Thumbnails from './Thumbnails'
 
 let gInterval = null
 
@@ -444,7 +443,7 @@ const Slideshow = ( {serial, camera } ) => {
           {serial} camera {camera}
         </div>
 
-        <Thumbnails />
+
 
     </div>
 

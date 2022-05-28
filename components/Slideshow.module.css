@@ -99,9 +99,13 @@
 
 .thumbnails {
   float: left;
-  width: 150px;
+  width: 120px;
   padding: 10px;
+  font-size: 8pt;
+  font-style: italic;
 }
+
 .thumbnails img {
-  width: 75px;
+  border-radius: 10px;
+  width: 100%;
 }
