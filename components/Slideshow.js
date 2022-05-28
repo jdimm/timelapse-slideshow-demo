@@ -375,7 +375,8 @@ const Slideshow = ( {serial, camera } ) => {
 
   const postToSlack = async (e) => {
     e.preventDefault()
-    const url = `/api/slack/${serial}`
+    const imgUrl = encodeURIComponent(imageRepoV2() + photos[index])
+    const url = `/api/slack/${serial}/${imgUrl}`
     const response = await fetch(url)
     const jsonResponse = await response.json()
     console.log(jsonResponse)
