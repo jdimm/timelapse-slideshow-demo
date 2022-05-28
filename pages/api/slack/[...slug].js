@@ -3,21 +3,23 @@ const { IncomingWebhook } = require('@slack/webhook');
 const postToSlack = async (serial, imgUrl) => {
     const url = process.env.SLACK_WEBHOOK_URL;
     const webhook = new IncomingWebhook(url);
+    const link = `http://13.90.210.214:3000/slideshow/${serial}|${serial}`
 
-    const text = `<http://13.90.210.214:3000/slideshow/${serial}>`
+    const text= `<${link}>`
     const attachments = [{
         type: 'image',
         title: serial,
         image_url: imgUrl,
+        image_link: link,
         alt_text: ''
     }]
 
     //console.log('postToSlack: ', text, attachments)
 
     await webhook.send({
-        text: text,
-        attachments: attachments
-      });
+        attachments: attachments,
+        text: text
+    });
 }
 
 
