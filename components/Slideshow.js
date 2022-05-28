@@ -396,8 +396,10 @@ const Slideshow = ( {serial, camera } ) => {
         <img src={imageSource(preloadedImages[preloadedImages.length - 1])} />
       </div>
     : ''
-  if (preloadCount === 1 && animate === false)
+  if (preloadCount === 1 && animate === false) {
+    setIndex(0)
     setAnimate(true)
+  }
 
   return (
     <div className={slideshowStyle} >
