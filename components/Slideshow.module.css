@@ -107,29 +107,41 @@
   width: 100%;
 }
 
-.postToSlack {
-  height: 40px;
-  border-radius: 0 !important;
+.addToSlack {
+  height: 30px;
   cursor: pointer;
-  border: 1px solid black;
+  border-radius: 0 !important;
+  border: 0;
 }
 
 .post_to_slack {
-  width: 400px;
+  width: 100%;
+  padding: 20px;
   font-size: 10pt;
 }
 
-.slack_button_active, .slack_button_inactive {
+.post_to_slack textarea {
   margin: 10px;
-  font-size: 12pt;
+}
+
+.slack_button_active, .slack_button_inactive {
+  margin: 5px;
+  background-image: url('/addToSlack.png');
+  height: 30px;
+  width: 151px;
+
 }
 
 .slack_button_active {
   background-color: #2F9CFF;
   color: white;
+  cursor: pointer;
+  border: 1px solid lightgray;
 }
 
 .slack_button_inactive {
   background-color: #EEEEEE;
   color: black;
+  cursor: default;
+  border: 0;
 }
