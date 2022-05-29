@@ -13,14 +13,14 @@
       border-radius: 50px;
   }
 
-  .slideshow button {
+  .vcr_controls button {
     font-size:18pt;
     margin: 5px;
     padding: 0;
     border: none;
   }
 
-  .slideshow button:active {
+  .vcr_controls button:active {
     transform: translate(3px,3px);
   } 
 
@@ -58,14 +58,10 @@
     font-weight: 500;
   }
 
-
   .image_holder {
     position: relative;
 }
 
-.image_holder img {
-
-}
 .countdown {
     position:absolute;
     right: 50px;
@@ -116,4 +112,24 @@
   border-radius: 0 !important;
   cursor: pointer;
   border: 1px solid black;
+}
+
+.post_to_slack {
+  width: 400px;
+  font-size: 10pt;
+}
+
+.slack_button_active, .slack_button_inactive {
+  margin: 10px;
+  font-size: 12pt;
+}
+
+.slack_button_active {
+  background-color: #2F9CFF;
+  color: white;
+}
+
+.slack_button_inactive {
+  background-color: #EEEEEE;
+  color: black;
 }

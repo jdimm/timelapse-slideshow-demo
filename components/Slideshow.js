@@ -106,6 +106,8 @@ const Slideshow = ( {serial, camera } ) => {
   const [range, setRange] = useState({})
   const [stopAt, setStopAt] = useState(-1)
   const [direction, setDirection] = useState(1)
+  const [slackMessage, setSlackMessage] = useState('')
+
   //const [interval, setInterval] = useState(null)
 
   // const [method, setMethod] = useState(_method)
@@ -373,13 +375,32 @@ const Slideshow = ( {serial, camera } ) => {
     setAnimate(false)
   } 
 
+  const slackMessageChanged = (e) => {
+    setSlackMessage(e.target.value)
+  }
+
   const postToSlack = async (e) => {
     e.preventDefault()
-    const imgUrl = encodeURIComponent(imageRepoV2() + photos[index])
-    const url = `/api/slack/${serial}/${imgUrl}`
-    const response = await fetch(url)
-    const jsonResponse = await response.json()
+    // const imgUrl = encodeURIComponent(imageRepoV2() + photos[index])
+    const imgUrl = imageRepoV2() + photos[index]
+
+    // const url = `/api/slack/${serial}/${imgUrl}`
+    const url = '/api/slack/'
+
+    const data = {imgUrl: imgUrl, serial: serial, message: slackMessage}
+    const options = {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    }
+    // console.log(options)
+    const response = await fetch(url, options)
+    const jsonResponse = await response.text()
     console.log(jsonResponse)
+    alert("posted to slack")
   }
 
   if (!photos || ! (photos.length > index))
@@ -410,6 +431,12 @@ const Slideshow = ( {serial, camera } ) => {
     setAnimate(true)
   }
 
+  const slackButtonStyle = slackMessage.length > 0 
+    ? styles.slack_button_active
+    : styles.slack_button_inactive
+
+  const disableSlackButton = slackMessage.length === 0
+
   return (
     <div className={slideshowStyle} >
 
@@ -438,7 +465,7 @@ const Slideshow = ( {serial, camera } ) => {
         </div>
 
 
-        <div>
+        <div className={styles.vcr_controls}>
           <button onClick={prevWeek}>&#9194;</button>
           <button onClick={stop}>&#9209;&#65039;</button>
           <button onClick={play}>&#9654;&#65039;</button>
@@ -454,9 +481,22 @@ const Slideshow = ( {serial, camera } ) => {
           {serial} camera {camera}
         </div>
 
-        <button onClick={postToSlack}>
-          <img className={styles.postToSlack} src='/addToSlack.png' />
-        </button>
+        <div className={styles.post_to_slack}>
+          <div>
+            <i>Found a good one?  Post it to the gardyn slack channel #timelapse-v2-examples</i>
+          </div>
+          <textarea type='text' size='50' onChange={slackMessageChanged}/>
+          <div>
+          <button 
+            className={slackButtonStyle} 
+            onClick={postToSlack} 
+            disabled={disableSlackButton}>
+            post
+          </button>
+          </div>
+
+        </div>
+
 
 
 
