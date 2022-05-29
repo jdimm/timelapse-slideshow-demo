@@ -6,12 +6,6 @@ import styles from './index.module.css'
 import Navbar from '../components/Navbar'
 
 function Index() {
-
-  //window.location.href = `/slideshow/${serial}?camera=${camera}&date=${date}`
-  //return null
-
- // const serial = '816a263e7954a5ceb4cc608f61a89640'
-  //const method = 'http'
   const [serial, setSerial] = useState(nice[0])
   const [camera, setCamera] = useState(1)
   const method = 'azure-small'
@@ -39,10 +33,13 @@ function Index() {
     return cameraLinks(serial, idx)
  })
 
- const url = `/slideshow/${serial}`
- return (
-   <meta httpEquiv="refresh" content="0; url={url}"></meta>
- )
+ //const url = `/slideshow/${serial}`
+ //return (
+ //  <meta httpEquiv="refresh" content="0; url={url}"></meta>
+ //)
+
+ console.log('the new index.js')
+ return <div>wtf</div>
 
   return <div>
     <Navbar page="slideshow"/>
@@ -51,9 +48,6 @@ function Index() {
     </div>
     <div className={styles.slideshow}>
       <Slideshow serial={serial} camera={camera} method={method}/> 
-    </div>
-    <div className={styles.thousand_links}>
-      {thousand_links}
     </div>
   </div>
 

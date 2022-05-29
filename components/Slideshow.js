@@ -483,7 +483,7 @@ const Slideshow = ( {serial, camera } ) => {
 
         <div className={styles.post_to_slack}>
           <div>
-            <i>Found a good one?  Post it to the gardyn slack channel <br /> #timelapse-v2-examples</i>
+            <i>Find a good one?  Post it to the gardyn slack channel <br /> #timelapse-v2-examples</i>
           </div>
           <textarea type='text' size='50' onChange={slackMessageChanged}/>
           <div>

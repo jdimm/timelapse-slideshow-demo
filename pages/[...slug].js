@@ -25,23 +25,33 @@ const App = () => {
       </div>
   }
 
-  let page, serial
+  let page
+  let serial
+
+  //console.log("serial", serial)
+  //console.log("nice", nice)
 
   const { slug } = router.query
+  //console.log('slug', slug)
+
   if (slug && slug.length > 0)
     page = slug[0]
   if (slug && slug.length > 1)
     serial = slug[1]
   
-  if (!serial || !page) 
+  if (!serial || !page) {
+    console.log('no serial or page')
     return null
+  }
 
-  const content = null
+  // console.log("serial", serial)
+
+  let content = null
   let { camera, date } = router.query
   if (!camera)
         camera = 1 
   if (!date)
-        date = '2022-05-22'
+        date = '2022-05-29'
 
     const nice_links = nice.map( (serial, idx) => {
       return cameraLinks(serial, idx)
