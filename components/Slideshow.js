@@ -137,6 +137,13 @@ const Slideshow = ( {serial, camera } ) => {
     onXMove(w,x)
   }
 
+  const touchMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.targetTouches[0].clientX - rect.left;
+    const w = e.currentTarget.clientWidth
+    onXMove(w,x)
+  }
+
   const imageRepo = () => {
       return `http://13.90.210.214/serials/${serial}/camera${camera}/`
   }
@@ -444,6 +451,7 @@ const Slideshow = ( {serial, camera } ) => {
         <img src={imgsrc} 
           onClick={toggleAnimation} 
           onMouseMove={mouseMove}
+          onTouchMove={touchMove}
           />
 
         {preloadedImg}

@@ -61,8 +61,10 @@ const Navbar = ({ page, serial, camera, date }) => {
               Serial: <input type="text" size='35' value={_serial} onChange={ 
                 (e) => changeSerial(e.currentTarget.value) 
                 } />
-              <input type='radio' name='camera' value='1' checked={_camera == 1} onChange={changeCamera}/> camera 1
-              <input type='radio' name='camera' value='2' checked={_camera == 2} onChange={changeCamera}/> camera 2
+              <div className={styles.camera_select}>
+                <input type='radio' name='camera' value='1' checked={_camera == 1} onChange={changeCamera}/> camera 1
+                <input type='radio' name='camera' value='2' checked={_camera == 2} onChange={changeCamera}/> camera 2
+              </div>
 
         </div>
 

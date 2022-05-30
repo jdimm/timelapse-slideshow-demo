@@ -64,17 +64,18 @@ const App = () => {
   if (page === 'video' || page === 'timelapse') {
       content = <Video serial={serial} camera={camera} date={date} />
   } else if (page === 'slideshow') {
-      content = (<div>
-    <div className={styles.nice_links}>
-      <h3>Examples</h3>
-      <Thumbnails />
-      {nice_links}
+      content = (
+    <div className={styles.content}>
 
-    </div>
+      <div className={styles.slideshow_holder}>
+        <Slideshow serial={serial} camera={camera} method={'azure-small'}/> 
+      </div>
 
-    <div className={styles.slideshow}>
-      <Slideshow serial={serial} camera={camera} method={'azure-small'}/> 
-    </div>
+      <div className={styles.nice_links}>
+        <h3>Examples</h3>
+        <Thumbnails />
+        {nice_links}
+      </div>
  
     </div>
 
@@ -85,7 +86,9 @@ const App = () => {
 
   return <div className={styles.page}>
       <Navbar page={page} serial={serial} camera={camera} date={date} />
-      {content}
+      <div className={styles.content}>
+        {content}
+      </div>
   </div>
   
 }

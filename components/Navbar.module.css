@@ -18,13 +18,17 @@
 .links {
     float: left;
     font-size: 10pt;
-    margin-right: 20px;
+    margin-right: 10px;
 }
 
 .query {
     float: left;
     padding-top: 30px;
+    margin-left: 10px;
     height: 80px;
     vertical-align: middle;
+}
 
+.camera_select {
+    white-space: nowrap;
 }
