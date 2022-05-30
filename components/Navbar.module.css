@@ -29,6 +29,8 @@
     vertical-align: middle;
 }
 
-.camera_select {
+.query_item {
     white-space: nowrap;
+    margin: 10px;
+    line-height: 200%;
 }

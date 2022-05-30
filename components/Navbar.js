@@ -54,17 +54,21 @@ const Navbar = ({ page, serial, camera, date }) => {
         </div>
 
         <div className={styles.query}>
+            <span className={styles.query_item}>
               Date: <input type="date" value={_date} onChange={ 
                 (e) => { changeDate(e.currentTarget.value); }
                 }  />
+            </span>
               &nbsp;&nbsp;
+            <span className={styles.query_item}>  
               Serial: <input type="text" size='35' value={_serial} onChange={ 
                 (e) => changeSerial(e.currentTarget.value) 
                 } />
-              <div className={styles.camera_select}>
+              </span>
+              <span className={styles.query_item}>
                 <input type='radio' name='camera' value='1' checked={_camera == 1} onChange={changeCamera}/> camera 1
                 <input type='radio' name='camera' value='2' checked={_camera == 2} onChange={changeCamera}/> camera 2
-              </div>
+              </span>
 
         </div>
 
