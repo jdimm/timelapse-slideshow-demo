@@ -38,12 +38,14 @@ const TouchBar = ( {photos, index, setIndex, wrongHour, hours, setRange, range, 
   }
 
   const mouseMove = (e) => {
+    e.preventDefault()
     const x = e.nativeEvent.offsetX 
     const w = e.currentTarget.clientWidth
     onXMove(w,x)
   }
 
   const touchMove = (e) => {
+    e.preventDefault()
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.targetTouches[0].clientX - rect.left;
     const w = e.currentTarget.clientWidth
