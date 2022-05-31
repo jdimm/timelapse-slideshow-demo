@@ -3,17 +3,16 @@
 }
 
 .slideshow_holder {
-    float: left;
-    left: 0;
-    width: 500px;
+   float: left
 }
 
 .nice_links{
     float: left;
     width: 300px;
-    margin: 20px;
     padding: 20px;
     font-size: 10pt;
+    margin-left: 30px;
+    border: 1px solid black;
 }
 
 .link{

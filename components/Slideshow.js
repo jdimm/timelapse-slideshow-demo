@@ -109,6 +109,7 @@ const Slideshow = ( {serial, camera } ) => {
   const [stopAt, setStopAt] = useState(-1)
   const [direction, setDirection] = useState(1)
   const [slackMessage, setSlackMessage] = useState('')
+  const [imgHolderClass, setImgHolderClass] = useState(styles.image_holder)
 
   //const [interval, setInterval] = useState(null)
 
@@ -384,6 +385,10 @@ const Slideshow = ( {serial, camera } ) => {
     setAnimate(false)
   } 
 
+  const fullScreen = (e) => {
+    setImgHolderClass(styles.image_holder_fullscreen)
+  }
+
   const slackMessageChanged = (e) => {
     setSlackMessage(e.target.value)
   }
@@ -449,8 +454,8 @@ const Slideshow = ( {serial, camera } ) => {
   return (
     <div className={slideshowStyle} >
 
-      <div className={styles.image_holder}>
-        <img src={imgsrc} 
+      <div className={imgHolderClass}>
+        <img  src={imgsrc} 
           onClick={toggleAnimation} 
           onMouseMove={mouseMove}
           onTouchMove={touchMove}
