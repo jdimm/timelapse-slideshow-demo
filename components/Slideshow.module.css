@@ -1,14 +1,13 @@
-  .slideshow, .slideshow_loading {
+  .slideshow, .slideshow_fullscreen {
     position: relative;
     display: inline-block;
     text-align:center;
     margin: 20px;
     padding: 20px;
     border: 1px solid lightgray;
-    border-radius: 25px;
   }
 
-  .slideshow img, .slideshow_loading img {
+  .slideshow img, .slideshow_fullscreen img {
       max-width: 80vw;
       max-height: 80vh;
       border-radius: 50px;
@@ -18,20 +17,54 @@
     position: relative;
   }
 
-.image_holder_fullscreen {
+.slideshow_fullscreen, .hires_image{
     position: fixed;
     top: 0;
     left: 0;
+    margin: 0;
     width: 100vw;
     height: 100vh;
-    background-color: black;
+    text-align: center;
+    padding-top: 20px;
+    background-color: gray;
+    overflow: auto;
+    text-align: center;
 }
 
+.hires_image img {
+  position: absolute;
+}
+
+.hires_image div {
+  position: fixed;
+  top: 0;
+  right: 0;
+  font-size: 18pt;
+  border: 1px solid black;
+  background-color: white;
+  cursor: pointer;
+  padding:5px;
+}
+
+.slideshow_fullscreen .below_image {
+  display: inline-block;
+  width: fit-content;
+  padding: 10px;
+  background-color: lightgray;
+  border-radius: 25px;
+}
+
+.vcr_controls {
+  width: fit-content;
+  display: inline-block;
+
+}
   .vcr_controls button {
     font-size:18pt;
-    margin: 5px;
-    padding: 0;
+    margin: 0px;
+    padding: 5px;
     border: none;
+    background-color: transparent;
   }
 
   .vcr_controls button:active {
@@ -43,10 +76,6 @@
     white-space: pre;
   }
 
-  .touchBarCell {
-    font-size: 10pt;
-  }
-
   .touchBar {
     display: inline-block;
     max-width: 410px;
@@ -56,6 +85,10 @@
     height: min-content;
     width: max-content;
     margin-top:5px;
+  }
+
+  .touchBarCell {
+    font-size: 10pt;
   }
 
   .touchBarCell::selection {
@@ -93,7 +126,6 @@
 
 .timelapse_metadata {
   font-size:9pt;
-  margin-bottom: 20px;
 }
 
 .no_photos {
@@ -126,17 +158,18 @@
 }
 
 .post_to_slack {
-  width: 100%;
+  width: 500px;
   padding: 20px;
   font-size: 10pt;
+  text-align: left;
 }
 
 .post_to_slack textarea {
-  margin: 10px;
+  margin-top: 0px;
 }
 
 .slack_button_active, .slack_button_inactive {
-  margin: 5px;
+  margin-top: 30px;
   background-image: url('/addToSlack.png');
   height: 30px;
   width: 151px;
@@ -155,4 +188,23 @@
   color: black;
   cursor: default;
   border: 0;
+}
+
+.fullscreen_icon {
+  position:relative; 
+  display:inline-block;
+}
+
+.fullscreen_icon_arrow {
+  position:absolute; 
+  top:0;
+}
+
+.slack_form {
+  vertical-align: bottom;
+}
+
+.slack_form div {
+  font-size:20pt;
+  color: red;
 }

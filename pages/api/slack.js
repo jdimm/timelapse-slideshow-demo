@@ -14,16 +14,17 @@ const postToSlack = async (serial, imgUrl, message) => {
         alt_text: ''
     }]
 
-   // console.log(`postToSlack: text`, text)
-   // console.log(`postToSlack: attachements`, attachments)
-    
+  //console.log(`postToSlack: text`, text)
+  //console.log(`postToSlack: attachements`, attachments)
+  //return
+
     await webhook.send({
         attachments: attachments,
         text: text
     });
 }
 
-export default async (req, res) => {
+const SlackPost = async (req, res) => {
     // console.log("req:", req.body)
 
     const serial = req.body.serial
@@ -35,3 +36,5 @@ export default async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.json(response)
 } 
+
+export default SlackPost
