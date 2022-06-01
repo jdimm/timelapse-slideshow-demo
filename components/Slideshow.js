@@ -303,11 +303,6 @@ const Slideshow = ({ serial, camera }) => {
 		setAnimate(false)
 	}
 
-	const fullscreen = (e) => {
-		if (slideshowStyle == styles.slideshow) setSlideshowStyle(styles.slideshow_fullscreen)
-		else setSlideshowStyle(styles.slideshow)
-	}
-
 	const getHiresImageUrl = () => {
 		const img = photos[index]
 		const re = /\d{4}-\d{2}-\d{2}\.(\d)\.(\d*).jpg/
@@ -383,15 +378,11 @@ const Slideshow = ({ serial, camera }) => {
 					</div>
 
 					<div className={styles.vcr_controls}>
-						<button onClick={prevWeek}>&#9194;</button>
-						<button onClick={stop}>&#9209;&#65039;</button>
-						<button onClick={play}>&#9654;&#65039;</button>
-						<button onClick={nextWeek}>&#9193;</button>
-					</div>
-
-					<div>
-						<button onClick={fullscreen}>fullscreen</button>
-						<button onClick={zoomIn}>zoom in</button>
+						<button onClick={prevWeek} title="play backwards a bit">&#9194;</button>
+						<button onClick={stop} title="stop animation">&#9209;&#65039;</button>
+						<button onClick={play} title="play timelapse">&#9654;&#65039;</button>
+						<button onClick={nextWeek} title="play forward a bit">&#9193;</button>
+						<button onClick={zoomIn} title="zoom in for more detail">🔎</button>
 					</div>
 
 					<div className={styles.datetime}>{title}</div>
@@ -399,6 +390,7 @@ const Slideshow = ({ serial, camera }) => {
 						{serial} camera {camera}
 					</div>
 				</div>
+
 			</div>
 
 			<Slack serial={serial} photo={photos[index]} imageRepoV2={imageRepoV2} />
