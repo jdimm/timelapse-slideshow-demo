@@ -9,7 +9,7 @@
 
   .slideshow img, .slideshow_fullscreen img {
       max-width: 80vw;
-      max-height: 80vh;
+      height: 80vh;
       border-radius: 50px;
   }
 

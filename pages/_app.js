@@ -6,7 +6,7 @@ const MyApp = ({ Component, pageProps }) =>{
   return (
     <>
       <Head>
-        <meta name="viewport" content="width=1024, initial-scale=1.0" />
+        <meta name="viewport" content="width=1024" />
       </Head>
       <Component {...pageProps} />
     </>
