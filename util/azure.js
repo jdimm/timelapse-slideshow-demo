@@ -13,7 +13,9 @@ function sort_unique(arr) {
   return ret;
 }
 
-export const smallImages = async (serial) => {
+
+
+export const smallImages = async (serial, camera) => {
   const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING_SMALL;
   
   if (!AZURE_STORAGE_CONNECTION_STRING) {
@@ -39,15 +41,14 @@ export const smallImages = async (serial) => {
     }
 
     for await (const blob of containerClient.listBlobsFlat(listOptions)) {
-      // if (blobList.length < 60)
-        blobList.push(blob.name)
+      blobList.push(blob.name)
     }
   }
 
-  await listBlobsCamera('1')
-  await listBlobsCamera('2')
-
-  console.log("listBlobsCamera, serial" % ( serial))
+  if (! camera || camera == 1)
+    await listBlobsCamera(1)
+  if (! camera || camera == 2)
+    await listBlobsCamera(2)
 
   return blobList.sort()
 

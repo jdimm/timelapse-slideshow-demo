@@ -2,3 +2,4 @@ node_modules
 .my.cnf
 .next
 .env
+iot-camera*
