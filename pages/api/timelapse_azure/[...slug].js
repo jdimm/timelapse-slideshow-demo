@@ -10,9 +10,10 @@ export default async (req, res) => {
 
     const  serverFiles = await smallImages(serial, camera)
 
+    // http://13.90.210.214/iot-camera-image-small/79af9585f6d91c7c70541c9dd62d58e6/2022-06-11.1.1654968094.jpg
     const regex = /camera(\d)_([^_]*)_([^_]*).jpg/
     const blobList = serverFiles.map ( (file, idx) => {
-        //return file
+        return file
         const match = file.match(regex)
         if (match) {
           const camera = match[1]

@@ -1,5 +1,7 @@
 import * as fs from 'fs';
 
+
+// https://gardyniotblob.blob.core.windows.net/iot-camera-image/camera1_79af9585f6d91c7c70541c9dd62d58e6_1654887094.jpg
 const parseFilename = (filename) => {
     const parts = filename.split('.')
     const date = parts[0]
