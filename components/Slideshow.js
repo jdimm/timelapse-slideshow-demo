@@ -391,9 +391,10 @@ const Slideshow = ({ serial, camera }) => {
 					</div>
 				</div>
 
+				<Slack serial={serial} photo={photos[index]} imageRepoV2={imageRepoV2} />
+
 			</div>
 
-			<Slack serial={serial} photo={photos[index]} imageRepoV2={imageRepoV2} />
 			<Zoom hiresImageUrl={hiresImageUrl} setHiresImageUrl={setHiresImageUrl} />
 		</>
 	)
