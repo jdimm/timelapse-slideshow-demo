@@ -16,7 +16,7 @@ const App = () => {
 
   const onClick = (e, serial) => {
     e.preventDefault()
-    window.location.href = '/' + page + '/' + serial + '?' + 'camera=' + camera + '&date=' + date
+    window.location.href = '/' + page + '/' + serial + '?' + 'camera=' + camera + '&date='
   }
 
   const cameraLinks = (serial, idx) => {
@@ -38,6 +38,8 @@ const App = () => {
     page = slug[0]
   if (slug && slug.length > 1)
     serial = slug[1]
+  if (slug && slug.length > 2)
+    segment = slug[2]
   
   if (!serial || !page) {
     console.log('no serial or page')
@@ -47,7 +49,7 @@ const App = () => {
   // console.log("serial", serial)
 
   let content = null
-  let { camera, date } = router.query
+  let { camera, date, segment } = router.query
   if (!camera)
         camera = 1 
   if (!date)
@@ -68,7 +70,7 @@ const App = () => {
     <div className={styles.content}>
 
       <div className={styles.slideshow_holder}>
-        <Slideshow serial={serial} camera={camera} method={'azure-small'}/> 
+        <Slideshow serial={serial} camera={camera} segment={segment} method={'azure-small'}/> 
       </div>
 
       <div className={styles.nice_links}>
@@ -85,7 +87,7 @@ const App = () => {
   }
 
   return <div className={styles.page}>
-      <Navbar page={page} serial={serial} camera={camera} date={date} />
+      <Navbar page={page} serial={serial} camera={camera} date={date} segment={segment}/>
       <div className={styles.content}>
         {content}
       </div>

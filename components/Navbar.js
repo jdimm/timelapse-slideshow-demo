@@ -1,10 +1,11 @@
 import styles from './Navbar.module.css'
 import { useEffect, useState } from 'react'
 
-const Navbar = ({ page, serial, camera, date }) => {
+const Navbar = ({ page, serial, camera, date, segment }) => {
     const [_serial, setSerial] = useState(serial)
     const[_camera, setCamera] = useState(camera || 1)
     const [_date, setDate] = useState(date)
+    const [_segment, setSegment] = useState(segment)
 
     console.log('Navbar', page, serial, camera, date)
 
@@ -24,12 +25,18 @@ const Navbar = ({ page, serial, camera, date }) => {
 
     const changeSerial = (newSerial) => {
         setSerial(newSerial)
-        window.location.href = '/' + page + '/' + newSerial + '?camera=' + _camera + '&date=' + _date
+        window.location.href = '/' + page + '/' + newSerial + '?camera=' + _camera + '&date=' + _date + "&segment=" + _segment
     }
 
     const changeDate = (newDate) => {
         setDate(newDate)
-        window.location.href = '/' + page + '/' + serial + '?camera=' + _camera + '&date=' + newDate
+        window.location.href = '/' + page + '/' + serial + '?camera=' + _camera + '&date=' + newDate + "&segment=" + _segment
+    }
+
+    const changeSegment= (e) => {
+      const newSegment = e.currentTarget.value
+      setSegment (newSegment)
+      window.location.href = '/' + page + '/' + serial + '?camera=' + _camera + '&date=' + _date + "&segment=" + newSegment
     }
 
 
@@ -65,10 +72,16 @@ const Navbar = ({ page, serial, camera, date }) => {
                 (e) => changeSerial(e.currentTarget.value) 
                 } />
               </span>
+              <br />
               <span className={styles.query_item}>
                 <input type='radio' name='camera' value='1' checked={_camera == 1} onChange={changeCamera}/> camera 1
                 <input type='radio' name='camera' value='2' checked={_camera == 2} onChange={changeCamera}/> camera 2
               </span>
+              <span className={styles.query_item}>
+                <input type='radio' name='segment' value='first' checked={_segment == 'first'} onChange={changeSegment}/> first
+                <input type='radio' name='segment' value='last' checked={_segment == 'last'} onChange={changeSegment}/> last
+              </span>
+
 
         </div>
 

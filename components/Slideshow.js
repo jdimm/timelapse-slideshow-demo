@@ -33,7 +33,7 @@ const HourSelect = ({ hours, toggleHour }) => {
 	)
 }
 
-const Slideshow = ({ serial, camera }) => {
+const Slideshow = ({ serial, camera, segment }) => {
 	const [index, setIndex] = useState(0)
 	const [animate, setAnimate] = useState(false)
 	const [photos, setPhotos] = useState([])
@@ -149,15 +149,30 @@ const Slideshow = ({ serial, camera }) => {
 				const matches = [...html.matchAll(regexp)]
 				const photosBoth = matches.map((val, idx) => val[1])
 
-				const photos = photosBoth.filter((photo) => {
+				console.log('getPhotosNginx, segment:', segment)
+		
+
+				const photos = photosBoth.filter((photo, idx) => {
 					const re = /\.(\d).(\d*).jpg/
 					const match = photo.match(re)
 					const good = match && match[1] == camera
 					return good
 				})
 
+				const requestedNumPhotos = 180
+				const skip = photosBoth.length - requestedNumPhotos
+
+				const photosSegment = photos.filter((photo, idx) => {
+					if (segment == 'last' && idx < skip)
+					  return false
+					if (segment == 'first' && idx > requestedNumPhotos)
+					  return false
+					return true
+					// console.log(photosBoth.length, segment, skip, idx)
+				})
+
 				// console.log(photos)
-				scanPhotos(photos)
+				scanPhotos(photosSegment)
 			})
 			.catch(function (err) {
 				console.warn('Something went wrong getting photos.', url, err)
