@@ -31,7 +31,7 @@ async function downscaleBuffer(buffer, path, image_width) {
       .write(path) 
 }
 
-export default async (req, res) => {
+const azureDownscale = async (req, res) => {
     const {
 		query: { slug },
 	} = req;
@@ -71,3 +71,5 @@ export default async (req, res) => {
     // res.json({response: 'ok'});
     
 };
+
+export default azureDownscale

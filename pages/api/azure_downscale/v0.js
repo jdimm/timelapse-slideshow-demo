@@ -89,7 +89,7 @@ async function loadPic(url, image_width) {
 
 
 
-export default async (req, res) => {
+const azureDownscalev0 = async (req, res) => {
     const {
 		query: { slug },
 	} = req;
@@ -119,3 +119,5 @@ export default async (req, res) => {
       if (error) console.error(error)
     })
 };
+
+export default azureDownscalev0

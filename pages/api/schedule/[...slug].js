@@ -18,7 +18,7 @@ const getSchedule = async (serial, day) => {
     return results
 }
 
-export default async (req, res) => {
+const schedule = async (req, res) => {
     const {
 		query: { slug },
 	} = req;
@@ -31,5 +31,7 @@ export default async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.json(schedule)
 }
+
+export default schedule
 
 

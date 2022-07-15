@@ -1,6 +1,6 @@
 import { smallImages } from '../../../util/azure'
 
-export default async (req, res) => {
+export default timelapseAzure = async (req, res) => {
     const {
 		query: { slug },
 	} = req;

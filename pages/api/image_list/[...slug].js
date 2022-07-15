@@ -1,6 +1,6 @@
 import { bigImages, smallImages, getLocalFiles } from '../../../util/azure'
 
-export default async (req, res) => {
+const imageList = async (req, res) => {
     const {
 		query: { slug },
 	} = req;
@@ -27,3 +27,5 @@ export default async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.json(response)
 }
+
+export default imageList

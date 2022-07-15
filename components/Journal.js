@@ -3,9 +3,6 @@ import Slideshow from '../components/Slideshow'
 import styles from './Journal.module.css'
 
 const Journal = ( {journal, updateMemory, deleteMemory} ) => {
-    if (!journal)
-        return null
-
     useEffect(() => {
         journal.forEach ( (entry, index) => {
             entry.index = index
@@ -28,6 +25,9 @@ const Journal = ( {journal, updateMemory, deleteMemory} ) => {
     sorted.sort ( function (a, b) { 
       return parseInt(a.t0) - parseInt(b.t0)
     } )
+
+    if (!journal)
+      return null
 
     const html = journal.map((entry, index) => {
         const camera = 1
