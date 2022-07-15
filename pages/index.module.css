@@ -5,12 +5,21 @@
 
 .slideshow_holder {
     float: left;
+    width: 640px;
+    height: 480px;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.journal_holder {
+    float: left;
+    text-align: center;
+    border: 1px solid lightgray;
+    margin: 20px;
 }
 
 .nice_links{
-    float: left;
-    left: 700px;
-    top: 100px;
     width: 300px;
     padding: 20px;
     font-size: 10pt;
@@ -25,4 +34,5 @@
     font-family:'Courier New', Courier, monospace;
     font-size: 10pt;
 }
+
 

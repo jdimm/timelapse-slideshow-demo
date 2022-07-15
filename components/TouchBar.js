@@ -1,7 +1,13 @@
 
 import styles from './Slideshow.module.css'
+import { useState } from 'react'
+import { parseNgnxPhoto } from '../util/unpackFilenames'
 
-const TouchBar = ({ photos, index, setIndex, wrongHour, hours, setRange, range, setAnimate }) => {
+const TouchBar = ({ photos, index, setIndex, wrongHour, 
+	hours, setRange, range, setAnimate, addJournalEntry, serial}) => {
+	const [mouseDown, setMouseDown] = useState(false)
+    const [seg, setSeg] = useState([0, 0])
+
 	const onXMove = (w, x) => {
 		const pc = x / w
 		const newIndex = Math.max(0, Math.floor(pc * photos.length) % photos.length)
@@ -37,16 +43,56 @@ const TouchBar = ({ photos, index, setIndex, wrongHour, hours, setRange, range, 
 			r.start = 0
 			r.end = photos.length
 		}
-		//setRange( r )
+		//console.log('range', r)
+		setRange( r )
 	}
 
+	const onMouseEnter = (e, idx) => {
+		//console.log("mouse enter, mousedown", mouseDown)
+		e.preventDefault()
+
+		if (mouseDown) {
+			if (seg[0] == 0)
+				seg[0] = idx
+			else
+				seg[1] = idx
+			setSeg(seg)
+		}
+			
+        setIndex(idx)
+	}
+
+	const onMouseDown= (e) => {
+		e.preventDefault()
+		//console.log("mouse down")
+		setMouseDown(true)
+		setSeg([0, 0])
+	}
+
+	const onMouseUp = (e) => {
+	   e.preventDefault()
+	   setMouseDown(false)
+       // console.log("create journal, seg:", seg, " photos", photos)
+	   const pStart = parseNgnxPhoto(photos[seg[0]])
+	   const pEnd =  parseNgnxPhoto(photos[seg[1]])
+	   addJournalEntry ({
+		   type:"timelapse",
+		   serial: serial,
+		   t0: parseInt(pStart.ts),
+		   t1: parseInt(pEnd.ts)
+	   })
+	   setSeg([0, 0])
+	}
 
 	return (
-		<div className={styles.touchBar}>
+		<div className={styles.touchBar}
+						onMouseDown={onMouseDown}
+						onMouseUp={onMouseUp}
+		>
 			{photos.map((photo, idx) => {
 				const skip = wrongHour(hours, photo)
 				let color = 'black'
-				if (idx < range.start || idx >= range.end) color = 'lightgray'
+				if (idx >= seg[0] && idx <= seg[1]) color = 'yellow'
 				else if (skip) color = 'white'
 				else if (idx <= index) color = 'red'
 
@@ -55,7 +101,7 @@ const TouchBar = ({ photos, index, setIndex, wrongHour, hours, setRange, range, 
 						key={idx}
 						style={{ color: color }}
 						className={styles.touchBarCell}
-						onMouseEnter={(e) => setIndex(idx)}
+						onMouseEnter={(e) => onMouseEnter(e,idx)}
 					>
 						I
 					</span>

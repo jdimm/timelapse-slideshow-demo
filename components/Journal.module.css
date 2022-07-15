@@ -1,0 +1,40 @@
+.journal {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    min-width: 250px;
+    min-height: 250px;
+    padding: 20px;
+    margin: 20px;
+}
+
+.journal_slideshow_holder {
+    display: block;
+    width: 250px;
+}
+
+.journal_slideshow_holder img {
+  height: calc(100% + 2px);
+}
+
+.journal_slideshow_holder div {
+    border-radius: 0;
+}
+
+.journal_entry {
+    float: left;
+    font-style: italic;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    width: 200px;
+}
+
+.close_button {
+    margin-top: -10px;
+    margin-right: 10px;
+    float: right;
+    font-size: 8pt;
+    cursor: pointer;
+}

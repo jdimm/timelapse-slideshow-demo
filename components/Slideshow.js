@@ -4,8 +4,7 @@ import { epochToTimestamp, timestampToEpoch } from '../util/timestamp'
 import Zoom from './Zoom'
 import TouchBar from './TouchBar'
 import Slack from './Slack'
-
-let gInterval = null
+import { parseNgnxPhoto } from '../util/unpackFilenames'
 
 function dateToString(date) {
 	const d = new Date(date)
@@ -33,8 +32,8 @@ const HourSelect = ({ hours, toggleHour }) => {
 	)
 }
 
-const Slideshow = ({ serial, camera, segment }) => {
-	const [index, setIndex] = useState(0)
+const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) => {
+	const [index, setIndex] = useState(t0)
 	const [animate, setAnimate] = useState(false)
 	const [photos, setPhotos] = useState([])
 	const [preloadedImages, setPreloadedImages] = useState([])
@@ -76,6 +75,7 @@ const Slideshow = ({ serial, camera, segment }) => {
 		} else if (method == 'http') {
 			getPhotosNginx()
 		}
+
 	}, [serial, camera])
 
 	const onXMove = (w, x) => {
@@ -106,9 +106,6 @@ const Slideshow = ({ serial, camera, segment }) => {
 	}
 
 	const imageSource = (filename) => {
-		// console.log("method:", method)
-		// return imageRepo() + filename
-
 		if (method == 'http') return imageRepoV2() + filename
 		else if (method == 'azure-large')
 			return `https://gardyniotblob.blob.core.windows.net/iot-camera-image/camera${camera}_${serial}_${filename}`
@@ -121,7 +118,6 @@ const Slideshow = ({ serial, camera, segment }) => {
 		const endTS = 4082191098 // 2099
 
 		const url = `/api/image_list/${serial}/${startTS}/${endTS}/small`
-		console.log('url:', url)
 		const response = await fetch(url)
 		const jsonResponse = await response.json()
 		const photosBoth = jsonResponse.serverFiles
@@ -144,21 +140,20 @@ const Slideshow = ({ serial, camera, segment }) => {
 			})
 			.then(function (html) {
 				// Parse nginx directory response.
-				// console.log(html)
 				const regexp = /href="(.*?.jpg)"/g
 				const matches = [...html.matchAll(regexp)]
 				const photosBoth = matches.map((val, idx) => val[1])
 
-				console.log('getPhotosNginx, segment:', segment)
-		
-
 				const photos = photosBoth.filter((photo, idx) => {
-					const re = /\.(\d).(\d*).jpg/
-					const match = photo.match(re)
-					const good = match && match[1] == camera
+					const p = parseNgnxPhoto(photo)
+					const good = p.camera == camera // && p.t0 >= t0
+					if (t0)
+						good = good && p.ts >= t0
+					if (t1)
+						good = good && p.ts <= t1
 					return good
 				})
-
+			
 				const requestedNumPhotos = 180
 				const skip = photosBoth.length - requestedNumPhotos
 
@@ -168,10 +163,8 @@ const Slideshow = ({ serial, camera, segment }) => {
 					if (segment == 'first' && idx > requestedNumPhotos)
 					  return false
 					return true
-					// console.log(photosBoth.length, segment, skip, idx)
 				})
 
-				// console.log(photos)
 				scanPhotos(photosSegment)
 			})
 			.catch(function (err) {
@@ -182,8 +175,6 @@ const Slideshow = ({ serial, camera, segment }) => {
 	const scanPhotos = (photos) => {
 		setPreloadedImages([])
 		setPhotos(photos)
-
-		console.log('preloading images, num photos:', photos.length)
 
 		photos.forEach((image_url, i) => {
 			const img = new Image()
@@ -200,23 +191,33 @@ const Slideshow = ({ serial, camera, segment }) => {
 		})
 		setHours(hours)
 
-		const newRange = { start: 0, end: photos.length }
-		// console.log("newRange:", newRange)
+		const start = 0
+		if (t0) {
+			for (let i = 0; i < photos.length; i++) {
+               const p = parseNgnxPhoto(photos[i])
+			   if (p.ts >= t0) {
+				   start = i
+				   break
+			   }			
+			}
+		}
+		const newRange = { start: start, end: photos.length }
 		setRange(newRange)
-		setIndex(0)
+		setIndex(start)
 		initSlideshow()
 	}
 
 	const initSlideshow = () => {
+		let timer = null
 		const startSlideShow = () => {
-			gInterval = setInterval(() => {
+			timer = setInterval(() => {
 				nextSlide()
 			}, 120)
 		}
 
-		if (!gInterval) startSlideShow()
+		if (!timer) startSlideShow()
 
-		return () => clearInterval(gInterval)
+		return () => clearInterval(timer)
 	}
 
 	const nextSlide = () => {
@@ -230,23 +231,23 @@ const Slideshow = ({ serial, camera, segment }) => {
 
 		if (animate && photos) {
 			let inc = direction
-			// console.log('inc:', inc, ' range:', range, ' stopAt:', stopAt)
 			let next
 			while (inc < photos.length) {
 				const atRightEnd = index + inc > photos.length - 1
-				// if (atRightEnd)
-				// console.log("index:", index, " photos.length:", photos.length)
 				const atLeftEnd = index + inc < 0
 				const stopNow = stopAt == index
-				// console.log('stopAtRef', stopAtRef.current, indexRef.current)
 				if (atRightEnd || atLeftEnd || stopNow) {
-					// Stop at the end, do not wrap.
-					// console.log('stop at end, atRightEnd:', atRightEnd, ' atLeftEnd:', atLeftEnd, ' stopNow:', stopNow)
-					setAnimate(false)
-					return
+					if (layout == 'journal') {
+						// For journel slideshows, go back in the reverse direction, forever.
+						setDirection(-1 * direction)
+						return
+					} else {
+					    // Stop at the end, do not wrap.
+						setAnimate(false)
+						return
+					}
 				}
 				next = (index + inc) % photos.length
-				// console.log('next:', next, 'range.end:', range.end)
 				if (wrongHour(hours, photos[next]) || next < range.start || next > range.end) {
 					inc++
 				} else {
@@ -329,7 +330,6 @@ const Slideshow = ({ serial, camera, segment }) => {
 			'https://gardyniotblob.blob.core.windows.net/iot-camera-image/' +
 			`camera${camera}_${serial}_${epoch}.jpg`
 		setHiresImageUrl(url)
-		console.log('hiresImageUrl:', url)
 		return url
 	}
 
@@ -362,6 +362,11 @@ const Slideshow = ({ serial, camera, segment }) => {
 		setAnimate(true)
 	}
 
+
+	const below_image_style = layout === 'journal' 
+	  ? {display:'none'}
+	  : {}
+
 	return (
 		<>
 			<div className={slideshowStyle}>
@@ -376,9 +381,10 @@ const Slideshow = ({ serial, camera, segment }) => {
 					{preloadedImg}
 
 					<div className={styles.countdown}>{preloadCountDisplay}</div>
+					<div className={styles.datetime}>{title}</div>
 				</div>
 
-				<div className={styles.below_image}>
+				<div className={styles.below_image} style={below_image_style}>
 					<div>
 						<TouchBar
 							photos={photos}
@@ -389,6 +395,8 @@ const Slideshow = ({ serial, camera, segment }) => {
 							setRange={setRange}
 							range={range}
 							setAnimate={setAnimate}
+							addJournalEntry={addJournalEntry}
+							serial={serial}
 						/>
 					</div>
 
@@ -400,13 +408,14 @@ const Slideshow = ({ serial, camera, segment }) => {
 						<button onClick={zoomIn} title="zoom in for more detail">🔎</button>
 					</div>
 
-					<div className={styles.datetime}>{title}</div>
+
 					<div className={styles.timelapse_metadata}>
 						{serial} camera {camera}
 					</div>
+					<Slack serial={serial} photo={photos[index]} imageRepoV2={imageRepoV2} />
+
 				</div>
 
-				<Slack serial={serial} photo={photos[index]} imageRepoV2={imageRepoV2} />
 
 			</div>
 

@@ -1,5 +1,6 @@
 const { BlobServiceClient } = require('@azure/storage-blob');
 import * as fs from 'fs';
+import {parseAzurePhoto} from '../util/unpackFilenames'
 
 function sort_unique(arr) {
   if (arr.length === 0) return arr;
@@ -136,6 +137,7 @@ const azureStorage = async (serial, ts_start, ts_end) => {
   
   }
 
+ 
   const imageToLocalFile = (image) => {
     if (!image || image === '')
       return ''
@@ -143,13 +145,14 @@ const azureStorage = async (serial, ts_start, ts_end) => {
     //console.log("imageToLocalFile: " + image)
     // return ''
 
-    const re = /camera(\d)_([^_]*)_([^_]*).jpg/
-    const match = image.match(re)
-    const camera = match[1]
-    const serial = match[2]
-    const ts = match[3]
+    //const re = /camera(\d)_([^_]*)_([^_]*).jpg/
+    //const match = image.match(re)
+    //const camera = match[1]
+    //const serial = match[2]
+    //const ts = match[3]
 
-    const localFile = `serials/${serial}/camera${camera}/${ts}.jpg`
+    const p = parseAzurePhoto(image)
+    const localFile = `serials/${p.serial}/camera${p.camera}/${p.ts}.jpg`
 
     // console.log('imageToLocalFile, image:', image, ' localFile:', localFile)
     return localFile
