@@ -30,7 +30,7 @@ const getLocalFiles = ( async (serial, requestedCamera) =>{
     return extracted
 })
 
-export default timelapseHTTP = async (req, res) => {
+const timelapseHTTP = async (req, res) => {
     const {
 		query: { slug },
 	} = req;
@@ -43,3 +43,5 @@ export default timelapseHTTP = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.json(serverFiles)
 }
+
+export default timelapseHTTP
