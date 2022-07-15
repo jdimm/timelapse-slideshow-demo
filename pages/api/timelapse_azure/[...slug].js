@@ -1,6 +1,6 @@
 import { smallImages } from '../../../util/azure'
 
-export default timelapseAzure = async (req, res) => {
+const timelapseAzure = async (req, res) => {
     const {
 		query: { slug },
 	} = req;
@@ -34,3 +34,5 @@ export default timelapseAzure = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.json(blobList)
 }
+
+export default timelapseAzure
