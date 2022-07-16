@@ -46,9 +46,11 @@ const Journal = ( {journal, updateMemory, deleteMemory} ) => {
         )
     })
 
-    return <div style={{clear:"both"}}>
+    return <div style={{clear:"both",width:"300px"}}>
         <h1>Journal</h1>
+        <div style={{fontSize:"10pt", fontStyle:"italic", paddingLeft: "10px", paddingRight: "10px"}}>to make a memory, click the touch bar and drag to the right</div>
         <div className={styles.journal}>
+
             {html}
         </div>
     </div>
