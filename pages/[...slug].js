@@ -14,19 +14,12 @@ const App = () => {
   const router = useRouter()
   const [forceRedraw, setForceRedraw] = useState(false)
   const [journal, setJournal] = useState( []);
+  const [serial, setSerial] = useState('');
 
   useEffect(() => {
-    const lj = localStorage.getItem('journal')
-    try {
-      const localJournal = JSON.parse(lj)
-    } catch (e) {
-      timer('error parsing journal', e)
-    }
-
-    if (localJournal && Array.isArray(localJournal) && localJournal.length > 0) {
-      setJournal(localJournal)
-    }
+    getJournal()
   }, [router.query])
+
 
   const addJournalEntry = (entry) => {
     const newJournal = [...journal, entry]
@@ -34,11 +27,58 @@ const App = () => {
     updateMemory(newJournal)
   }
 
-  const updateMemory = (newJournal) => {
-    const jStr = JSON.stringify(newJournal)
-    localStorage.setItem('journal', jStr)
+  // /api/journal/get/[serial]
+  const getJournal = async () => {
+    // const lj = localStorage.getItem('journal')
+
+    const url = `/api/journal/get/${serial}`
+    const response = await fetch(url)
+    const json = await response.json()
+    setJournal(json)
+/*
+    let localJournal
+    try {
+      localJournal = JSON.parse(lj)
+    } catch (e) {
+      console.log('error parsing journal', e)
+    }
+
+    if (localJournal && Array.isArray(localJournal) && localJournal.length > 0) {
+      setJournal(localJournal)
+    }
+*/
   }
 
+  // /api/journal/update/[serial]
+  // post { "journal": journal }
+  const updateMemory = (newJournal) => {
+    
+    const body = {
+      serial: serial,
+      journal: newJournal
+    }
+    const bodyStr = JSON.stringify(body)
+
+    const url = '/api/journal/put/'
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        accept: 'application.json',
+        'Content-Type': 'application/json'
+      },
+      body: bodyStr
+    }).then(function(response) { 
+      return response.json()
+    }).then(function(data) {
+      console.log(data) 
+    })
+    
+
+    //const journalStr = JSON.stringify(newJournal)
+    //localStorage.setItem('journal', journalStr)
+  }
+
+  // /api/journal/memory/delete/[serial][index]
   const deleteMemory = (index) => {
     const newJournal = [...journal]
     newJournal.splice(index, 1)
@@ -58,7 +98,7 @@ const App = () => {
   }
 
   let page
-  let serial
+  // let serial
 
   const { slug } = router.query
 
