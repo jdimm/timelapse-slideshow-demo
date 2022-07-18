@@ -14,7 +14,7 @@
     width: 250px;
 }
 
-.journal_slideshow_holder img {
+.journal_slideshow_holder .primary_image {
   height: calc(100% + 2px);
 }
 
