@@ -7,7 +7,7 @@
     height: 100%;
   }
 
-  .slideshow img {
+  .primary_image {
     width: 100%;
     height: calc(100% + 5px);
   }
@@ -124,7 +124,6 @@
   width: 100px;
   height: 76px;
   border-radius: 10px;
-
 }
 
 .timelapse_metadata {

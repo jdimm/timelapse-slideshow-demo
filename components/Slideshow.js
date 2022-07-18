@@ -146,7 +146,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 
 				const photos = photosBoth.filter((photo, idx) => {
 					const p = parseNgnxPhoto(photo)
-					const good = p.camera == camera // && p.t0 >= t0
+					const good = p.camera == camera
 					if (t0)
 						good = good && p.ts >= t0
 					if (t1)
@@ -155,7 +155,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 				})
 			
 				const requestedNumPhotos = 180
-				const skip = photosBoth.length - requestedNumPhotos
+				const skip = photos.length - requestedNumPhotos
 
 				const photosSegment = photos.filter((photo, idx) => {
 					if (segment == 'last' && idx < skip)
@@ -345,7 +345,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 	const imgsrc = imageSource(photos[index])
 	const date = getDate(photos[index])
 
-	const title = date.toISOString().slice(0, 10) + ' ' + date.toISOString().slice(11, 16)
+	const timestamp = date.toISOString().slice(0, 10) + ' ' + date.toISOString().slice(11, 16)
 
 	const preloadCount = photos.length - preloadedImages.length
 	const preloadCountDisplay = preloadCount > 0 ? preloadCount : ''
@@ -372,6 +372,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 			<div className={slideshowStyle}>
 				<div className={styles.image_holder}>
 					<img
+					    className={styles.primary_image}
 						src={imgsrc}
 						onClick={toggleAnimation}
 						onMouseMove={mouseMove}
@@ -381,7 +382,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 					{preloadedImg}
 
 					<div className={styles.countdown}>{preloadCountDisplay}</div>
-					<div className={styles.datetime}>{title}</div>
+					<div className={styles.datetime}>{timestamp}</div>
 				</div>
 
 				<div className={styles.below_image} style={below_image_style}>
@@ -408,7 +409,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 						<button onClick={zoomIn} title="zoom in for more detail">🔎</button>
 					</div>
 
-
+					<div className={styles.datetime}>{timestamp}</div>
 					<div className={styles.timelapse_metadata}>
 						{serial} camera {camera}
 					</div>

@@ -120,7 +120,7 @@ const App = () => {
   if (!date)
         date = '2022-05-29'
   if (!segment)
-        segment = 'first'
+        segment = 'last'
 
     const nice_links = nice.map( (serial, idx) => {
       return cameraLinks(serial, idx)
