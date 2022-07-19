@@ -27,37 +27,18 @@ const App = () => {
     updateMemory(newJournal)
   }
 
-  // /api/journal/get/[serial]
   const getJournal = async () => {
-    // const lj = localStorage.getItem('journal')
-
     const url = `/api/journal/get/${serial}`
     const response = await fetch(url)
     const json = await response.json()
     setJournal(json)
-/*
-    let localJournal
-    try {
-      localJournal = JSON.parse(lj)
-    } catch (e) {
-      console.log('error parsing journal', e)
-    }
-
-    if (localJournal && Array.isArray(localJournal) && localJournal.length > 0) {
-      setJournal(localJournal)
-    }
-*/
   }
 
-  // /api/journal/update/[serial]
-  // post { "journal": journal }
   const updateMemory = (newJournal) => {
-    
     const body = {
       serial: serial,
       journal: newJournal
     }
-    const bodyStr = JSON.stringify(body)
 
     const url = '/api/journal/put/'
     fetch(url, {
@@ -66,19 +47,14 @@ const App = () => {
         accept: 'application.json',
         'Content-Type': 'application/json'
       },
-      body: bodyStr
+      body: JSON.stringify(body)
     }).then(function(response) { 
       return response.json()
     }).then(function(data) {
       console.log(data) 
     })
-    
-
-    //const journalStr = JSON.stringify(newJournal)
-    //localStorage.setItem('journal', journalStr)
   }
 
-  // /api/journal/memory/delete/[serial][index]
   const deleteMemory = (index) => {
     const newJournal = [...journal]
     newJournal.splice(index, 1)
@@ -98,7 +74,6 @@ const App = () => {
   }
 
   let page
-  // let serial
 
   const { slug } = router.query
 
@@ -106,15 +81,13 @@ const App = () => {
     page = slug[0]
   if (slug && slug.length > 1)
     serial = slug[1]
-  if (slug && slug.length > 2)
-    segment = slug[2]
   
   if (!serial || !page) {
     return null
   }
 
   let content = null
-  let { camera, date, segment } = router.query
+  let { camera, date, segment, email } = router.query
   if (!camera)
         camera = 1 
   if (!date)
@@ -156,7 +129,7 @@ const App = () => {
   }
 
   return <div className={styles.page}>
-      <Navbar page={page} serial={serial} camera={camera} date={date} segment={segment}/>
+      <Navbar page={page} serial={serial} camera={camera} date={date} segment={segment} email={email}/>
       <div className={styles.content}>
         {content}
 

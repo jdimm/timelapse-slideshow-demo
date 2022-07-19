@@ -32,18 +32,36 @@ const Journal = ( {journal, updateMemory, deleteMemory} ) => {
     const html = journal.map((entry, index) => {
         const camera = 1
         const segment = 'first'
-        return (<div key={entry.index}>
-  
-                    <div className={styles.journal_slideshow_holder}>
-                        <Slideshow serial={entry.serial} camera={camera} segment={segment} method={'azure-small'} layout='journal' t0={entry.t0} t1={entry.t1}/> 
-                    </div>
-                    <div contentEditable={true} className={styles.journal_entry} placeholder="notes"
-                      onBlur={ (e) => onBlur(e, entry)}>
-                      {entry.caption}
-                    </div>
-                    <button className={styles.close_button} onClick={(e) => onClick(e, entry)} title="delete memory and caption">x</button>
+        return (
+            <div key={entry.index}>
+                <div className={styles.journal_slideshow_holder}>
+                    <Slideshow
+                        serial={entry.serial}
+                        camera={camera}
+                        segment={segment}
+                        method={'azure-small'}
+                        layout='journal'
+                        t0={entry.t0}
+                        t1={entry.t1}
+                    />
                 </div>
-        )
+                <div
+                    contentEditable={true}
+                    className={styles.journal_entry}
+                    placeholder='notes'
+                    onBlur={(e) => onBlur(e, entry)}
+                >
+                    {entry.caption}
+                </div>
+                <button
+                    className={styles.close_button}
+                    onClick={(e) => onClick(e, entry)}
+                    title='delete memory and caption'
+                >
+                    x
+                </button>
+            </div>
+				)
     })
 
     return <div style={{clear:"both",width:"300px"}}>
