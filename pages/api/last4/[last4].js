@@ -6,6 +6,7 @@ const getSerialFromLast4 = async (last4) => {
     select d.serial
     from device as d
     where d.serial like '%${last4}'
+    limit 1
     ;
     `
     const results = await executeQuery({
