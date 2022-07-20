@@ -22,7 +22,10 @@ const Navbar = ({ page, serial, camera, date, segment, email }) => {
     const schedule = `/schedule/${serial}?${params}`
 
     const href = (page, serial, camera, date, segment) => {
-      return `/${page}/${serial}?camera=${camera}&date=${date}&segment=${segment}&email=${selectedEmail}` 
+      const params = `/${page}/${serial}?camera=${camera}&date=${date}&segment=${segment}`
+      if (selectedEmail)
+        params += `&email=${selectedEmail}` 
+      return params
     }
 
     const changeCamera = (e) => {
@@ -32,8 +35,20 @@ const Navbar = ({ page, serial, camera, date, segment, email }) => {
     }
 
     const changeSerial = (newSerial) => {
-        setSerial(newSerial)
-        window.location.href = href(page, newSerial, _camera, _date, _segment)
+        if (newSerial.length === 4) {
+          const url = '/api/last4/' + newSerial
+          fetch(url).then(function(response) {
+            return response.json()
+          }).then(function(data) {
+            setSerial(data.serial)
+            const newHref = href(page, data.serial, _camera, _date, _segment)
+            console.log("new href", newHref)
+            window.location.href = newHref
+          })
+        } else if (newSerial.length === 32) {
+          setSerial(newSerial)
+          window.location.href = href(page, newSerial, _camera, _date, _segment)
+        }
     }
 
     const changeDate = (newDate) => {
@@ -106,7 +121,7 @@ const Navbar = ({ page, serial, camera, date, segment, email }) => {
 						<input
 							type='text'
 							size='35'
-							value={_serial}
+							defaultValue={_serial}
 							onChange={(e) => changeSerial(e.currentTarget.value)}
 						/>
 					</span>
