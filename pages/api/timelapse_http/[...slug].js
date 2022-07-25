@@ -15,13 +15,13 @@ const getLocalFiles = ( (serial, requestedCamera, t0, t1, cutoff, segment) =>{
     const filtered = files.filter( file => {
        const   [ date, camera, ts ] = file.split('.')
         
-        console.log("camera: " + camera, " requestedCamera: " + requestedCamera)
+        // console.log("camera: " + camera, " requestedCamera: " + requestedCamera)
         return camera == requestedCamera 
           && (!t0 || ts >= t0) 
           && (!t1 || ts <= t1)
     } )
 
-    console.log("filtered: " + filtered)
+    // console.log("filtered: " + filtered)
 
     if (!cutoff) 
        cutoff = 180
@@ -37,7 +37,7 @@ const getLocalFiles = ( (serial, requestedCamera, t0, t1, cutoff, segment) =>{
           extracted.push(parseFilename (file))
     })
 
-    console.log("extracted: " + extracted)
+    // console.log("extracted: " + extracted)
     return extracted
 })
 

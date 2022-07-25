@@ -30,7 +30,8 @@ const Journal = ( {journal, updateMemory, deleteMemory} ) => {
       return null
 
     const html = journal.map((entry, index) => {
-        const camera = (camera in entry) ? entry.camera : 1
+        const camera = ("camera" in entry) ? entry.camera : 1
+        console.log("html: " + JSON.stringify(entry))
         const segment = 'first'
         return (
             <div key={entry.index}>
