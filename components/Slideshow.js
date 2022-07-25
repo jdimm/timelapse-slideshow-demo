@@ -105,6 +105,11 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 		return `http://13.90.210.214/iot-camera-image-small/${serial}/`
 	}
 
+	// For local testing:
+	//const imageRepoV2 = () => {
+	//	return `http://localhost:3000/iot-camera-image-small/${serial}/`
+	//}
+
 	const imageSource = (filename) => {
 		if (method == 'http') return imageRepoV2() + filename
 		else if (method == 'azure-large')
@@ -130,46 +135,35 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 		scanPhotos(photos)
 	}
 
-	const getPhotosNginx = () => {
-		// Get the listing of files from the serial directory.
-		const url = imageRepoV2()
+	const getPhotosNginx = async () => {
+		const url = `/api/timelapse_http/${serial}/${camera}?`
+		if (t0 && t0 != 'undefined')
+		  url += `t0=${t0}`
+		if (t1 && t1 != 'undefined')
+		  url += `&t1=${t1}`
+		if (segment)
+		  url += `&segment=${segment}`
 
-		fetch(url)
-			.then(function (response) {
-				return response.text()
-			})
-			.then(function (html) {
-				// Parse nginx directory response.
-				const regexp = /href="(.*?.jpg)"/g
-				const matches = [...html.matchAll(regexp)]
-				const photosBoth = matches.map((val, idx) => val[1])
+		const photos= []
 
-				const photos = photosBoth.filter((photo, idx) => {
-					const p = parseNgnxPhoto(photo)
-					const good = p.camera == camera
-					if (t0)
-						good = good && p.ts >= t0
-					if (t1)
-						good = good && p.ts <= t1
-					return good
+		console.log("url: " + url)
+		const response = await fetch(url)
+		// if (response) {
+			const jsonResponse = await response.text()
+			// if (jsonResponse) {
+				// console.log("jsonResponse: " + jsonResponse)
+				const imageArray = JSON.parse(jsonResponse)
+
+				imageArray.forEach( (filename) => {
+					const [date, hour, camera, timestamp] = filename.split('_')
+					const ngnxFilename = `${date}.${camera}.${timestamp}.jpg`
+					photos.push(ngnxFilename)
 				})
-			
-				const requestedNumPhotos = 180
-				const skip = photos.length - requestedNumPhotos
+			//  }
 
-				const photosSegment = photos.filter((photo, idx) => {
-					if (segment == 'last' && idx < skip)
-					  return false
-					if (segment == 'first' && idx > requestedNumPhotos)
-					  return false
-					return true
-				})
-
-				scanPhotos(photosSegment)
-			})
-			.catch(function (err) {
-				console.warn('Something went wrong getting photos.', url, err)
-			})
+            if (photos)
+			  scanPhotos(photos)		
+		// }
 	}
 
 	const scanPhotos = (photos) => {

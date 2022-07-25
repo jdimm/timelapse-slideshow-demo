@@ -1,46 +1,57 @@
 import * as fs from 'fs';
+import { parseNgnxPhoto } from '/util/unpackFilenames.js'
 
 
-// https://gardyniotblob.blob.core.windows.net/iot-camera-image/camera1_79af9585f6d91c7c70541c9dd62d58e6_1654887094.jpg
 const parseFilename = (filename) => {
-    const parts = filename.split('.')
-    const date = parts[0]
-    const camera = parts[1]
-    const timestamp = parts[2]
+    const [date, camera, ts] = filename.split('.')
 
-    const tsDate = new Date(timestamp * 1000)
+    const tsDate = new Date(ts * 1000)
     const tsHour = tsDate.getHours() + ':' + tsDate.getMinutes() + ':' + tsDate.getSeconds()
-    return `${date}_${tsHour}_${camera}_${timestamp}`
-
+    return `${date}_${tsHour}_${camera}_${ts}`
 }
 
-const getLocalFiles = ( async (serial, requestedCamera) =>{
+const getLocalFiles = ( (serial, requestedCamera, t0, t1, cutoff, segment) =>{
     const files = fs.readdirSync(`./iot-camera-image-small/${serial}/`)
-    const filtered = files.filter(file => {
-        const parts = file.split('.')
-        const camera = parts[1]
+    const filtered = files.filter( file => {
+       const   [ date, camera, ts ] = file.split('.')
+        
         console.log("camera: " + camera, " requestedCamera: " + requestedCamera)
-        return camera == requestedCamera
+        return camera == requestedCamera 
+          && (!t0 || ts >= t0) 
+          && (!t1 || ts <= t1)
     } )
 
+    console.log("filtered: " + filtered)
 
-    const extracted = filtered.map ( (file, idx) => {
-        return parseFilename(file)
+    if (!cutoff) 
+       cutoff = 180
+
+    if (!segment)
+        segment = 'last'
+
+    const extracted = []
+    filtered.forEach ( (file, idx) => {
+        if ( (segment == 'first' && idx < cutoff) 
+          || (segment == 'last' && idx >= filtered.length - cutoff)
+          || (segment == 'all'))
+          extracted.push(parseFilename (file))
     })
+
+    console.log("extracted: " + extracted)
     return extracted
 })
 
 const timelapseHTTP = async (req, res) => {
     const {
-		query: { slug },
+		query: { slug, t0, t1, cutoff, segment },
 	} = req;
 
     const serial = slug[0] 
     const camera = slug[1]
 
-    const  serverFiles = await getLocalFiles(serial, camera)
+    const  serverFiles = getLocalFiles(serial, camera, t0, t1, cutoff, segment)
 
-    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Type', 'application/json');ß
     res.json(serverFiles)
 }
 

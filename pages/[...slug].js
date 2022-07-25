@@ -28,10 +28,14 @@ const App = () => {
   }
 
   const getJournal = async () => {
-    const url = `/api/journal/get/${serial}`
-    const response = await fetch(url)
-    const json = await response.json()
-    setJournal(json)
+    if (serial) {
+      const url = `/api/journal/get/${serial}`
+      console.log(`getJournal url: ${url}`)
+      const response = await fetch(url)
+      const json = await response.json()
+      console.log(`getJournal json: ${JSON.stringify(json)}`)
+      setJournal(json)
+    }
   }
 
   const updateMemory = (newJournal) => {

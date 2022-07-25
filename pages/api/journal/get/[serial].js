@@ -1,15 +1,25 @@
-import {useRouter} from 'next/router'
 import fs from 'fs'
 
 const getJournal = async (req, res) => {
   const {
-    query: { serial },
+    query: { serial, start, end },
   } = req;
 
+  let journal = []
   const filename = `./journals/${serial}.json`
-  const journal = fs.existsSync(filename) ? JSON.parse(fs.readFileSync(filename)) : []
+  if (fs.existsSync(filename)) {
+    const contents = fs.readFileSync(filename)
+    if (contents && contents.length > 0) {  
+      journal = JSON.parse(contents)
+    } 
+  }
 
-  res.setHeader('Content-Type', 'application/json');
+  if (start && end) {
+    journal = journal.slice(start, end)
+  }
+
+  res.setHeader('Content-Type', 'application/json')
+  res.setHeader('Access-Control-Allow-Origin', '*')
   res.json(journal)
 }
 

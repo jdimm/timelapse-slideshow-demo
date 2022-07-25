@@ -23,3 +23,5 @@ export const parseAzurePhoto = (image) => {
         ts: ts
     }
   }
+
+  
