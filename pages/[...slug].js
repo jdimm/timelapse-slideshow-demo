@@ -122,7 +122,7 @@ const App = () => {
       </div>
 
       <div className={styles.journal_holder}>
-         <Journal journal={journal} updateMemory={updateMemory} deleteMemory={deleteMemory}/>
+         <Journal journal={journal} updateMemory={updateMemory} deleteMemory={deleteMemory} segment={segment}/>
       </div>
 
     </div>

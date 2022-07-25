@@ -146,7 +146,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 
 		const photos= []
 
-		console.log("url: " + url)
+		// console.log("url: " + url)
 		const response = await fetch(url)
 		// if (response) {
 			const jsonResponse = await response.text()
@@ -162,7 +162,9 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 			//  }
 
             if (photos)
-			  scanPhotos(photos)		
+			  scanPhotos(photos)
+			
+			//ßconsole.log("photos: ", photos)
 		// }
 	}
 

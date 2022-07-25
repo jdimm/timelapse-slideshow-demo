@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Slideshow from '../components/Slideshow'
 import styles from './Journal.module.css'
 
-const Journal = ( {journal, updateMemory, deleteMemory} ) => {
+const Journal = ( {journal, updateMemory, deleteMemory, segment} ) => {
     useEffect(() => {
         journal.forEach ( (entry, index) => {
             entry.index = index
@@ -31,10 +31,9 @@ const Journal = ( {journal, updateMemory, deleteMemory} ) => {
 
     const html = journal.map((entry, index) => {
         const camera = ("camera" in entry) ? entry.camera : 1
-        console.log("html: " + JSON.stringify(entry))
-        const segment = 'first'
+        const key = 100 * index + "index" in entry ? entry.index : index
         return (
-            <div key={entry.index}>
+            <div key={key}>
                 <div className={styles.journal_slideshow_holder}>
                     <Slideshow
                         serial={entry.serial}
