@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { parseNgnxPhoto } from '../util/unpackFilenames'
 
 const TouchBar = ({ photos, index, setIndex, wrongHour, 
-	hours, setRange, range, setAnimate, addJournalEntry, serial}) => {
+	hours, setRange, range, setAnimate, addJournalEntry, serial, camera}) => {
 	const [mouseDown, setMouseDown] = useState(false)
     const [seg, setSeg] = useState([0, 0])
 
@@ -78,6 +78,7 @@ const TouchBar = ({ photos, index, setIndex, wrongHour,
 	   addJournalEntry ({
 		   type:"timelapse",
 		   serial: serial,
+		   camera: camera,
 		   t0: parseInt(pStart.ts),
 		   t1: parseInt(pEnd.ts)
 	   })

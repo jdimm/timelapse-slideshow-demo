@@ -30,13 +30,14 @@ const Journal = ( {journal, updateMemory, deleteMemory} ) => {
       return null
 
     const html = journal.map((entry, index) => {
+        const camera = (camera in entry) ? entry.camera : 1
         const segment = 'first'
         return (
             <div key={entry.index}>
                 <div className={styles.journal_slideshow_holder}>
                     <Slideshow
                         serial={entry.serial}
-                        camera={entry.camera}
+                        camera={camera}
                         segment={segment}
                         method={'azure-small'}
                         layout='journal'

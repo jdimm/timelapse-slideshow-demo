@@ -392,6 +392,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 							setAnimate={setAnimate}
 							addJournalEntry={addJournalEntry}
 							serial={serial}
+							camera={camera}
 						/>
 					</div>
 
