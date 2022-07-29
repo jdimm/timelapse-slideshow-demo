@@ -103,7 +103,7 @@ const timelapseHTTP = async (req, res) => {
     const serial = slug[0] 
     const camera = slug[1]
 
-    const  serverFiles = await getLocalFiles(serial, camera, t0, t1, cutoff, segment)ß
+    const  serverFiles = await getLocalFiles(serial, camera, t0, t1, cutoff, segment)
 
     res.setHeader('Content-Type', 'application/json');
     res.json(serverFiles)
