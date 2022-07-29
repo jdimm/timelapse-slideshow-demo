@@ -143,8 +143,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 		console.log("url:", url)
 
 		const response = await fetch(url)
-		const jsonResponse = await response.json()
-		const batch = JSON.parse(jsonResponse)
+		const batch = await response.json()
 
         if (batch && batch.photos) {
 			const user_id = batch.user_id 
@@ -155,6 +154,8 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 				const date = photo.date
 				const hour = photo.hour
 				const timestamp = photo.timestamp
+				const camera = batch.camera
+
 				return eval(batch.url_template)
 			})
 			scanPhotos(photos)
@@ -394,7 +395,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 	//  ? date.toISOString().slice(0, 10) + ' ' + date.toISOString().slice(11, 16)
 	//  : ''
 	
-	const timestamp =  batch.photos[index].date + ' ' + batch.photos[index].hour
+	const timestamp =  batch.photos ? batch.photos[index].date + ' ' + batch.photos[index].hour : ''
 
 	const preloadCount = photos.length - preloadedImages.length
 	const preloadCountDisplay = preloadCount > 0 ? preloadCount : ''

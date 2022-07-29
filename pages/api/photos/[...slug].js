@@ -52,7 +52,7 @@ const getPhotos = async (req, res) => {
   const  serverFiles = await getAzureFiles(serial, camera, t0, t1, cutoff, segment)
 
   res.setHeader('Content-Type', 'application/json');
-  res.json(JSON.stringify(serverFiles))
+  res.json(serverFiles)
 }
 
 export default getPhotos
