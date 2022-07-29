@@ -3,7 +3,7 @@ import styles from './Slideshow.module.css'
 import { useState } from 'react'
 import { parseNgnxPhoto } from '../util/unpackFilenames'
 
-const TouchBar = ({ photos, index, setIndex, wrongHour, 
+const TouchBar = ({ photos, batch, index, setIndex, wrongHour, 
 	hours, setRange, range, setAnimate, addJournalEntry, serial, camera}) => {
 	const [mouseDown, setMouseDown] = useState(false)
     const [seg, setSeg] = useState([0, 0])
@@ -73,14 +73,18 @@ const TouchBar = ({ photos, index, setIndex, wrongHour,
 	   e.preventDefault()
 	   setMouseDown(false)
        // console.log("create journal, seg:", seg, " photos", photos)
-	   const pStart = parseNgnxPhoto(photos[seg[0]])
-	   const pEnd =  parseNgnxPhoto(photos[seg[1]])
+	   //const pStart = parseNgnxPhoto(photos[seg[0]])
+	   // const pEnd =  parseNgnxPhoto(photos[seg[1]])
+
+	   const pStart = batch.photos[seg[0]].timestamp
+	   const pEnd = batch.photos[seg[1]].timestamp
+
 	   addJournalEntry ({
 		   type:"timelapse",
 		   serial: serial,
 		   camera: camera,
-		   t0: parseInt(pStart.ts),
-		   t1: parseInt(pEnd.ts)
+		   t0: parseInt(pStart),
+		   t1: parseInt(pEnd)
 	   })
 	   setSeg([0, 0])
 	}

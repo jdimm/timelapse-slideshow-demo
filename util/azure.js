@@ -32,13 +32,14 @@ export const smallImages = async (serial, camera) => {
   const blobList = []
 
   async function listBlobsCamera (camera) {
+    const user_id = '12483'
     const listOptions = {
-      includeMetadata: true,
+      includeMetadata: false,
       includeSnapshots: false,
-      includeTags: true,
+      includeTags: false,
       includeVersions: false,
-      prefix: `camera${camera}_${serial}_`
-      // prefix: 'camera1_85df8546a995dd7772a230f03978cbc8_'
+      // prefix: `camera${camera}_${serial}_`
+      prefix: user_id + '/' + camera
     }
 
     for await (const blob of containerClient.listBlobsFlat(listOptions)) {

@@ -24,4 +24,14 @@ async function executeQuery({ query, values }) {
   }
 }
 
+export async function getUserInfo(serial) {
+  const query = `select 
+      u.id as user_id, d.id as device_id
+    from user as u
+    join device as d on d.user_id = u.id
+    where d.serial = '${serial}'
+    `
+  return executeQuery({ query })
+}
+
 export default executeQuery

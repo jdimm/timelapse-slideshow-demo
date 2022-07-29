@@ -4,7 +4,7 @@ import { epochToTimestamp, timestampToEpoch } from '../util/timestamp'
 import Zoom from './Zoom'
 import TouchBar from './TouchBar'
 import Slack from './Slack'
-import { parseNgnxPhoto } from '../util/unpackFilenames'
+import { parseNgnxPhoto, parseAzurePhoto } from '../util/unpackFilenames'
 
 function dateToString(date) {
 	const d = new Date(date)
@@ -43,6 +43,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 	const [direction, setDirection] = useState(1)
 	const [slideshowStyle, setSlideshowStyle] = useState(styles.slideshow)
 	const [hiresImageUrl, setHiresImageUrl] = useState('')
+	const [batch, setBatch] = useState([])
 
 	const animateRef = useRef(animate)
 	const indexRef = useRef(index)
@@ -52,7 +53,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 	const photosRef = useRef(photos)
 	const hoursRef = useRef(hours)
 
-	const method = 'http'
+	const method = 'azure-small'
 
 	useEffect(() => {
 		// Use a ref to communicate the animate state to the
@@ -70,11 +71,18 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 	useEffect(() => {
 		if (!serial) return
 
+		method = 'azure-small'
+
 		if (method == 'azure-small') {
 			getPhotosAzure()
 		} else if (method == 'http') {
 			getPhotosNginx()
 		}
+
+		const template = "`here is v: ${c.v}`"
+		const c = { v : 'the value of v' }
+		console.log("template: " + eval(template))
+
 
 	}, [serial, camera])
 
@@ -97,13 +105,16 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 		onXMove(w, x)
 	}
 
+	const imageRepoV2 = () => {
+		return `http://13.90.210.214/iot-camera-image-small/${serial}/`
+	}
+
+	/*
 	const imageRepo = () => {
 		return `http://13.90.210.214/serials/${serial}/camera${camera}/`
 	}
 
-	const imageRepoV2 = () => {
-		return `http://13.90.210.214/iot-camera-image-small/${serial}/`
-	}
+
 
 	// For local testing:
 	//const imageRepoV2 = () => {
@@ -111,35 +122,51 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 	//}
 
 	const imageSource = (filename) => {
+		return filename
+
 		if (method == 'http') return imageRepoV2() + filename
 		else if (method == 'azure-large')
 			return `https://gardyniotblob.blob.core.windows.net/iot-camera-image/camera${camera}_${serial}_${filename}`
 		else if (method == 'azure-small')
 			return `https://gardyniotblobsmall.blob.core.windows.net/iot-camera-image-small/${filename}`
 	}
+	*/
 
 	const getPhotosAzure = async () => {
-		const startTS = 958053498 // 2000
-		const endTS = 4082191098 // 2099
+		let url = `/api/photos_http/${serial}/${camera}?`
+		if (t0)
+			url += `t0=${t0}`
+		if (t1)
+			url += `&t1=${t1}`
+		if (segment)
+			url += `&segment=${segment}`
+		console.log("url:", url)
 
-		const url = `/api/image_list/${serial}/${startTS}/${endTS}/small`
 		const response = await fetch(url)
 		const jsonResponse = await response.json()
-		const photosBoth = jsonResponse.serverFiles
+		const batch = JSON.parse(jsonResponse)
 
-		const photos = photosBoth.filter((photo) => {
-			const good = photo.startsWith('camera' + camera)
-			return good
-		})
+        if (batch && batch.photos) {
+			const user_id = batch.user_id 
+			const device_id = batch.device_id
+			const url_prefix = batch.url_prefix
 
-		scanPhotos(photos)
+			const photos = batch.photos.map((photo) => {
+				const date = photo.date
+				const hour = photo.hour
+				const timestamp = photo.timestamp
+				return eval(batch.url_template)
+			})
+			scanPhotos(photos)
+			setBatch(batch)
+		}
 	}
 
 	const getPhotosNginx = async () => {
 		const url = `/api/timelapse_http/${serial}/${camera}?`
-		if (t0 && t0 != 'undefined')
+		if (t0)
 		  url += `t0=${t0}`
-		if (t1 && t1 != 'undefined')
+		if (t1)
 		  url += `&t1=${t1}`
 		if (segment)
 		  url += `&segment=${segment}`
@@ -164,7 +191,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
             if (photos)
 			  scanPhotos(photos)
 			
-			//ßconsole.log("photos: ", photos)
+			//console.log("photos: ", photos)
 		// }
 	}
 
@@ -177,27 +204,34 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 			img.onload = () => {
 				setPreloadedImages((preloadedImages) => [...preloadedImages, image_url])
 			}
-			img.src = imageSource(image_url)
+			// https://gardyniotblobsmall.blob.core.windows.net/iot-camera-image-small/undefined
+			img.src = image_url
+
+			// console.log("preload:", img.src)
+			// img.src = image_url
 		})
 
 		var hours = []
-		photos.map((image_url, i) => {
-			const hour = getHour(image_url)
-			hours[hour] = true
-		})
+		if (batch.photos)
+			batch.photos.map((photo, i) => {
+				const hour = photo.hour.substring(0,2)
+				hours[hour] = true
+			})
 		setHours(hours)
 
 		const start = 0
-		if (t0) {
-			for (let i = 0; i < photos.length; i++) {
-               const p = parseNgnxPhoto(photos[i])
-			   if (p.ts >= t0) {
+		if (t0 && batch.photos) {
+			for (let i = 0; i < batch.photos.length; i++) {
+               // const p = parseNgnxPhoto(photos[i])
+			   // if (p.ts >= t0) {
+			   if (batch.photos[i].timestamp >= t0 ) {
 				   start = i
 				   break
 			   }			
 			}
 		}
-		const newRange = { start: start, end: photos.length }
+		const end = batch.photos ? batch.photos.length : 0
+		const newRange = { start: start, end: end }
 		setRange(newRange)
 		setIndex(start)
 		initSlideshow()
@@ -255,13 +289,17 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 	}
 
 	const getDate = (imgsrc) => {
-		if ((method = 'http')) {
+		if ((method == 'http-hide')) {
 			const re = /(\d{4}-\d{2}-\d{2})\.\d\.(\d*).jpg/
 			const match = imgsrc.match(re)
 			const epoch = match[2]
 
 			return epochToTimestamp(epoch)
 		}
+        const info = parseAzurePhoto(imgsrc)
+		// console.log("getDate: ", info)
+		// return info.ts * 1000
+		return epochToTimestamp(info.date)
 
 		if (!imgsrc) return new Date()
 		imgsrc = imgsrc.replace(/.*_/, '').replace(/_.*/, '')
@@ -269,9 +307,10 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 		return epochToTimestamp(epoch)
 	}
 
-	const getHour = (imgsrc) => {
-		const date = getDate(imgsrc)
-		return date.getHours()
+	const getHour = (photo) => {
+		return photo.hour
+		//const date = new Date(photo.timestamp * 1000)
+		//return date.getHours()
 	}
 
 	const toggleAnimation = (e) => {
@@ -316,11 +355,17 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 	}
 
 	const getHiresImageUrl = () => {
+		/*
 		const img = photos[index]
 		const re = /\d{4}-\d{2}-\d{2}\.(\d)\.(\d*).jpg/
+
 		const match = img.match(re)
 		const camera = match[1]
 		const epoch = match[2]
+		*/
+
+		const camera = batch.photos[index].camera
+		const epoch = batch.photos[index].timestamp
 		//  : 'https://gardyniotblob.blob.core.windows.net/iot-camera-image/' + image
 		const url =
 			'https://gardyniotblob.blob.core.windows.net/iot-camera-image/' +
@@ -338,17 +383,25 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 	if (!photos || !(photos.length > index))
 		return <div className={styles.no_photos}> ... finding azure photos ... </div>
 
-	const imgsrc = imageSource(photos[index])
-	const date = getDate(photos[index])
+	const imgsrc = photos[index]
+	// const date = getDate(photos[index])
+	//const dateStr = batch.photos ? batch.photos[index].date : ''
+	//const date = new Date(dateStr)
 
-	const timestamp = date.toISOString().slice(0, 10) + ' ' + date.toISOString().slice(11, 16)
+	// console.log("date: ", date)
+
+	//const timestamp = date 
+	//  ? date.toISOString().slice(0, 10) + ' ' + date.toISOString().slice(11, 16)
+	//  : ''
+	
+	const timestamp =  batch.photos[index].date + ' ' + batch.photos[index].hour
 
 	const preloadCount = photos.length - preloadedImages.length
 	const preloadCountDisplay = preloadCount > 0 ? preloadCount : ''
 	const preloadedImg =
 		preloadCount > 0 ? (
 			<div className={styles.preloaded_image}>
-				<img src={imageSource(preloadedImages[preloadedImages.length - 1])} />
+				<img src={preloadedImages[preloadedImages.length - 1]} />
 			</div>
 		) : (
 			''
@@ -395,6 +448,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 							addJournalEntry={addJournalEntry}
 							serial={serial}
 							camera={camera}
+							batch={batch}
 						/>
 					</div>
 
