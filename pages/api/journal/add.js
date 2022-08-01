@@ -2,10 +2,10 @@ import {useRouter} from 'next/router'
 import fs from 'fs'
 
 const AddJournal = (req, res) => {
-  const { serial, entry } = JSON.parse(req.body)
-  console.log(`serial: ${serial}, entry: ${JSON.stringify(entry)}`)
+  const { id, entry } = JSON.parse(req.body)
+  console.log(`id: ${id}, entry: ${JSON.stringify(entry)}`)
   
-  const filename = `./journals/${serial}.json`
+  const filename = `./journals/${id}.json`
   const journal = fs.existsSync(filename) 
     ? JSON.parse(fs.readFileSync(filename)) 
     : []

@@ -1,8 +1,8 @@
 import fs from 'fs'
 
 const putJournal = async (req, res) => {
-  const {serial, journal} = req.body
-  const filename = `./journals/${serial}.json`
+  const {id, journal} = req.body
+  const filename = `./journals/${id}.json`
   fs.writeFileSync(filename, JSON.stringify(journal))
   
   res.setHeader('Content-Type', 'application/json');

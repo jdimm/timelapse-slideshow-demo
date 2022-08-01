@@ -1,11 +1,11 @@
 import fs from 'fs'
 
 const updateJournal = async (req, res) => {
-  const {serial, entry, index} = JSON.parse(req.body)
+  const {id, entry, index} = JSON.parse(req.body)
 
-  console.log("serial: ", serial, "entry: ", entry, "index: ", index)
+  console.log("id: ", id, "entry: ", entry, "index: ", index)
 
-  const filename = `./journals/${serial}.json`
+  const filename = `./journals/${id}.json`
   const journal = fs.existsSync(filename) 
     ? JSON.parse(fs.readFileSync(filename)) 
     : []

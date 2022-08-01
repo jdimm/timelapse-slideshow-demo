@@ -2,11 +2,11 @@ import {useRuter} from 'next/router'
 import fs from 'fs'
 
 const deleteJournalEntry = async (req, res) => {
-  const {index, serial} = req.query
+  const {index, id} = req.query
 
-  console.log(`serial: ${serial}, index: ${index}`)
+  console.log(`id: ${id}, index: ${index}`)
 
-  const filename = `./journals/${serial}.json`
+  const filename = `./journals/${id}.json`
   const journal = fs.existsSync(filename) 
     ? JSON.parse(fs.readFileSync(filename)) 
     : []

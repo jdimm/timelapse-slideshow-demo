@@ -2,11 +2,11 @@ import fs from 'fs'
 
 const getJournal = async (req, res) => {
   const {
-    query: { serial, start, end },
+    query: { id, start, end },
   } = req;
 
   let journal = []
-  const filename = `./journals/${serial}.json`
+  const filename = `./journals/${id}.json`
   if (fs.existsSync(filename)) {
     const contents = fs.readFileSync(filename)
     if (contents && contents.length > 0) {  
