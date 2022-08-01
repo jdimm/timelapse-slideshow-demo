@@ -8,7 +8,7 @@ const getAzureFiles = async (serial, camera, t0, t1, cutoff, segment) => {
     user_id: userInfo[0].user_id,
     device_id: userInfo[0].device_id,
     url_prefix: 'https://gardyniotblobsmall.blob.core.windows.net/iot-camera-image-small',
-    url_template: '`${url_prefix}/${user_id}/${camera}/${device_id}/${date}/${timestamp}.${serial}.jpg`',
+    url_template: '`${url_prefix}/${user_id}/${camera}/${device_id}/${date}.${timestamp}.${serial}.jpg`',
     camera: camera,
     photos: []
   }

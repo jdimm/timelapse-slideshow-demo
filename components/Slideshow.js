@@ -79,11 +79,6 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 			getPhotosNginx()
 		}
 
-		const template = "`here is v: ${c.v}`"
-		const c = { v : 'the value of v' }
-		console.log("template: " + eval(template))
-
-
 	}, [serial, camera])
 
 	const onXMove = (w, x) => {
@@ -230,10 +225,11 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 				   break
 			   }			
 			}
+
+			const end = batch.photos ? batch.photos.length : 0
+			const newRange = { start: start, end: end }
+			setRange(newRange)
 		}
-		const end = batch.photos ? batch.photos.length : 0
-		const newRange = { start: start, end: end }
-		setRange(newRange)
 		setIndex(start)
 		initSlideshow()
 	}
@@ -365,7 +361,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 		const epoch = match[2]
 		*/
 
-		const camera = batch.photos[index].camera
+		// const camera = batch.photos[index].camera
 		const epoch = batch.photos[index].timestamp
 		//  : 'https://gardyniotblob.blob.core.windows.net/iot-camera-image/' + image
 		const url =

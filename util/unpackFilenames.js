@@ -1,6 +1,6 @@
 export const parseAzurePhoto = (image) => {
     // const re = /camera(\d)_([^_]*)_([^_]*).jpg/
-    const re = /(\d*)\/(\d)\/(\d*)\/([^\/]*)\/(\d*).([^\.]*).jpg/
+    const re = /(\d*)\/(\d)\/(\d*)\/([^\/]*)\.(\d*)\.([^\.]*)\.jpg/
     const match = image.match(re)
     if (!match) {
       console.log("no match in parseAzurePhoto, image:", image, " match:", match)
