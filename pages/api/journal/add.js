@@ -2,7 +2,20 @@ import {useRouter} from 'next/router'
 import fs from 'fs'
 
 const AddJournal = (req, res) => {
-  const { id, entry } = JSON.parse(req.body)
+  //console.log("AddJournal body:", req.body)
+  //let body = req.body.replace('"', '\\"').replace("'", '"')
+  //const { id, entry } = JSON.parse(body)
+ let id 
+ let entry
+ if (req.body.hasOwnProperty('id')) {
+    id = req.body.id
+    entry = req.body.entry
+ } else {
+    const b = JSON.parse(req.body)
+    id = b.id
+    entry = b.entry
+ }
+  //  const {id, entry} = JSON.parse(req.body)
   console.log(`id: ${id}, entry: ${JSON.stringify(entry)}`)
   
   const filename = `./journals/${id}.json`
