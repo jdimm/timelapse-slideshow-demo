@@ -16,7 +16,7 @@ function sort_unique(arr) {
 
 
 
-export const smallImages = async (serial, camera) => {
+export const smallImages = async (user_id, camera) => {
   const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING_SMALL;
   
   if (!AZURE_STORAGE_CONNECTION_STRING) {
@@ -32,13 +32,12 @@ export const smallImages = async (serial, camera) => {
   const blobList = []
 
   async function listBlobsCamera (camera) {
-    const user_id = '12483'
+    // const user_id = '12483'
     const listOptions = {
       includeMetadata: false,
       includeSnapshots: false,
       includeTags: false,
       includeVersions: false,
-      // prefix: `camera${camera}_${serial}_`
       prefix: user_id + '/' + camera
     }
 

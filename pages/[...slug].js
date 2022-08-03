@@ -91,13 +91,15 @@ const App = () => {
   }
 
   let content = null
-  let { camera, date, segment, email } = router.query
+  let { camera, date, segment, email, method } = router.query
   if (!camera)
         camera = 1 
   if (!date)
         date = '2022-05-29'
   if (!segment)
         segment = 'last'
+  if (!method)
+        method = 'azure-small'
 
     const nice_links = nice.map( (serial, idx) => {
       return cameraLinks(serial, idx)
@@ -110,7 +112,7 @@ const App = () => {
     <div className={styles.content}>
 
       <div className={styles.slideshow_holder}>
-        <Slideshow serial={serial} camera={camera} segment={segment} method={'azure-small'}
+        <Slideshow serial={serial} camera={camera} segment={segment} method={method}
           layout='standard' addJournalEntry={addJournalEntry}/> 
 
         <div className={styles.nice_links}>

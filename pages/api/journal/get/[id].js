@@ -11,6 +11,19 @@ const getJournal = async (req, res) => {
     const contents = fs.readFileSync(filename)
     if (contents && contents.length > 0) {  
       journal = JSON.parse(contents)
+      let index = 0
+      journal = journal.map(entry => {
+        console.log('getJournal entry: ', entry)
+        if (typeof entry === "object") {
+          entry['index'] = index++
+          return entry
+        } else {
+          const j = JSON.parse(entry)
+          console.log("j", j)
+          j['index'] = index++
+          return j
+        }
+      })
     } 
   }
 

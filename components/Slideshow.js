@@ -32,7 +32,7 @@ const HourSelect = ({ hours, toggleHour }) => {
 	)
 }
 
-const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) => {
+const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, method}) => {
 	const [index, setIndex] = useState(t0)
 	const [animate, setAnimate] = useState(false)
 	const [photos, setPhotos] = useState([])
@@ -53,7 +53,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 	const photosRef = useRef(photos)
 	const hoursRef = useRef(hours)
 
-	const method = 'azure-small'
+	// const method = 'azure-small'
 
 	useEffect(() => {
 		// Use a ref to communicate the animate state to the
@@ -71,13 +71,13 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 	useEffect(() => {
 		if (!serial) return
 
-		method = 'azure-small'
+		// method = 'azure-small'
 
-		if (method == 'azure-small') {
+		//if (method == 'azure-small') {
 			getPhotosAzure()
-		} else if (method == 'http') {
-			getPhotosNginx()
-		}
+		//} else if (method == 'http') {
+		//	getPhotosNginx()
+		//}
 
 	}, [serial, camera])
 
@@ -128,7 +128,8 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1}) 
 	*/
 
 	const getPhotosAzure = async () => {
-		let url = `/api/photos_http/${serial}/${camera}?`
+		const api = method === 'azure' ? 'photos' : 'photos_http'
+		let url = `/api/${api}/${serial}/${camera}?`
 		if (t0)
 			url += `t0=${t0}`
 		if (t1)
