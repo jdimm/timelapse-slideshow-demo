@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-const updateJournal = async (req, res) => {ß
+const updateJournal = async (req, res) => {
   let id 
   let entry
   let index
