@@ -23,7 +23,7 @@ const deleteJournalEntry = async (req, res) => {
 
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Access-Control-Allow-Origin', '*')
-  res.json({"results":"ok"})
+  res.json({"results":"success"})
 }
 
 export default deleteJournalEntry
