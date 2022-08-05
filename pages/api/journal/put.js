@@ -6,7 +6,7 @@ const putJournal = async (req, res) => {
   fs.writeFileSync(filename, JSON.stringify(journal))
   
   res.setHeader('Content-Type', 'application/json');
-  res.json(journal)
+  res.json({"response": "success"})
 }
 
 export default putJournal

@@ -30,7 +30,7 @@ const AddJournal = (req, res) => {
 
   res.setHeader('Content-Type', 'application/json')
   res.setHeader('Access-Control-Allow-Origin', '*')
-  res.json({result: 'success'})
+  res.json({response: 'success'})
 }
 
 export default AddJournal

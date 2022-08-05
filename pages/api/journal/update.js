@@ -30,7 +30,7 @@ const updateJournal = async (req, res) => {
   }
 
   res.setHeader('Content-Type', 'application/json');
-  res.json(journal)
+  res.json({"response": "success"})
 }
 
 export default updateJournal
