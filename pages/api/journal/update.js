@@ -7,7 +7,7 @@ const updateJournal = async (req, res) => {
   if (req.body.hasOwnProperty('id')) {
      id = req.body.id
      entry = req.body.entry
-     index = req.body.entry
+     index = req.body.index
   } else {
      const b = JSON.parse(req.body)
      id = b.id
