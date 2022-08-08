@@ -99,7 +99,7 @@ const App = () => {
   if (!segment)
         segment = 'last'
   if (!method)
-        method = 'azure-small'
+        method = 'http'
 
     const nice_links = nice.map( (serial, idx) => {
       return cameraLinks(serial, idx)

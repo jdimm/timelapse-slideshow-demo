@@ -22,13 +22,10 @@ const oldgetLocalFiles = ( (serial, requestedCamera, t0, t1, cutoff, segment) =>
     const filtered = files.filter( file => {
        const   [ date, camera, ts ] = file.split('.')
         
-        // console.log("camera: " + camera, " requestedCamera: " + requestedCamera)
         return camera == requestedCamera 
           && (!t0 || ts >= t0) 
           && (!t1 || ts <= t1)
     } )
-
-    // console.log("filtered: " + filtered)
 
     if (!cutoff) 
        cutoff = 180
@@ -44,15 +41,12 @@ const oldgetLocalFiles = ( (serial, requestedCamera, t0, t1, cutoff, segment) =>
           extracted.push(parseFilename (file))
     })
 
-    // console.log("extracted: " + extracted)
     return extracted
 })
 
 
 const getLocalFiles = async (serial, camera, t0, t1, cutoff, segment) => {
     const userInfo = await getUserInfo(serial)
-    console.log("serial", serial)
-    console.log("userInfo: ", userInfo)
 
     const batchInfo = {
       user_id: userInfo[0].user_id,
@@ -68,7 +62,6 @@ const getLocalFiles = async (serial, camera, t0, t1, cutoff, segment) => {
 
     files.forEach(file => {
       const photo = parseFilename(file)
-      // console.log(photo)
       if (photo 
           && (!t0 || photo.timestamp >= t0) && (!t1 || photo.timestamp <= t1)
           && (photo.camera == camera)) {
@@ -80,8 +73,6 @@ const getLocalFiles = async (serial, camera, t0, t1, cutoff, segment) => {
       }
     })
 
-    // console.log('batchInfo:', batchInfo)
-  
     if (!cutoff) 
        cutoff = 180
   

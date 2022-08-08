@@ -134,22 +134,32 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, m
 		return userInfo
 	}
 	const getPhotosAzure = async () => {
-		const api = method === 'azure' ? 'photos' : 'photos_http'
+		let key
+		let api
+		// console.log("method: " + method)
+		if (method == 'azure') {
+                api = 'user_photos'
 
-		// Get user_id from serial.
-		//const resp = await getUserInfo(serial)
-		//if (!resp || resp.length === 0) 
-		//  return
-		//const userInfo = resp[0]
+			    // Get user_id from serial.
+				const resp = await getUserInfo(serial)
+				if (!resp || resp.length === 0) 
+				  return
+				const userInfo = resp[0]
+				key = userInfo.user_id
+		}
+		else {
+			api = 'photos_http'
+			key = serial
+		}
 
-		let url = `/api/${api}/${serial}/${camera}?`
+		let url = `/api/${api}/${key}/${camera}?`
 		if (t0)
 			url += `t0=${t0}`
 		if (t1)
 			url += `&t1=${t1}`
 		if (segment)
 			url += `&segment=${segment}`
-		console.log("url:", url)
+		//console.log("url:", url)
 
 		const response = await fetch(url)
 		const batch = await response.json()

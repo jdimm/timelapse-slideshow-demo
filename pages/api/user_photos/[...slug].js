@@ -19,6 +19,7 @@ const getAzureFiles = async (user_id, camera, t0, t1, cutoff, segment) => {
     const photo = parseAzurePhoto(file)
     if (batchInfo.device_id === -1) {
         batchInfo.device_id = photo.device_id
+        batchInfo.serial = photo.serial
     }
     if (photo 
          && (!t0 || photo.timestamp >= t0) 
@@ -26,8 +27,6 @@ const getAzureFiles = async (user_id, camera, t0, t1, cutoff, segment) => {
          && photo.device_id == batchInfo.device_id
          ) {
 
-      //console.log(photo.device_id, batchInfo.device_id, file)
-      //console.log(JSON.stringify(photo))
       batchInfo.photos.push({
         date: photo.date,
         hour: photo.hour,
@@ -49,7 +48,6 @@ const getAzureFiles = async (user_id, camera, t0, t1, cutoff, segment) => {
         || (segment == 'all')
   })
 
-  //console.log("batchInfo: " + JSON.stringify(batchInfo))
   return batchInfo
 }
 
