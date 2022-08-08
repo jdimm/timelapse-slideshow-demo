@@ -51,6 +51,9 @@ const oldgetLocalFiles = ( (serial, requestedCamera, t0, t1, cutoff, segment) =>
 
 const getLocalFiles = async (serial, camera, t0, t1, cutoff, segment) => {
     const userInfo = await getUserInfo(serial)
+    console.log("serial", serial)
+    console.log("userInfo: ", userInfo)
+
     const batchInfo = {
       user_id: userInfo[0].user_id,
       device_id: userInfo[0].device_id,
