@@ -127,9 +127,19 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, m
 	}
 	*/
 
+	const getUserInfo = async (serial) => {
+		const url = `/api/user/${serial}`
+		const response = await fetch(url)
+		const userInfo = await response.json()
+		return userInfo
+	}
 	const getPhotosAzure = async () => {
-		const api = method === 'azure' ? 'photos' : 'photos_http'
-		let url = `/api/${api}/${serial}/${camera}?`
+		const api = method === 'azure' ? 'user_photos' : 'photos_http'
+		const resp = await getUserInfo(serial)
+		if (!resp || resp.length === 0) return
+		const userInfo = resp[0]
+
+		let url = `/api/${api}/${userInfo.user_id}/${camera}?`
 		if (t0)
 			url += `t0=${t0}`
 		if (t1)

@@ -41,8 +41,11 @@ export const smallImages = async (user_id, camera) => {
       prefix: user_id + '/' + camera
     }
 
+    //console.log(listOptions)
+
     for await (const blob of containerClient.listBlobsFlat(listOptions)) {
       blobList.push(blob.name)
+      //console.log("blob.name: " + blob.name)
     }
   }
 

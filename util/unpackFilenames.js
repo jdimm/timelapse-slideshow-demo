@@ -7,7 +7,7 @@ export const parseAzurePhoto = (image) => {
       return null
     }
 
-    const [inputString, user_id, device_id, camera, date, timestamp, serial] = match
+    const [inputString, user_id, camera, device_id, date, timestamp, serial] = match
 
     const d = new Date(timestamp * 1000)
     const hour = 
