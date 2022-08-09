@@ -44,6 +44,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, m
 	const [slideshowStyle, setSlideshowStyle] = useState(styles.slideshow)
 	const [hiresImageUrl, setHiresImageUrl] = useState('')
 	const [batch, setBatch] = useState([])
+	const [userInfo, setUserInfo] = useState({})
 
 	const animateRef = useRef(animate)
 	const indexRef = useRef(index)
@@ -144,8 +145,10 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, m
 				const resp = await getUserInfo(serial)
 				if (!resp || resp.length === 0) 
 				  return
-				const userInfo = resp[0]
-				key = userInfo.user_id
+				const userInf = resp[0]
+				setUserInfo(userInf)
+
+				key = userInf.user_id
 		}
 		else {
 			api = 'photos_http'
@@ -159,7 +162,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, m
 			url += `&t1=${t1}`
 		if (segment)
 			url += `&segment=${segment}`
-		//console.log("url:", url)
+		console.log("fetching photo list from azure:", url)
 
 		const response = await fetch(url)
 		const batch = await response.json()
@@ -485,6 +488,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, m
 					<div className={styles.timelapse_metadata}>
 						{serial} camera {camera}
 					</div>
+					<div className={styles.user_info}>{userInfo.user_id} : {userInfo.name} {userInfo.email}</div>
 					<Slack serial={serial} photo={photos[index]} imageRepoV2={imageRepoV2} />
 
 				</div>
