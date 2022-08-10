@@ -171,7 +171,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, m
 			const user_id = batch.user_id 
 			const device_id = batch.device_id
 			const url_prefix = batch.url_prefix
-			let serial
+			// let serial
 
 			const photos = batch.photos.map((photo) => {
 				const date = photo.date
