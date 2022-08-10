@@ -14,7 +14,6 @@ const getAzureFiles = async (user_id, camera, t0, t1, cutoff, segment) => {
 
   const files = await smallImages(batchInfo['user_id'], camera)
 
-  // Return files for the first device only.
   files.forEach(file => {
     const photo = parseAzurePhoto(file)
     if (batchInfo.device_id === -1) {
