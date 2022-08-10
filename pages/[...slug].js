@@ -15,9 +15,19 @@ const App = () => {
   const [forceRedraw, setForceRedraw] = useState(false)
   const [journal, setJournal] = useState( []);
   const [serial, setSerial] = useState('');
+  const [page, setPage] = useState('');
 
   useEffect(() => {
-    getJournal()
+    const { slug } = router.query
+  
+    if (slug && slug.length > 0)
+      setPage(slug[0])
+    if (slug && slug.length > 1) {
+      const serial = slug[1]
+      setSerial(serial)
+      getJournal(serial)
+    }
+
   }, [router.query])
 
 
@@ -27,20 +37,18 @@ const App = () => {
     updateMemory(newJournal)
   }
 
-  const getJournal = async () => {
-    if (serial) {
+  const getJournal = async (serial) => {
+    if (serial && serial != '') {
       const url = `/api/journal/get/${serial}`
-      console.log(`getJournal url: ${url}`)
       const response = await fetch(url)
       const json = await response.json()
-      console.log(`getJournal json: ${JSON.stringify(json)}`)
       setJournal(json)
     }
   }
 
   const updateMemory = (newJournal) => {
     const body = {
-      serial: serial,
+      id: serial,
       journal: newJournal
     }
 
@@ -55,7 +63,7 @@ const App = () => {
     }).then(function(response) { 
       return response.json()
     }).then(function(data) {
-      console.log(data) 
+      console.log("Journal updated") 
     })
   }
 
@@ -77,15 +85,6 @@ const App = () => {
       </div>
   }
 
-  let page
-
-  const { slug } = router.query
-
-  if (slug && slug.length > 0)
-    page = slug[0]
-  if (slug && slug.length > 1)
-    serial = slug[1]
-  
   if (!serial || !page) {
     return null
   }
@@ -124,7 +123,11 @@ const App = () => {
       </div>
 
       <div className={styles.journal_holder}>
-         <Journal journal={journal} updateMemory={updateMemory} deleteMemory={deleteMemory} segment={segment}/>
+         <Journal journal={journal} 
+           updateMemory={updateMemory} 
+           deleteMemory={deleteMemory} 
+           segment={segment}
+           method={method}/>
       </div>
 
     </div>

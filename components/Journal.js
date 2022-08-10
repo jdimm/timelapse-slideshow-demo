@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Slideshow from '../components/Slideshow'
 import styles from './Journal.module.css'
 
-const Journal = ( {journal, updateMemory, deleteMemory, segment} ) => {
+const Journal = ( {journal, updateMemory, deleteMemory, segment, method} ) => {
     useEffect(() => {
         journal.forEach ( (entry, index) => {
             entry.index = index
@@ -39,7 +39,7 @@ const Journal = ( {journal, updateMemory, deleteMemory, segment} ) => {
                         serial={entry.serial}
                         camera={camera}
                         segment={segment}
-                        method={'azure'}
+                        method={method}
                         layout='journal'
                         t0={entry.t0}
                         t1={entry.t1}

@@ -162,7 +162,6 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, m
 			url += `&t1=${t1}`
 		if (segment)
 			url += `&segment=${segment}`
-		console.log("fetching photo list from azure:", url)
 
 		const response = await fetch(url)
 		const batch = await response.json()

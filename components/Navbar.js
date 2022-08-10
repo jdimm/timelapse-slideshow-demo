@@ -11,8 +11,6 @@ const Navbar = ({ page, serial, camera, date, segment, email }) => {
 
     var selectedEmail = email
 
-    console.log('Navbar', page, serial, camera, date)
-
     if (!serial || serial == '' || serial == 'undefined') 
       serial = 'e90e736b799fa757010405a0c7cef017'
 

@@ -13,7 +13,6 @@ const getJournal = async (req, res) => {
       journal = JSON.parse(contents)
       let index = 0
       journal = journal.map(entry => {
-        console.log('getJournal entry: ', entry)
         if (typeof entry === "object") {
           entry['index'] = index++
           return entry

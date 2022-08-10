@@ -13,7 +13,7 @@ const getAzureFiles = async (user_id, camera, t0, t1, cutoff, segment) => {
   }
 
   const files = await smallImages(batchInfo['user_id'], camera)
-
+  
   files.forEach(file => {
     const photo = parseAzurePhoto(file)
     if (batchInfo.device_id === -1) {
@@ -25,7 +25,7 @@ const getAzureFiles = async (user_id, camera, t0, t1, cutoff, segment) => {
          && (!t1 || photo.timestamp <= t1)
          && photo.device_id == batchInfo.device_id
          ) {
-
+      
       batchInfo.photos.push({
         date: photo.date,
         hour: photo.hour,
