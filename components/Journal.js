@@ -39,7 +39,7 @@ const Journal = ( {journal, updateMemory, deleteMemory, segment} ) => {
                         serial={entry.serial}
                         camera={camera}
                         segment={segment}
-                        method={'azure-small'}
+                        method={'azure'}
                         layout='journal'
                         t0={entry.t0}
                         t1={entry.t1}
