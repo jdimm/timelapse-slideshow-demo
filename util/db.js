@@ -26,7 +26,7 @@ async function executeQuery({ query, values }) {
 
 export async function getUserInfo(serial) {
   const query = `select 
-      u.id as user_id, d.id as device_id, u.email, u.name
+      u.id as user_id, d.id as device_id, u.email, u.name, datediff(now(),from_unixtime(first_pair_time)) as days_since_pairing
     from user as u
     join device as d on d.user_id = u.id
     where d.serial = '${serial}'

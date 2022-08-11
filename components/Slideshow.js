@@ -489,6 +489,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, m
 						{serial} camera {camera}
 					</div>
 					<div className={styles.user_info}>{userInfo.user_id} : {userInfo.name} {userInfo.email}</div>
+					<div className={styles.user_info}>days since pairing: {userInfo.days_since_pairing}</div>
 					<Slack serial={serial} photo={photos[index]} imageRepoV2={imageRepoV2} />
 
 				</div>
