@@ -403,6 +403,15 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, m
 		else setHiresImageUrl('')
 	}
 
+	const daysSincePair = (photo) => {
+		const photoDate = new Date(photo.date)
+		const deviceDate = new Date(userInfo.first_pair_date)
+
+		const msdiff = photoDate - deviceDate
+		const days = Math.floor(msdiff / (1000 * 60 * 60 * 24))
+		return days
+	}
+
 	// Code that runs each re-draw starts here.
 	if (!photos || !(photos.length > index))
 		return <div className={styles.no_photos}> ... finding azure photos ... </div>
@@ -418,7 +427,8 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, m
 	//  ? date.toISOString().slice(0, 10) + ' ' + date.toISOString().slice(11, 16)
 	//  : ''
 	
-	const timestamp =  batch.photos ? batch.photos[index].date + ' ' + batch.photos[index].hour : ''
+	const timestamp =  batch.photos ? batch.photos[index].date + ' ' + batch.photos[index].hour  : ''
+	const daysSincePairPicture = daysSincePair(batch.photos[index]) 
 
 	const preloadCount = photos.length - preloadedImages.length
 	const preloadCountDisplay = preloadCount > 0 ? preloadCount : ''
@@ -489,7 +499,7 @@ const Slideshow = ({ serial, camera, segment, layout, addJournalEntry, t0, t1, m
 						{serial} camera {camera}
 					</div>
 					<div className={styles.user_info}>{userInfo.user_id} : {userInfo.name} {userInfo.email}</div>
-					<div className={styles.user_info}>days since pairing: {userInfo.days_since_pairing}</div>
+					<div className={styles.user_info}>days since pairing: {daysSincePairPicture}</div>
 					<Slack serial={serial} photo={photos[index]} imageRepoV2={imageRepoV2} />
 
 				</div>
