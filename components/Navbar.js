@@ -159,6 +159,14 @@ const Navbar = ({ page, serial, camera, date, segment, email }) => {
 							onChange={changeSegment}
 						/>{' '}
 						last
+						<input
+							type='radio'
+							name='segment'
+							value='all'
+							checked={_segment == 'all'}
+							onChange={changeSegment}
+						/>{' '}
+						all
 					</span>
 
 
