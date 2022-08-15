@@ -41,8 +41,8 @@ const Journal = ( {journal, updateMemory, deleteMemory, segment, method} ) => {
                         segment={segment}
                         method={method}
                         layout='journal'
-                        t0={entry.t0}
-                        t1={entry.t1}
+                        t0={entry.start}
+                        t1={entry.end}
                     />
                 </div>
                 <div

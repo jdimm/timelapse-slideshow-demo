@@ -79,6 +79,16 @@ const TouchBar = ({ photos, batch, index, setIndex, wrongHour,
 	   const pStart = batch.photos[seg[0]].timestamp
 	   const pEnd = batch.photos[seg[1]].timestamp
 
+	   // Jamie uses:
+	   //"text": "",
+	   //"camera": 1,
+	   //"start": "1654701695",
+	   //"end": "1657394494",
+	   //"delay": 100,
+	   //"type": "timelapse",
+	   //"date": "Thu Aug 11 20:16:08 2022"
+
+/*
 	   addJournalEntry ({
 		   type:"timelapse",
 		   serial: serial,
@@ -86,6 +96,18 @@ const TouchBar = ({ photos, batch, index, setIndex, wrongHour,
 		   t0: parseInt(pStart),
 		   t1: parseInt(pEnd)
 	   })
+*/
+	   addJournalEntry ({
+		text: '',
+		type:"timelapse",
+		serial: serial,
+		camera: camera,
+		start: parseInt(pStart),
+		end: parseInt(pEnd),
+		delay: 100,
+		date: new Date().toISOString().substring(0, 10)
+	})
+
 	   setSeg([0, 0])
 	}
 
