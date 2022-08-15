@@ -11,7 +11,7 @@ const Journal = ( {journal, updateMemory, deleteMemory, segment, method, serial}
 
     const onBlur = (e, entry) => {
         e.preventDefault()
-        entry.caption = e.target.textContent
+        entry.text = e.target.textContent
         updateMemory(journal)
     }
 
@@ -51,12 +51,12 @@ const Journal = ( {journal, updateMemory, deleteMemory, segment, method, serial}
                     placeholder='notes'
                     onBlur={(e) => onBlur(e, entry)}
                 >
-                    {entry.caption}
+                    {entry.text}
                 </div>
                 <button
                     className={styles.close_button}
                     onClick={(e) => onClick(e, entry)}
-                    title='delete memory and caption'
+                    title='delete memory and text'
                 >
                     x
                 </button>
