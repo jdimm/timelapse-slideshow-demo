@@ -16,6 +16,18 @@ const App = () => {
   const [journal, setJournal] = useState( []);
   const [serial, setSerial] = useState('');
   const [page, setPage] = useState('');
+  const [user_uuid, setUserUUID] = useState('');
+
+  const getUser = async (serial) => {
+      const url = "/api/user/" + serial
+      const response = await fetch(url)
+      const data = await response.json()
+      if (data.length > 0) {
+        const uuid = data[0].user_uuid
+        setUserUUID(uuid)
+        getJournal(uuid)
+      }
+  }
 
   useEffect(() => {
     const { slug } = router.query
@@ -25,7 +37,7 @@ const App = () => {
     if (slug && slug.length > 1) {
       const serial = slug[1]
       setSerial(serial)
-      getJournal(serial)
+      getUser(serial)
     }
 
   }, [router.query])
@@ -37,9 +49,9 @@ const App = () => {
     updateMemory(newJournal)
   }
 
-  const getJournal = async (serial) => {
-    if (serial && serial != '') {
-      const url = `/api/journal/get/${serial}`
+  const getJournal = async (user_uuid) => {
+    if (user_uuid && user_uuid != '') {
+      const url = `/api/journal/get/${user_uuid}`
       const response = await fetch(url)
       const json = await response.json()
       setJournal(json)
@@ -48,7 +60,7 @@ const App = () => {
 
   const updateMemory = (newJournal) => {
     const body = {
-      id: serial,
+      id: user_uuid,
       journal: newJournal
     }
 
