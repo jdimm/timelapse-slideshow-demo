@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Slideshow from '../components/Slideshow'
 import styles from './Journal.module.css'
 
-const Journal = ( {journal, updateMemory, deleteMemory, segment, method} ) => {
+const Journal = ( {journal, updateMemory, deleteMemory, segment, method, serial} ) => {
     useEffect(() => {
         journal.forEach ( (entry, index) => {
             entry.index = index
@@ -36,13 +36,13 @@ const Journal = ( {journal, updateMemory, deleteMemory, segment, method} ) => {
             <div key={key}>
                 <div className={styles.journal_slideshow_holder}>
                     <Slideshow
-                        serial={entry.serial}
+                        serial={serial}
                         camera={camera}
                         segment={segment}
                         method={method}
                         layout='journal'
-                        t0={entry.start}
-                        t1={entry.end}
+                        t0={parseInt(entry.start)}
+                        t1={parseInt(entry.end)}
                     />
                 </div>
                 <div

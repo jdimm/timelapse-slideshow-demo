@@ -139,7 +139,9 @@ const App = () => {
            updateMemory={updateMemory} 
            deleteMemory={deleteMemory} 
            segment={segment}
-           method={method}/>
+           method={method}
+           serial={serial}
+           />
       </div>
 
     </div>

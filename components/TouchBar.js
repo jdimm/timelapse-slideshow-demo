@@ -96,16 +96,25 @@ const TouchBar = ({ photos, batch, index, setIndex, wrongHour,
 		   t0: parseInt(pStart),
 		   t1: parseInt(pEnd)
 	   })
-*/
+*/     
+       const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+	   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+       const date = new Date();
+	   const dayOfWeek = days[date.getDay()]
+	   const year = date.getFullYear()
+	   const month = months[date.getMonth() + 1]
+	   const day = date.getDate()
+	   const time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+	   const dateString = `${dayOfWeek} ${month} ${day} ${time} ${year}`
 	   addJournalEntry ({
 		text: '',
 		type:"timelapse",
 		serial: serial,
-		camera: camera,
-		start: parseInt(pStart),
-		end: parseInt(pEnd),
+		camera: parseInt(camera),
+		start: pStart,
+		end: pEnd,
 		delay: 100,
-		date: new Date().toISOString().substring(0, 10)
+		date: dateString
 	})
 
 	   setSeg([0, 0])
