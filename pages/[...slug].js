@@ -51,7 +51,7 @@ const App = () => {
 
   const getJournal = async (user_uuid) => {
     if (user_uuid && user_uuid != '') {
-      const url = `/api/journal/get/${user_uuid}`
+      const url = `/api/webjournal/get/${user_uuid}`
       const response = await fetch(url)
       const json = await response.json()
       setJournal(json)
@@ -64,7 +64,7 @@ const App = () => {
       journal: newJournal
     }
 
-    const url = '/api/journal/put/'
+    const url = '/api/webjournal/put/'
     fetch(url, {
       method: 'POST',
       headers: {
