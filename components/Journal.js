@@ -30,6 +30,8 @@ const Journal = ( {journal, updateMemory, deleteMemory, segment, method, serial}
       return null
 
     const html = journal.map((entry, index) => {
+        const t0 = entry.start
+        const t1 = entry.end === entry.start ? entry.end + 100 : entry.end
         const camera = ("camera" in entry) ? entry.camera : 1
         const key = 100 * index + "index" in entry ? entry.index : index
         return (
@@ -41,8 +43,8 @@ const Journal = ( {journal, updateMemory, deleteMemory, segment, method, serial}
                         segment={segment}
                         method={method}
                         layout='journal'
-                        t0={parseInt(entry.start)}
-                        t1={parseInt(entry.end)}
+                        t0={parseInt(t0)}
+                        t1={parseInt(t1)}
                     />
                 </div>
                 <div
