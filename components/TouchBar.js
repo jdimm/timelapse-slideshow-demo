@@ -78,6 +78,8 @@ const TouchBar = ({ photos, batch, index, setIndex, wrongHour,
 
 	   const pStart = batch.photos[seg[0]].timestamp
 	   const pEnd = batch.photos[seg[1]].timestamp
+	   if (pStart === pEnd)
+		   return
 
 	   // Jamie uses:
 	   //"text": "",
