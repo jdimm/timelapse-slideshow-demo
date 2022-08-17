@@ -1,12 +1,12 @@
 .content {
     clear: both;
-    width: 1150px;
+    width: 1420px;
 }
 
 .slideshow_holder {
     float: left;
-    width: 640px;
-    height: 480px;
+    width: 1024px;
+    height: 768px;
     padding: 10px;
     padding-left: 20px;
     padding-right: 20px;
