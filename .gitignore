@@ -3,4 +3,5 @@ node_modules
 .next
 .env
 iot-camera*
-journals/*
+journals/*.json
+webjournals/*.json
